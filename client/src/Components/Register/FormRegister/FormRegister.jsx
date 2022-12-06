@@ -19,6 +19,7 @@ import {
 import { CheckCircleIcon, InfoIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
+import { useAuth } from "../../AuthComponents/AuthContext"
 
 const paises = ['Argentina', 'Brasil', 'Bolivia', 'Chile', 'Colombia', 'Costa Rica', 'Ecuador', 'El Salvador', 'España', 'Estados Unidos', 'Guatemala', 'Guinea Ecuatorial', 'Honduras', 'México', 'Nicaragua', 'Panamá', 'Paraguay', 'Perú', 'Puerto Rico', 'República Dominicana', 'Uruguay', 'Venezuela', 'OTROS']
 
@@ -26,17 +27,17 @@ const FormRegister = () => {
 
     const navigate = useNavigate()
 
+    const { signup } = useAuth()
+
     const [infoUser, setInfoUser] = useState({
-        name: "",
-        surname: "",
+        userSlack: "",
         country: "",
         email: "",
         password: ""
     });
 
     const [errorInfoUser, setErrorInfoUser] = useState({
-        name: "black",
-        surname: "black",
+        userSlack: "black",
         country: "black",
         email: "black",
         password: {
@@ -50,11 +51,11 @@ const FormRegister = () => {
 
     const [showSubmitButton, setShowSubmitButton] = useState(true)
 
+
+
     useEffect(() => {
         setShowSubmitButton(!(
-            (errorInfoUser.name === "green")
-            &&
-            (errorInfoUser.surname === "green")
+            (errorInfoUser.userSlack === "green")
             &&
             (errorInfoUser.country === "green")
             &&
@@ -80,7 +81,7 @@ const FormRegister = () => {
                 &&
                 /[0-9]/.test(current)
                 &&
-                /[$@$!%*?&#+-]/.test(current)
+                /[$@$!%*?&#+-.]/.test(current)
                 &&
                 (current.length > 8))
                 ?
@@ -95,7 +96,7 @@ const FormRegister = () => {
                     complete,
                     capitalLetter: /[A-Z]/.test(e.target.value) ? "green" : "red",
                     digit: /[0-9]/.test(e.target.value) ? "green" : "red",
-                    specialCharacter: /[$@$!%*?&#+-]/.test(e.target.value) ? "green" : "red",
+                    specialCharacter: /[$@$!%*?&#+-.]/.test(e.target.value) ? "green" : "red",
                     eightCharacters: e.target.value.length > 8 ? "green" : "red"
                 }
             })
@@ -144,8 +145,9 @@ const FormRegister = () => {
     }
 
 
-    const submitHandler = (e) => {
+    const submitHandler = async (e) => {
         e.preventDefault()
+        await signup(infoUser.email, infoUser.password, infoUser.userSlack, infoUser.country)
         console.log(infoUser)
     }
 
@@ -167,47 +169,26 @@ const FormRegister = () => {
             </VStack>
             <form onSubmit={submitHandler}>
                 <Stack spacing={3} w="23rem" >
-                    <Flex fontSize={".8rem"}
-                        justifyContent="space-between"
-                        gap="4%"
-                        wrap="wrap">
-                        <FormControl id="name"
-                            w="48%" >
-                            <Input name='name'
-                                placeholder='Nombre'
-                                borderColor={errorInfoUser.name}
+                    
+                        <FormControl id="userSlack"
+                            fontSize={".8rem"}
+                             >
+                            <Input name='userSlack'
+                                placeholder='Usuario de Slack con tu cohorte'
+                                borderColor={errorInfoUser.userSlack}
                                 focusBorderColor='black'
-                                _hover={{ borderColor: errorInfoUser.name }}
-                                value={infoUser.name}
+                                _hover={{ borderColor: errorInfoUser.userSlack }}
+                                value={infoUser.userSlack}
                                 onChange={onChangeInput}
                                 onBlur={(e) => setErrorInfoUser({
                                     ...errorInfoUser, [e.target.name]: (e.target.value === "") ? "red" : "green"
                                 })}
                             />
+                            <Flex justifyContent={"flex-end"}>
+                            {(errorInfoUser.userSlack === "red") && <Text color="red"  >* Campo obligatorio</Text>}
+                            </Flex>
                         </FormControl>
-                        <FormControl id="surname"
-                            w="48%">
-                            <Input name='surname'
-                                placeholder='Apellido'
-                                borderColor={errorInfoUser.surname}
-                                focusBorderColor='black'
-                                _hover={{ borderColor: errorInfoUser.surname }}
-                                value={infoUser.surname}
-                                onChange={onChangeInput}
-                                onBlur={(e) => setErrorInfoUser({
-                                    ...errorInfoUser, [e.target.name]: (e.target.value === "") ? "red" : "green"
-                                })}
-                            />
-                        </FormControl>
-                        <Flex justifyContent="flex-end"
-                            w="48%">
-                            {(errorInfoUser.name === "red") && <Text color="red">* Campo obligatorio</Text>}
-                        </Flex>
-                        <Flex justifyContent="flex-end"
-                            w="48%">
-                            {(errorInfoUser.surname === "red") && <Text color="red">* Campo obligatorio</Text>}
-                        </Flex>
-                    </Flex>
+                    
                     <FormControl id="country"
                         fontSize={".8rem"}>
                         <Select name="country"
