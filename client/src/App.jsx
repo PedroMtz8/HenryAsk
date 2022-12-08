@@ -5,6 +5,7 @@ import Register from "./Components/Register/Register"
 import AuthProvider from "./Components/AuthComponents/AuthContext"
 import ProtectedRoute  from "./Components/AuthComponents/ProtectedRoutes"
 import Home from "./Components/Home/Home"
+import Profile from "./Components/Profile/Profile"
 
 function App() {
 
@@ -14,6 +15,7 @@ function App() {
       <Route path="/" element={<LandingPage/>} />
       <Route path="/login" element={<Login/>} />
       <Route path="/signup" element={<Register/>} />
+      <Route path="/profile" element={<Profile/>} />
       <Route path="/home" element={<ProtectedRoute><Home/></ProtectedRoute>} />      
     </Routes>
     </AuthProvider>

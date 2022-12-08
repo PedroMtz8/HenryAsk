@@ -39,13 +39,15 @@ export default function NavBar() {
     <>
       <Box bg={useColorModeValue('black', 'black')} px={4}>
         <Flex h={"96px"} alignItems={'center'} justifyContent={'space-around'}>
+          <RouteLink to={"/home"} >
           <Img h={"25px"} src='https://assets.soyhenry.com/henry-landing/assets/Henry/logo-white.png' />
+          </RouteLink>
           <Flex alignItems={'center'}>
             <Stack direction={'row'} spacing={7} margin={0}>
             <QuestionModal title={"Hacer pregunta"} />
-              <Button onClick={toggleColorMode}>
+             {/*  <Button onClick={toggleColorMode}>
                 {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-              </Button>
+              </Button> */}
             
                 <Flex>
 

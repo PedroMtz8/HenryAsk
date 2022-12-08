@@ -24,7 +24,7 @@ export default function QuestionModal({title}) {
 
   return (
     <>
-      <Button backgroundColor={"#FFFF01"}/*  background={}  */onClick={onOpen}>{title}</Button>
+      <Button marginTop={"5px"} backgroundColor={"#FFFF01"}/*  background={}  */onClick={onOpen}>{title}</Button>
      {/*  <Button ml={4} ref={finalRef}>
         I'll receive focus on close
       </Button> */}
