@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, createContext } from "react";
 import { app, auth, firestore } from "./Credentials"
-import { createUserWithEmailAndPassword, onAuthStateChanged  } from "firebase/auth"
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut  } from "firebase/auth"
 import { doc, setDoc } from "firebase/firestore"
 
 
@@ -15,8 +15,8 @@ export const useAuth = () => {
 const AuthProvider = ({children}) => {
     const [loadingUser, setLoadingUser] = useState(true);
     const [user, setUser] = useState(null)
-
-
+  //console.log(user.uid, user.accessToken)
+  console.log(user)
     const signup = async(email, password, userSlack, country) => {
 
         let infoUser = await createUserWithEmailAndPassword(auth, email, password).then((userFirebase) => userFirebase);
@@ -36,6 +36,16 @@ const AuthProvider = ({children}) => {
 
     }
 
+
+    const login = async(email, password) => {
+      let user = await signInWithEmailAndPassword(auth, email, password)
+      console.log(user)
+    }
+
+    const signout = async() => {
+        await signOut(auth)
+    }
+
     useEffect(() => {
         onAuthStateChanged(auth, (currentUser) => {
           setUser(currentUser);
@@ -44,7 +54,7 @@ const AuthProvider = ({children}) => {
       }, []);
 
     return (
-        <authContext.Provider value={{signup}}>
+        <authContext.Provider value={{signup, login, signout, loadingUser, user}}>
             {children}
         </authContext.Provider>
     )

@@ -27,7 +27,7 @@ const FormRegister = () => {
 
     const navigate = useNavigate()
 
-    const { signup } = useAuth()
+    const { signup, signout } = useAuth()
 
     const [infoUser, setInfoUser] = useState({
         userSlack: "",
@@ -50,7 +50,6 @@ const FormRegister = () => {
     })
 
     const [showSubmitButton, setShowSubmitButton] = useState(true)
-
 
 
     useEffect(() => {
@@ -149,6 +148,7 @@ const FormRegister = () => {
         e.preventDefault()
         await signup(infoUser.email, infoUser.password, infoUser.userSlack, infoUser.country)
         console.log(infoUser)
+        await signout()
     }
 
     return (
