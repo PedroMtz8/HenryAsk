@@ -7,11 +7,11 @@ import { Provider } from "react-redux";
 import store from "./app/store";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <Provider store={store}>
-    <ChakraProvider>
-      <BrowserRouter>
+  <ChakraProvider>
+    <BrowserRouter>
+      <Provider store={store}>
         <App />
-      </BrowserRouter>
-    </ChakraProvider>
-  </Provider>
+      </Provider>
+    </BrowserRouter>
+  </ChakraProvider>
 );
