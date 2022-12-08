@@ -88,8 +88,6 @@ const FormRegister = () => {
                 :
                 "red"
 
-                console.log(complete)
-
             setErrorInfoUser({
                 ...errorInfoUser, password: {
                     complete,
@@ -110,7 +108,7 @@ const FormRegister = () => {
     const [show, setShow] = useState(false)
     const handleClick = () => setShow(!show)
 
-    const ShowPassword = ({ colorError }) => {
+    const showPasswordErrorText = (colorError) => {
 
         return (
             <SimpleGrid columns={2}
@@ -235,9 +233,7 @@ const FormRegister = () => {
                         </InputGroup>
                     </FormControl>
 
-
-                    {<ShowPassword colorError={errorInfoUser.password} />}
-
+                    {showPasswordErrorText(errorInfoUser.password)}
 
                     <Stack spacing={4}>
                         <Button bg='#ffff01'
