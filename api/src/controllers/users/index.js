@@ -1,4 +1,5 @@
 const User = require('../../models/User')
+const { checkUserWasFound } = require('./functions')
 
 const registerUser = async (req, res) => {
     const { uid, mail, userSlack, country } = req.body
@@ -17,8 +18,9 @@ const registerUser = async (req, res) => {
 
 const checkStatusUser = async (req, res) => {
     try {
-        const user = await User.findById(req.id)
-        res.json({ status: user.status })
+        const foundUser = await User.findById(req.id)
+        checkUserWasFound(foundUser)
+        res.json({ status: foundUser.status })
     } catch (error) {
         res.json({ message: error.message })
     }
@@ -29,15 +31,21 @@ const approveUser = async (req, res) => {
     if (!mail) return res.status(400).json({ message: 'Mail requerido.' })
 
     const user = await User.findOneAndUpdate({ mail }, { status: 'approved' }, { new: true })
-    if (!user) return res.status(404).json({ message: 'Usuario no encontrado!' })
+    checkUserWasFound(user)
 
     return res.json({ message: 'Usuario aprobado!', user })
 }
 
 const getUserById = async (req, res) => {
-    const foundUser = await User.findById(req.id)
-    res.json(foundUser)
+    try {
+        const foundUser = await User.findById(req.id)
+        checkUserWasFound(foundUser)
+        res.json(foundUser)
+    } catch (error) {
+        res.json({ message: error.message })
+    }
 }
+
 module.exports = {
     registerUser,
     approveUser,

@@ -18,7 +18,7 @@ const schema = new Schema({
     rol: {
         type: String,
         validate: {
-            validator: r => r === 'Estudiante' || r === 'Egresado',
+            validator: r => r === 'Estudiante' || r === 'Egresado' || r === 'Administrador',
             message: props => `${props.value} no es un rol valido!`
         },
         default: 'Estudiante'
