@@ -3,7 +3,7 @@ const { verifyToken } = require('../controllers/middlewares');
 const { registerUser, approveUser, getUserById, checkStatusUser } = require('../controllers/users')
 
 router.get('/status', verifyToken, checkStatusUser)
-router.get('/', getUserById)
+router.get('/', verifyToken, getUserById)
 router.post('/register', registerUser)
 router.put('/approve', approveUser)
 
