@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
     VStack,
     HStack,
@@ -42,11 +42,63 @@ const FormLogin = () => {
         }
     })
 
+    const [showSubmitButton, setShowSubmitButton] = useState(true)
+
+    useEffect(() => {
+        setShowSubmitButton(!(
+            (errorInfoUser.email === "green")
+            &&
+            (errorInfoUser.password.complete === "green")))
+    })
+
     const onChangeInput = (e) => {
-        setInfoUser({
-            ...infoUser,
-            [e.target.name]: e.target.value
-        })
+
+        setInfoUser({ ...infoUser, [e.target.name]: e.target.value })
+
+        if (e.target.name === "email") {
+            setErrorInfoUser({
+                ...errorInfoUser, email: !(/^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/.test(e.target.value)) ? "red" : "green"
+            })
+        }
+        else if (e.target.name === "password") {
+
+            const current = e.target.value
+
+            const complete = (/[A-Z]/.test(current)
+                &&
+                /[0-9]/.test(current)
+                &&
+                /[$@$!%*?&#+-.]/.test(current)
+                &&
+                (current.length > 8))
+                ?
+                "green"
+                :
+                "red"
+
+            setErrorInfoUser({
+                ...errorInfoUser, password: {
+                    complete,
+                    capitalLetter: /[A-Z]/.test(e.target.value),
+                    digit: /[0-9]/.test(e.target.value),
+                    specialCharacter: /[$@$!%*?&#+-.]/.test(e.target.value),
+                    eightCharacters: (e.target.value.length > 8)
+                }
+            })
+        }
+    }
+
+    const showPasswordErrorText = () => {
+
+        if (errorInfoUser.password.complete === "red") {
+            return (<Text color="red">{
+                (infoUser.password === "") ? "* Campo obligatorio"
+                    : !(errorInfoUser.password.eightCharacters) ? "* Al menos 8 caracteres"
+                        : !(errorInfoUser.password.capitalLetter) ? "* Una mayuscula"
+                            : !(errorInfoUser.password.specialCharacter) ? "* Un caracter especial"
+                                : "* Un numero"
+            }</Text>)
+        }
     }
 
     const [show, setShow] = useState(false)
@@ -67,11 +119,11 @@ const FormLogin = () => {
                     alt='logoHenry'
                     w="9rem" />
                 <Heading fontSize='3xl'>
-                    Resuelve tus <Text display={"inline"} boxShadow='0px 7px 0px 0px #ffff01'>dudas</Text> 🚀
+                    ¡<Text display={"inline"} boxShadow='0px 7px 0px 0px #ffff01'>Hola</Text> de nuevo! 👋
                 </Heading>
                 <Text fontSize='1rem'
                     color='gray.600'>
-                    Regístrate para ingresar a nuestra plataforma
+                    Ingresa a Henry ASK y resuelve todas tus dudas
                 </Text>
             </VStack>
             <form onSubmit={submitHandler}>
@@ -85,12 +137,15 @@ const FormLogin = () => {
                             focusBorderColor='black'
                             _hover={{ borderColor: errorInfoUser.email }}
                             value={infoUser.email}
-                            onChange={onChangeInput} />
+                            onChange={onChangeInput}
+                        />
                         <Flex justifyContent="flex-end">
-                            {(errorInfoUser.email === "red") && <Text color="red">* Email no válido</Text>}
+                            {(errorInfoUser.email === "red") &&
+                                (<Text color="red">{(infoUser.email === "") ? "* Campo obligatorio" : `* Email no válido`}</Text>)}
                         </Flex>
                     </FormControl>
-                    <FormControl id="password">
+                    <FormControl id="password"
+                        fontSize=".8rem">
                         <InputGroup size='md'>
                             <Input name='password'
                                 placeholder='Contraseña'
@@ -104,33 +159,38 @@ const FormLogin = () => {
                                 {show ? <ViewIcon fontSize={"1.5rem"} onClick={handleClick} /> : <ViewOffIcon fontSize={"1.5rem"} onClick={handleClick} />}
                             </InputRightElement>
                         </InputGroup>
+                        <Flex justifyContent="flex-end">
+                            {showPasswordErrorText()}
+                        </Flex>
                     </FormControl>
-                    <Stack spacing={10}>
-                        <Stack
+                    <Stack spacing={5}>
+                        <Stack fontSize=".9rem"
                             direction={{ base: 'column', sm: 'row' }}
                             align={'start'}
                             justify={'space-between'}>
-                            <Checkbox>Recordar</Checkbox>
-                            <Link color={'blue.400'}>Olvidaste la contraseña?</Link>
-                        </Stack>
-                        <Button type='submit'
-                            bg={'blue.400'}
-                            color={'white'}
-                            _hover={{
-                                bg: 'blue.500',
-                            }}
-                        >
-                            Acceder
-                        </Button>
-                        <Stack align={'center'}>
-                            <Text>
-                                ¿Todavia no tenes una cuenta?
-                            </Text>
-                            <Link color={'blue.400'}
-                                onClick={() => navigate("/signup")}>
-                                Registrate
+                            <Checkbox>Recordarme</Checkbox>
+                            <Link as={"u"} fontWeight="semibold" textDecoration={"underline"}>
+                                Olvidé mi contraseña
                             </Link>
                         </Stack>
+                        <Button type='submit'
+                            bg='#ffff01'
+                            color='black'
+                            disabled={showSubmitButton}
+                        >
+                            Ingresar
+                        </Button>
+                        <HStack justifyContent="flex-start"
+                            gap={"0.2rem"}
+                            fontSize=".9rem">
+                            <Text>
+                            ¿Aún no tienes una cuenta?
+                            </Text>
+                            <Link as={"u"} fontWeight="semibold" textDecoration={"underline"}
+                                onClick={() => navigate("/signup")}>
+                                Regístrate aquí
+                            </Link>
+                        </HStack>
                     </Stack>
                 </Stack>
             </form>
