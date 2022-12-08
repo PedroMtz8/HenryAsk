@@ -12,16 +12,34 @@ import {
     Text,
     useColorModeValue,
 } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom'
+import { useState } from 'react';
+import { useNavigate, Link as RouteLink } from 'react-router-dom'
+import { useAuth } from "../AuthComponents/AuthContext"
 
 
 const Login = () => {
 
     const navigate = useNavigate()
+    const { login } = useAuth()
 
-    const submitHandler = (e) => {
-        e.preventDefault()
+    const [user, setUser] = useState({
+        email: "",
+        password: ""
+    })
+
+    const handleChange = (e) =>{
+        setUser({
+            ...user,
+            [e.target.name] : e.target.value
+        })
     }
+
+    const submitHandler = async(e) => {
+        e.preventDefault()
+        await login(user.email, user.password)
+        navigate("/")
+    }
+
 
     return (
         <Flex className='App'
@@ -50,11 +68,11 @@ const Login = () => {
                             <Stack spacing={4}>
                                 <FormControl id="email">
                                     <FormLabel>Email</FormLabel>
-                                    <Input type="email" />
+                                    <Input name='email' value={user.email} onChange={handleChange}  type="email" />
                                 </FormControl>
                                 <FormControl id="password">
                                     <FormLabel>Contraseña</FormLabel>
-                                    <Input type="password" />
+                                    <Input name='password' value={user.password} onChange={handleChange} type="password" />
                                 </FormControl>
                                 <Stack spacing={10}>
                                     <Stack
@@ -69,7 +87,9 @@ const Login = () => {
                                         color={'white'}
                                         _hover={{
                                             bg: 'blue.500',
-                                        }}>
+                                        }}
+                                        /* onClick={submitHandler} */
+                                        >
                                         Acceder
                                     </Button>
                                     <Stack align={'center'}>
