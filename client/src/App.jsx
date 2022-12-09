@@ -6,6 +6,7 @@ import AuthProvider from "./Components/AuthComponents/AuthContext";
 import ProtectedRoute from "./Components/AuthComponents/ProtectedRoutes";
 import Home from "./Components/Home/Home";
 import CardsHome from "./Components/Card/CardsHome";
+import Posts from "./Components/Posts/Posts";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           }
         />
         <Route path="/card" element={<CardsHome />} />
+        <Route path="/post" element={<Posts />} />
       </Routes>
     </AuthProvider>
   );
