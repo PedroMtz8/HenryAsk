@@ -7,7 +7,7 @@ const schema = new Schema({
     tags: [{ type: String }],
     score: { type: Number, default: 0 },
     user: {
-        type: Schema.Types.ObjectId,
+        type: String,
         ref: 'User',
         immutable: true
     },

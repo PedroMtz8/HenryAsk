@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { getPostsByUserId, createPost, editPost, getPostsByTag, getPosts, deletePosts, sumPostScore } = require('../controllers/posts');
+const { getPostsByUserId, createPost, editPost, getPosts, sumPostScore } = require('../controllers/posts');
 
 router.get('/', getPosts)
 router.get('/user', getPostsByUserId)
