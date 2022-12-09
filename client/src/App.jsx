@@ -1,11 +1,13 @@
-import LandingPage from "./Components/LandingPage/LandingPage";
-import Login from "./Components/Login/Login";
-import { Route, Routes } from "react-router-dom";
-import Register from "./Components/Register/Register";
-import AuthProvider from "./Components/AuthComponents/AuthContext";
-import ProtectedRoute from "./Components/AuthComponents/ProtectedRoutes";
-import Home from "./Components/Home/Home";
-import CardsHome from "./Components/Card/CardsHome";
+
+import LandingPage from "./Components/LandingPage/LandingPage"
+import Login from "./Components/Login/Login"
+import {Route, Routes} from 'react-router-dom'
+import Register from "./Components/Register/Register"
+import AuthProvider from "./Components/AuthComponents/AuthContext"
+import ProtectedRoute  from "./Components/AuthComponents/ProtectedRoutes"
+import Home from "./Components/Home/Home"
+import Profile from "./Components/Profile/Profile"
+import CardsHome from "./Components/Card/CardHome"
 
 function App() {
   return (
@@ -23,6 +25,7 @@ function App() {
           }
         />
         <Route path="/card" element={<CardsHome />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </AuthProvider>
   );
