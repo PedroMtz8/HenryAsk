@@ -1,4 +1,5 @@
 const Post = require('../../models/Post')
+const { checkPostWasFound } = require('./functions')
 
 const createPost = async (req, res) => {
     const { title, body, tags, module } = req.body
@@ -8,7 +9,7 @@ const createPost = async (req, res) => {
         const newPost = await Post.create({
             title,
             body,
-            user_id: req.id,
+            user: req.id,
             tags,
             module,
         })
@@ -24,6 +25,7 @@ const editPost = async (req, res) => {
 
     try {
         const post = await Post.findByIdAndUpdate(post_id, { title, body, tags, module }, { new: true }) //siempre ya que cuando editas, por default, tiene la info anterior
+        checkPostWasFound(post)
         res.json({ message: 'Post actualizado!', post })
     } catch (error) {
         res.json({ message: error.message })
@@ -66,6 +68,7 @@ const getPosts = async (req, res) => {
 const sumPostScore = async (req, res) => {
     const { post_id } = req.body
     const updatedPost = await Post.findByIdAndUpdate(post_id, { $inc: { score: 1 } }, { new: true })
+    checkPostWasFound(updatedPost)
     res.json(updatedPost)
 }
 
