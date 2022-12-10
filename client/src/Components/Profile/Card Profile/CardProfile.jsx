@@ -22,7 +22,7 @@ const CardProfile = ({title, description}) => {
         variant="outline"
         boxShadow="dark-lg"
         direction={{ base: "column", sm: "row" }}
-        
+          bg={"white"}
       >
         <Image
           padding={{ base: "7px" }}
@@ -34,13 +34,13 @@ const CardProfile = ({title, description}) => {
           alt="Caffe Latte"
         />
 
-        <Stack color={"white"}>
+          <Stack color={"black"}>
           <CardBody  overflow={"hidden"}>
             <Link to={"/post/id"}>
             <Heading  size="md">{title}</Heading>
             </Link>
             <Box display={"flex"} overflow={"hidden"}>
-            <Text py="2" h={"100px"} overflow={"hidden"} >{description}</Text>
+                <Text py="2" h={"80px"} overflow={"hidden"} >{description}</Text>
 
             </Box>
           </CardBody>

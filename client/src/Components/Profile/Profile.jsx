@@ -50,8 +50,7 @@ const Profile = () => {
                         <Img src="https://cdn-icons-png.flaticon.com/512/2720/2720867.png" w={"16px"} h={"16px"}/>
                         <Text >324</Text>
                     </Box>
-                </Flex>
-
+                        </Flex>
                 </Flex>
                     {/* Preguntas y respuestas */}
                 <Box marginX={"50px"} w={"90%"} >
@@ -64,8 +63,8 @@ const Profile = () => {
                         <TabPanel position={"relative"} bg={"#1F1F1F"} h={"450px"} borderRightRadius={"10px"} borderBottomLeftRadius={"10px"}>
                                 <SimpleGrid columns={2} gap={4} mt={"10px"}>
                                     {
-                                        questions.map(q =>{
-                                            return <CardProfile title={q.title} description={q.description} />
+                                            questions.map((q, i) => {
+                                                return <CardProfile title={q.title} description={q.description} key={i} />
                                         })
                                     }
                                 </SimpleGrid>

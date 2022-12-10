@@ -14,11 +14,28 @@ export const useAuth = () => {
   return context;
 };
 
+
+
 const AuthProvider = ({children}) => {
   const [loadingUser, setLoadingUser] = useState(true);
   const [user, setUser] = useState(null)
   //console.log(user.uid, user.accessToken)
   console.log(user)
+
+
+  const createAxios = async () => {
+    const token = await user.getIdToken()
+
+    axios.create({
+      baseURL: API_URL,
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+  }
+
+
+
   const signup = async(email, password, userSlack, country) => {
 
     let infoUser = await createUserWithEmailAndPassword(auth, email, password).then((userFirebase) => userFirebase);
