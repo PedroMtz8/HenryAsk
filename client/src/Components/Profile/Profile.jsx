@@ -9,9 +9,19 @@ import { Box, CardBody, Center, Flex, Heading, Img, Stack, Text,
     Tab,
     TabPanels,
     TabPanel, } from "@chakra-ui/react";
+import { useState } from "react";
 import NavBar from "../NavBar/NavBar";
+import CardProfile from "./Card Profile/CardProfile";
+
 
 const Profile = () => {
+
+    const [questions, setQuestions] = useState([
+        {title:"Como hacer un map", description: "No entiendo como hacer un map con el metodo map..."},
+        {title:"Problema con QuickSort", description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos culpa rem consectetur earum iure reiciendis repellat, sint aspernatur enim quaerat?"},
+        {title:"Me esta dando un error al hacer un post", description:"Al intentar hacer un post me da un error..."},
+        {title:"Ayuda con un evento", description:"El evento onClick blablabla"}
+    ])
 
 
     return(
@@ -23,7 +33,7 @@ const Profile = () => {
                 <Flex >
                     <Box margin={"30px"}>
 
-                <Img src="https://avatars.dicebear.com/api/male/username.svg" width={"100px"} height={"100px"} borderRadius={"50%"} border={"1px solid black"} /* margin={"30px"} */ />
+                <Img src="https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60" width={"100px"} height={"100px"} borderRadius={"50%"} border={"1px solid black"} /* margin={"30px"} */ />
                 <Button >Edit photo</Button>
                     </Box>
                 <Flex flexDirection={"column"} mt={"20px"} h={"inherit"}>
@@ -45,17 +55,24 @@ const Profile = () => {
 
                 </Flex>
                     {/* Preguntas y respuestas */}
-                <Box margin={"50px"} >
+                <Box marginX={"50px"} w={"90%"} >
                     <Tabs variant="enclosed"  >
                     <TabList>
                         <Tab  _selected={{ color: 'white', bg: "#1F1F1F" }}>Mis preguntas: (5) </Tab>
                         <Tab _selected={{ color: 'white', bg: "#1F1F1F" }} >Mis respuestas: (0) </Tab>
                     </TabList>
                     <TabPanels>
-                        <TabPanel position={"relative"} bg={"#1F1F1F"} h={"400px"} borderRightRadius={"10px"} borderBottomLeftRadius={"10px"}>
-                             <Text color={"white"} >holaa</Text>
+                        <TabPanel position={"relative"} bg={"#1F1F1F"} h={"450px"} borderRightRadius={"10px"} borderBottomLeftRadius={"10px"}>
+                                <SimpleGrid columns={2} gap={4} mt={"10px"}>
+                                    {
+                                        questions.map(q =>{
+                                            return <CardProfile title={q.title} description={q.description} />
+                                        })
+                                    }
+                                </SimpleGrid>
+
                              <Center>
-                             <Box display={"flex"} alignItems="center" gap={5} position={"absolute"} bottom={0} marginBottom={"20px"}>
+                             <Box display={"flex"} alignItems="center" gap={5} position={"absolute"} bottom={0} marginY={"20px"}>
                                 <Button>ANTERIOR</Button>
                                 <Text color={"white"}>1 de 7</Text>
                                 <Button bg={"#FFFF01"}>SIGUIENTE</Button>
@@ -85,17 +102,3 @@ const Profile = () => {
 export default Profile
 
 
-{/* <Card>
-
-<Stack>
-<CardBody>
-    <Heading Heading size="md">Titulo de la consulta</Heading>
-
-    <Text py="2">
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos culpa
-    rem consectetur earum iure reiciendis repellat, sint aspernatur
-    enim quaerat?
-    </Text>
-</CardBody>
-</Stack>
-</Card> */}

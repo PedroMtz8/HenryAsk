@@ -1,19 +1,17 @@
-import { Flex } from '@chakra-ui/react'
+import { Box, Flex } from '@chakra-ui/react'
 import Footer from './Footer/Footer'
+import NavBar from '../NavBar/NavBar'
 
 const Home = () => {
 
     return (
-        <Flex h="150vh"
-            maxW="100vw"
-            bg="#1F1F1F"
-            flexDirection="column"
-            justifyContent="space-between">
-            <Flex bg="#000000"
-                h="22vh"  >
+        <Box backgroundColor={"#1F1F1F"} h={"100vh"}>
+            <NavBar />
+            <Flex bg={"#1F1F1F"} h={"90vh"}>
+
             </Flex>
             <Footer />
-        </Flex>
+        </Box>
     )
 }
 
