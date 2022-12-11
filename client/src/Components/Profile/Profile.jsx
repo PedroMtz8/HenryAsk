@@ -13,6 +13,7 @@ import { useState } from "react";
 import NavBar from "../NavBar/NavBar";
 import CardProfile from "./Card Profile/CardProfile";
 
+
 const Profile = () => {
 
     const [questions, setQuestions] = useState([
@@ -98,4 +99,5 @@ const Profile = () => {
 }
 
 export default Profile
+
 

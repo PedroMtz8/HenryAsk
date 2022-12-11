@@ -7,6 +7,7 @@ import ProtectedRoute  from "./Components/AuthComponents/ProtectedRoutes"
 import Home from "./Components/Home/Home"
 import Profile from "./Components/Profile/Profile"
 import CardsHome from "./Components/Card/CardHome"
+import Posts from "./Components/Posts/Posts";
 
 function App() {
   return (
