@@ -8,7 +8,7 @@ const Home = () => {
         <Box backgroundColor={"#1F1F1F"} h={"100vh"}>
             <NavBar />
             <Flex bg={"#1F1F1F"} h={"90vh"}>
-
+            
             </Flex>
             <Footer />
         </Box>

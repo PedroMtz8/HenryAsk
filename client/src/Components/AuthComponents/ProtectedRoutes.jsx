@@ -1,5 +1,6 @@
 import { useAuth } from "./AuthContext";
 import { Navigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 
 export default function ProtectedRoute({children}) {
@@ -7,5 +8,5 @@ export default function ProtectedRoute({children}) {
     if(loadingUser) return null
     if(!user) return <Navigate  to={"/login"} />
 
-    return <>{children}</>
+    return <><Outlet /></>
 }

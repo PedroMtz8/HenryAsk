@@ -107,7 +107,7 @@ const FormLogin = () => {
     const submitHandler = async (e) => {
         e.preventDefault()
         await login(infoUser.email, infoUser.password)
-        navigate("/")
+        navigate("/home")
     }
 
     return (

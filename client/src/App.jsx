@@ -16,17 +16,11 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Register />} />
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/card" element={<CardsHome />} />
-        <Route path="/post" element={<Posts />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/home" element={<Home />} />
+          <Route path="/card" element={<CardsHome />} />
+          <Route path="/profile" element={<Profile />} />
+        </Route>
       </Routes>
     </AuthProvider>
   );
