@@ -19,20 +19,8 @@ export const useAuth = () => {
 const AuthProvider = ({children}) => {
   const [loadingUser, setLoadingUser] = useState(true);
   const [user, setUser] = useState(null)
-  //console.log(user.uid, user.accessToken)
-  console.log(user)
+  /* console.log(user) */
 
-
-  const createAxios = async () => {
-    const token = await user.getIdToken()
-
-    axios.create({
-      baseURL: API_URL,
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-  }
 
 
 
@@ -40,18 +28,7 @@ const AuthProvider = ({children}) => {
 
     let infoUser = await createUserWithEmailAndPassword(auth, email, password).then((userFirebase) => userFirebase);
 
-    const docRef = doc(firestore, `/users/${infoUser.user.uid}`)
-
-    setDoc(docRef, {
-      userSlack,
-      avatar: "https://e7.pngegg.com/pngimages/84/165/png-clipart-united-states-avatar-organization-information-user-avatar-service-computer-wallpaper-thumbnail.png",
-      score: 0,
-      questions: 0,
-      answers: 0,
-      status: false,
-      country,
-      student: false,
-    })
+    await axios.post(API_URL + "/auth/register", { uid: infoUser.user.uid, mail: email, country, userSlack })
 
   }
 
@@ -64,7 +41,7 @@ const AuthProvider = ({children}) => {
         Authorization: `Bearer ${token}`
       }
     })
-    console.log(result.data) //Estado actual del usuario: awaiting
+    /* console.log(result.data) */ //Estado actual del usuario: awaiting
     
   }
 
@@ -79,8 +56,9 @@ const AuthProvider = ({children}) => {
     });
   }, []);
 
+
   return (
-    <authContext.Provider value={{signup, login, signout, loadingUser, user}}>
+    <authContext.Provider value={{ signup, login, signout, loadingUser, user }}>
       {children}
     </authContext.Provider>
   )
