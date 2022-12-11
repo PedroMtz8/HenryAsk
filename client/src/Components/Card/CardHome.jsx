@@ -14,7 +14,7 @@ import { ChatIcon } from "@chakra-ui/icons";
 const CardHome = () => {
   return (
     <div style={{ padding: "10px" }}>
-      <Card
+      <Card bg="#F2F2F2"
         overflow="hidden"
         variant="outline"
         boxShadow="dark-lg"
