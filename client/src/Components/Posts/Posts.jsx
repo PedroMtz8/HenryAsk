@@ -7,6 +7,7 @@ import {
   UnorderedList,
   ListItem,
 } from "@chakra-ui/react";
+import TextEditor from "./TextEditor";
 
 const Posts = () => {
   return (
@@ -38,13 +39,7 @@ const Posts = () => {
       <Text fontSize="2xl" mb="20px">
         Cuerpo
       </Text>
-      <Textarea
-        rows={15}
-        resize="none"
-        size="lg"
-        placeholder="Escriba aquí su pregunta..."
-        variant="filled"
-      ></Textarea>
+      <TextEditor />
       <div
         style={{ display: "flex", justifyContent: "end", marginTop: "20px" }}
       >
