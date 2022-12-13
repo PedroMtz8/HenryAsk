@@ -1,5 +1,4 @@
 const Post = require('../../models/Post')
-const { checkPostWasFound } = require('./functions')
 
 const createPost = async (req, res) => {
     const { title, body, tags, module } = req.body
@@ -25,7 +24,8 @@ const editPost = async (req, res) => {
 
     try {
         const post = await Post.findByIdAndUpdate(post_id, { title, body, tags, module }, { new: true }) //siempre ya que cuando editas, por default, tiene la info anterior
-        checkPostWasFound(post)
+        if (!post) return res.status(404).json({ message: 'El post no fue encontrado!' })
+
         res.json({ message: 'Post actualizado!', post })
     } catch (error) {
         res.json({ message: error.message })
@@ -34,7 +34,7 @@ const editPost = async (req, res) => {
 
 const getPostsByUserId = async (req, res) => {
     try {
-        const posts = await Post.find({ user_id: req.id })
+        const posts = await Post.find({ user: req.id })
         res.json({ message: 'Posts encontrados!', posts })
     } catch (error) {
         res.json({ message: error.message })
@@ -42,34 +42,55 @@ const getPostsByUserId = async (req, res) => {
 }
 
 const getPosts = async (req, res) => {
-    const { page, module, sort, tags } = req.query
-
+    let { page, module, sort, tags, q } = req.query
     if (!page) return res.status(400).json({ message: 'Numero de pagina requerido.' })
 
-    let posts = tags && Post.find({ tags: { $all: tags.split(' ') } }) //si hay tags, filtra por tagas
+    try {
+        const numberOfDocs = await Post.countDocuments()
+        const maxPages = Math.ceil(numberOfDocs / 10)
 
-    if (module) {
-        posts = posts
-            ? posts.find({ module }) //si filtro por tags, filtra tambien por modulo
-            : Post.find({ module }) //si no filtro por tags, filtra por modulo
+        if (q) {
+            q = q.replace(/[^\w\+]+/g, '')
+            var posts = Post.find({ title: new RegExp(q.trim().replace('+', ' '), 'i') })
+        }
+
+        if (tags) {
+            posts = posts
+                ? posts.find({ tags: { $all: tags.split(' ') } }) //si filtro por titulo, filtro tambien por tags
+                : Post.find({ tags: { $all: tags.split(' ') } }) //si no filtro por titulo, filtro por tags
+        }
+
+        if (module) {
+            posts = posts
+                ? posts.find({ module }) //si filtro por tags, filtra tambien por modulo
+                : Post.find({ module }) //si no filtro por tags, filtra por modulo
+        }
+
+        if (!posts) posts = Post.find() //si no filtro por nada, obtiene todos los posts
+
+        posts = sort === 'score'
+            ? posts.sort({ score: -1 }) //ordena por puntaje de mayor a menor
+            : posts.sort({ createdAt: -1 }) //ordena por fecha de creacion de mas nuevo a mas viejo
+
+        const foundPosts = await posts.skip(page * 10 - 10).limit(10).populate('user') //obtiene los 10 posts de n pagina
+
+        res.json({ message: 'Posts encontrados!', foundPosts, maxPages })
+    } catch (error) {
+        res.json({ message: error.message })
     }
 
-    if (!posts) posts = Post.find() //si no filtro por nada, obtiene todos los posts
-
-    posts = sort === 'score'
-        ? posts.sort({ score: -1 }) //ordena por puntaje de mayor a menor
-        : posts.sort({ createdAt: -1 }) //ordena por fecha de creacion de mas nuevo a mas viejo
-
-    const foundPosts = await posts.skip(page * 10 - 10).limit(10).populate(['user']) //obtiene los 10 posts de n pagina
-
-    res.json(foundPosts)
 }
 
 const sumPostScore = async (req, res) => {
     const { post_id } = req.body
-    const updatedPost = await Post.findByIdAndUpdate(post_id, { $inc: { score: 1 } }, { new: true })
-    checkPostWasFound(updatedPost)
-    res.json(updatedPost)
+    try {
+        const updatedPost = await Post.findByIdAndUpdate(post_id, { $inc: { score: 1 } }, { new: true })
+        if (!updatedPost) return res.status(404).json({ message: 'El post no fue encontrado!' })
+
+        res.json(updatedPost)
+    } catch (error) {
+        res.json({ message: error.message })
+    }
 }
 
 module.exports = {
