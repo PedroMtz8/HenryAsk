@@ -10,15 +10,15 @@ const schema = new Schema({
     status: {
         type: String,
         validate: {
-            validator: s => s === 'awaiting' || s === 'approved',
+            validator: s => s === 'Esperando' || s === 'Aprobado',
             message: props => `${props.value} no es un estado valido!`
         },
-        default: 'awaiting'
+        default: 'Esperando'
     },
     rol: {
         type: String,
         validate: {
-            validator: r => r === 'Estudiante' || r === 'Egresado' || r === 'Administrador',
+            validator: r => r === 'Estudiante' || r === 'Egresado' || r === 'Administrador' || r === 'TA' || r === 'Henry Hero',
             message: props => `${props.value} no es un rol valido!`
         },
         default: 'Estudiante'
