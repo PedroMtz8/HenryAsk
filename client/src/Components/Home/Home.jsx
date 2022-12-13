@@ -1,15 +1,14 @@
 import { Box, Flex } from '@chakra-ui/react'
 import Footer from './Footer/Footer'
 import NavBar from '../NavBar/NavBar'
+import Paginated from './Paginated/Paginated'
 
 const Home = () => {
 
     return (
-        <Box backgroundColor={"#1F1F1F"} h={"100vh"}>
+        <Box >
             <NavBar />
-            <Flex bg={"#1F1F1F"} h={"90vh"}>
-            
-            </Flex>
+            <Paginated/>
             <Footer />
         </Box>
     )
