@@ -1,33 +1,42 @@
 import {
     Flex,
     Text,
-    Image
+    Image,
+    Box,
+    SimpleGrid
 } from '@chakra-ui/react'
 import FormRegister from './FormRegister/FormRegister'
 
 const Register = () => {
 
     return (
-        <Flex position='relative'
-            h='100vh'
-            w='100vw'
-            bg='#FFFFFF'
-            flexWrap="wrap">
-            <Flex w='50%' h="95vh"
-                bg="#ffff01" />
-            <Flex w='50%' h="95vh"
-                justifyContent="center"
-                alignItems="center">
+        <Flex
+            height='100vh'
+            w='100%'
+            bg='#FFFFFF' flexFlow={"column"} >
+
+            <SimpleGrid h={"95vh"} w='100%' columns={{ lg: 2 }}>
+                <Box
+                    display={{ base: "none", md: "none", lg: "flex" }}
+                    bg={"#ffff01"} />
+                <Flex
+                    justifyContent="center"
+                    alignItems="center">
                     <FormRegister />
-            </Flex>
-            <Flex h="5vh"
-                w='100%'
+                </Flex>
+            </SimpleGrid>
+
+
+            <Flex height={{ base: "200px", md: "200px", lg: "5vh" }}
+                w='100vw'
                 bg="black"
                 color="white"
                 fontSize=".8rem"
                 fontWeight="light"
                 justifyContent={"space-evenly"}
-                alignItems="center">
+                flexDirection={{ base: "column", md: "column", lg: "initial" }}
+                alignItems="center"
+            >
                 <Image src='https://assets.soyhenry.com/henry-landing/assets/Henry/logo-white.png'
                     alt='logoHenry'
                     w="5rem" />
@@ -38,7 +47,7 @@ const Register = () => {
                     ¿Consultas y dudas? Escríbenos a admisiones@soyhenry.com
                 </Text>
             </Flex>
-        </Flex>
+        </Flex >
     )
 }
 
