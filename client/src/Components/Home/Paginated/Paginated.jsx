@@ -13,7 +13,6 @@ const Paginated = () => {
 
     const { user } = useAuth();
     let token = user.accessToken
-    console.log(token)
 
     const [currentPosts, setCurrentPosts] = useState([])
     const [loadingPosts, setLoadingPosts] = useState(true)
@@ -45,7 +44,7 @@ const Paginated = () => {
             {loadingPosts?
             <Flex h="100vh" color={"white"}>Loading</Flex> 
             :
-            <CardsHome />
+            <CardsHome currentPosts={currentPosts}/>
             }
             <PaginatedButtons />
         </Flex>
