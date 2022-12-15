@@ -1,20 +1,37 @@
+import {useSelector} from 'react-redux'
 import {
     HStack,
     Button,
     Text
 } from "@chakra-ui/react";
 
-const buttonNumber = ["<", "1", "2", "3", "4", "5", ">"]
-
 const PaginatedButtons = () => {
+
+    const currentPage = useSelector((state) => state.paginated.currentPage)
+    const maxPages = useSelector((state) => state.paginated.maxPages)
+
+    console.log(currentPage)
+    console.log("............")
+    console.log(maxPages)
+
+    const showButtons = (pN, cP) => {
+
+        const buttons = []
+        
+        for (let i = 1; i <= pN; i++) {
+    
+            buttons.push(<Button key={i}> {i} </Button>)
+    
+        }
+    
+        return buttons
+    }
+
     return (
         <HStack spacing={2} >
-            {buttonNumber.map((elem, i) =>
-                <Button key={i} >
-                    <Text>
-                        {elem}
-                    </Text>
-                </Button>)}
+            <Button > <Text> {"<"} </Text> </Button>
+            {showButtons(maxPages, currentPage)}
+            <Button > <Text> {">"} </Text> </Button>
         </HStack>
     )
 }
