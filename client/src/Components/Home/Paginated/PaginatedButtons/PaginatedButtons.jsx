@@ -12,29 +12,30 @@ const PaginatedButtons = () => {
 
     const showButtons = (cP, mP) => {
 
-        const buttons = []
-        let i = 1
+        const buttons = [];
+        let i = 1;
 
-        if (cP >= 2) {
+        (cP > 1) && buttons.push(<Button key={'<'} >{"<"}</Button>);
 
-            buttons.push(<Button >{"<"}</Button>)
 
-            if ((cP >= 5 && mP > 6)) {
+        if (cP >= 5 && mP > 6) {
 
-                buttons.push(<Button >1</Button>, <Button >...</Button>)
-                i = cP - 2
-            }
+            buttons.push((<Button key={'1'}>1</Button>), (<Button key={'...1'}>{'...'}</Button>))
 
-        }
-
-        for (; i <= mP; i++) {
-
-            buttons.push(<Button key={i}> {i} </Button>)
+            i = (mP - cP <= 3) ? cP - (4 - (mP - cP)) : cP - 2
 
         }
 
-        (mP - cP > 4) && buttons.push(<Button >...</Button>)
-        (cP >= mP) && buttons.push(<Button >{">"}</Button>)
+
+        for (; (((mP - cP >= 3) &&  mP > 6)? i + 1: i) < mP; i++) {
+
+            buttons.push(<Button key={i} bg={i === cP ? "red.300" : null}> {i} </Button>)
+
+        }
+
+        ((mP - cP >= 3) &&  mP > 6) && buttons.push(<Button key={'...2'} >{'...'}</Button>);
+        buttons.push(<Button key={mP} bg={i === cP ? "red.300" : null}>{mP}</Button>);
+        (cP < mP) && buttons.push(<Button key={'>'} >{">"}</Button>);
 
         return buttons
     }
