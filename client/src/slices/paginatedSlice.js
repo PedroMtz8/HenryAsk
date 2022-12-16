@@ -6,7 +6,7 @@ export const getUserInfo = createAsyncThunk("user/info");
 const initialState = {
   currentPosts: [],
   currentPage: 1,
-  maxPages: 1
+  maxPages:1
 };
 
 export const paginatedSlice = createSlice({
@@ -15,16 +15,19 @@ export const paginatedSlice = createSlice({
   reducers: {
     savePosts: (state, action) => {
       state.currentPosts = action.payload.foundPosts
-      state.currentPage = 1
       state.maxPages = action.payload.maxPages
     },
-    changePage: (state, action) => {
-      state.currentPage = action.payload.foundPosts
-    }
+    incrementPage: (state) => {
+      state.currentPage += 1
+    },
+    decrementPage: (state) => {
+      state.currentPage -= 1
+    },
+    
   },
   extraReducers: (builder) => { },
 });
 
-export const { savePosts, changePage } = paginatedSlice.actions
+export const { savePosts, incrementPage, decrementPage } = paginatedSlice.actions
 
 export default paginatedSlice.reducer;

@@ -1,4 +1,5 @@
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { incrementPage, decrementPage } from '../../../../slices/paginatedSlice';
 import {
     HStack,
     Button,
@@ -7,35 +8,60 @@ import {
 
 const PaginatedButtons = () => {
 
-    const currentPage = useSelector((state) => state.paginated.currentPage)
-    const maxPages = useSelector((state) => state.paginated.maxPages)
+    const dispatch = useDispatch()
+
+    const currentPage = useSelector((state) => state.paginated.currentPage);
+    const maxPages = useSelector((state) => state.paginated.maxPages);
 
     const showButtons = (cP, mP) => {
 
         const buttons = [];
-        let i = 1;
 
-        (cP > 1) && buttons.push(<Button key={'<'} >{"<"}</Button>);
+        let i = 1
+        let j = mP
+        const dif = mP - cP;
+
+        if ((cP > 4 && mP > 6)) {
+
+            buttons.push(<Button key={'1n'} > {'1'} </Button>, <Button key={'...i'} > {'...'} </Button>); 
+
+            i = cP - ((dif > 3 || dif === 2)? 2 : (dif === 3)? 1: (dif === 1)? 3 : (dif === 0)? 4 : 2 )
+
+        }       
 
 
-        if (cP >= 5 && mP > 6) {
-
-            buttons.push((<Button key={'1'}>1</Button>), (<Button key={'...1'}>{'...'}</Button>))
-
-            i = (mP - cP <= 3) ? cP - (4 - (mP - cP)) : cP - 2
-
-        }
-
-
-        for (; (((mP - cP >= 3) &&  mP > 6)? i + 1: i) < mP; i++) {
-
+        for (; i <= j ; i++) {
+     
             buttons.push(<Button key={i} bg={i === cP ? "red.300" : null}> {i} </Button>)
 
         }
 
-        ((mP - cP >= 3) &&  mP > 6) && buttons.push(<Button key={'...2'} >{'...'}</Button>);
-        buttons.push(<Button key={mP} bg={i === cP ? "red.300" : null}>{mP}</Button>);
-        (cP < mP) && buttons.push(<Button key={'>'} >{">"}</Button>);
+
+        /* if ((cP > 4 && mP > 6)) {
+
+            buttons.push(<Button key={'1n'} > {'1'} </Button>, <Button key={'...i'} > {'...'} </Button>); 
+
+            i = cP - ((dif > 3 || dif === 2)? 2 : (dif === 3)? 1: (dif === 1)? 3 : (dif === 0)? 4 : 2 )
+
+        }       
+                
+        for (; (i <= j) && (i <= mP); i++) {
+
+            if (i <= 0) {
+                j++;
+                continue;
+            }       
+            buttons.push(<Button key={i} bg={i === cP ? "red.300" : null}> {i} </Button>)
+
+        }
+
+        if (mP > 6 && (mP - cP > 2)) {
+
+            buttons.push(<Button key={'...f'} > {'...'} </Button>, <Button key={mP} > {mP} </Button>);
+        }
+ */
+        (cP > 1) && buttons.unshift(<Button key={'<'} onClick={(e) => cP > 1? dispatch(decrementPage()) : null} > {'<'} </Button>);
+        (mP > cP) && buttons.push(<Button key={'>'} onClick={(e) => cP < mP? dispatch(incrementPage()) : null}> {'>'} </Button>);
 
         return buttons
     }
