@@ -2,8 +2,8 @@ import React, { useState, useRef } from "react";
 import JoditEditor, { Jodit } from "jodit-react";
 
 const TextEditor = () => {
-  const editor = useRef(null);
   const [content, setContent] = useState("");
+  const editor = useRef(null);
 
   const config = {
     readonly: false,

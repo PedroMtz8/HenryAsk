@@ -12,23 +12,44 @@ import { Box, CardBody, Center, Flex, Heading, Img, Stack, Text,
 import { useState } from "react";
 import NavBar from "../NavBar/NavBar";
 import CardProfile from "./Card Profile/CardProfile";
-
+import Footer from "../Footer/Footer";
 
 const Profile = () => {
 
+    const [page, setPage] = useState(1)
     const [questions, setQuestions] = useState([
         {title:"Como hacer un map", description: "No entiendo como hacer un map con el metodo map..."},
         {title:"Problema con QuickSort", description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos culpa rem consectetur earum iure reiciendis repellat, sint aspernatur enim quaerat?"},
         {title:"Me esta dando un error al hacer un post", description:"Al intentar hacer un post me da un error..."},
-        {title:"Ayuda con un evento", description:"El evento onClick blablabla"}
+        { title: "Ayuda con un evento", description: "El evento onClick blablabla" },
+        { title: "Ayuda con un evento", description: "El evento onClick blablabla" },
+        { title: "Ayuda con un evento", description: "El evento onClick blablabla" },
+        { title: "Ayuda con un evento", description: "El evento onClick blablabla" },
+        { title: "Ayuda con un evento", description: "El evento onClick blablabla" },
+        { title: "Ayuda con un evento", description: "El evento onClick blablabla" },
     ])
 
+    const indexOfLast = page * 6
+    const indexFirst = indexOfLast - 6
+    const currentQuestions = questions.slice(indexFirst, indexOfLast)
+
+    let totalPages = Math.ceil(questions.length / 6);
+
+    function prevPage(e) {
+        e.preventDefault();
+        if (page > 1) return setPage(page - 1);
+    }
+
+    const nextPage = (e) => {
+        e.preventDefault();
+        if (page !== totalPages) return setPage(page + 1);
+    };
 
     return(
-        <Box backgroundColor={"#1F1F1F"} h={"auto"} pb={"2.05rem"} >
+        <Flex backgroundColor={"#1F1F1F"} h={"auto"} w='100%' flexFlow={"column"} >
             <NavBar />
             <Center>
-                <Box backgroundColor={"#F2F2F2"} height={"100%"} pb={"50px"} w={{ base: "90%", md: "80%", lg: "70%" }} mt={"50px"} borderRadius={"10px"} >
+                <Box backgroundColor={"#F2F2F2"} height={"100%"} mb={"50px"} w={{ base: "90%", md: "80%", lg: "70%" }} mt={"50px"} borderRadius={"10px"} >
                     <Flex flexDirection={{ base: "column", md: "initial", lg: "initial" }}  >
                         <Center>
                             <Flex flexDirection={"column"} margin={{ base: "10px", md: "30px", lg: "30px" }} w={"max-content"}  >
@@ -73,20 +94,27 @@ const Profile = () => {
                         <Tab _selected={{ color: 'white', bg: "#1F1F1F" }} >Mis respuestas: (0) </Tab>
                     </TabList>
                     <TabPanels>
-                                <TabPanel /* position={"relative"} */ bg={"#1F1F1F"} h={"auto"} borderRightRadius={"10px"} borderBottomLeftRadius={"10px"}>
+                                <TabPanel position={"relative"} bg={"#1F1F1F"} minHeight={{ base: "1080", md: "590px", lg: "590px" }} mb={"50px"} borderRightRadius={"10px"} borderBottomLeftRadius={"10px"}>
                                     <SimpleGrid columns={{ base: 1, md: 2, lg: 2 }} gap={4} mt={"10px"}>
                                     {
-                                            questions.map((q, i) => {
+                                            questions ? currentQuestions.map((q, i) => {
                                                 return <CardProfile title={q.title} description={q.description} key={i} />
-                                        })
+                                            }) : null
                                     }
                                     </SimpleGrid>
                              <Center>
-                                        <Box display={"flex"} alignItems="center" gap={5} /* position={"absolute"} */ bottom={0} marginY={"20px"}>
-                                            <Button fontSize={{ base: "12px", md: "16px", lg: "16px" }}>ANTERIOR</Button>
-                                            <Text fontSize={{ base: "12px", md: "16px", lg: "16px" }} color={"white"}>1 de 7</Text>
-                                            <Button fontSize={{ base: "12px", md: "16px", lg: "16px" }} bg={"#FFFF01"}>SIGUIENTE</Button>
-                             </Box>
+                                        {
+                                            questions.length > 6 ?
+                                                (
+                                                    <Box display={"flex"} alignItems="center" justifyContent={"space-between"} gap={3} position={"absolute"} bottom={0} marginY={"20px"}>
+                                                        <Button onClick={prevPage} fontSize={{ base: "12px", md: "16px", lg: "16px" }}>ANTERIOR</Button>,
+                                                        <Text fontSize={{ base: "12px", md: "16px", lg: "16px" }} color={"white"}>1 de 7</Text>,
+                                                        <Button onClick={nextPage} fontSize={{ base: "12px", md: "16px", lg: "16px" }} bg={"#FFFF01"}>SIGUIENTE</Button>
+                                                    </Box>
+                                                )
+                                                :
+                                                null
+                                        }
                              </Center>
 
                         </TabPanel>
@@ -103,10 +131,11 @@ const Profile = () => {
                     </TabPanels>
                     </Tabs>
                 </Box>
-
+                    {/* <Box backgroundColor={"#1F1F1F"} h={"50px"} /> */}
             </Box>
             </Center>
-        </Box>
+            <Footer />
+        </Flex>
     )
 }
 

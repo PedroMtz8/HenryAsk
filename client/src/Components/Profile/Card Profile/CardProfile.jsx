@@ -21,6 +21,7 @@ const CardProfile = ({title, description}) => {
         overflow="hidden"
         variant="outline"
         boxShadow="dark-lg"
+          height={"150px"}
           direction={"row"}
           bg={"white"}
       >

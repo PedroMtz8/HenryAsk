@@ -20,6 +20,8 @@ import { useRef } from "react"
 import axios from "axios"
 import API_URL from "../../config/environment"
 import { useAuth } from "../AuthComponents/AuthContext"
+import TextEditor from "../Posts/TextEditor"
+import JoditEditor, { Jodit } from "jodit-react";
 
 let modulos = ["Modulo 1", "Modulo 2", "Modulo 3", "Modulo 4", "Sin modulos"]
 
@@ -27,6 +29,21 @@ export default function QuestionModal({title}) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [size, setSize] = useState("xl")
   const { user } = useAuth()
+  const editor = useRef(null);
+
+  const config = {
+    readonly: false,
+    enableDragAndDropFileToEditor: true,
+    placeholder: "Escriba aqui por favor...",
+    height: "450px",
+    width: "100%",
+    removeButtons: ["brush", "file", "copyformat"],
+    showXPathInStatusbar: false,
+    showCharsCounter: false,
+    showWordsCounter: false,
+    toolbarAdaptive: true,
+    toolbarSticky: true,
+  };
 
   const [post, setPost] = useState({
     title: "",
@@ -35,14 +52,13 @@ export default function QuestionModal({title}) {
     module: ""
   })
 
-
   const initialRef = useRef(null)
   const finalRef = useRef(null)
 
 
 
   const handleChange = (e) => {
-    e.preventDefault()
+    /*  e.preventDefault() */
     setPost({
       ...post,
       [e.target.name]: e.target.value
@@ -81,7 +97,16 @@ export default function QuestionModal({title}) {
             <FormControl mt={4}>
               <FormLabel fontSize={"24px"}>Cuerpo</FormLabel>
               <Text mb={"5px"} >El cuerpo de la pregunta contiene los detalles de tu problema y, a futuro, la resolucion de este.</Text>
-                <Textarea name="body" value={post.body} onChange={handleChange} h={"400px"} placeholder="Describe tu problema..." />
+                <JoditEditor
+                  ref={editor}
+                  config={config}
+                  name="body"
+                  value={post.body}
+                  tabIndex={1} // tabIndex of textarea
+                  onChange={handleChange}
+                />
+
+                {/* <Textarea name="body" value={post.body} onChange={handleChange} h={"400px"} placeholder="Describe tu problema..." /> */}
             </FormControl>
 
             <FormControl mt={4}>
@@ -94,7 +119,7 @@ export default function QuestionModal({title}) {
                 <FormLabel fontSize={"24px"}>Modulo</FormLabel>
                 <Text mb={"5px"} >Agrega a que modulo corresponde esta pregunta</Text>
                 <Select name="module" onChange={handleChange} >
-                  <option value="" disabled selected >Selecciona el modulo</option>
+                  <option /* value="anything" */ disabled /* selected */ >Selecciona el modulo</option>
                   {
                     modulos.map((m, i) => {
                       return <option key={i} value={m}>{m}</option>
