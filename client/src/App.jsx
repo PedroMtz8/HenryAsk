@@ -8,6 +8,7 @@ import Home from "./Components/Home/Home";
 import Profile from "./Components/Profile/Profile";
 import CardsHome from "./Components/Card/CardHome";
 import Posts from "./Components/Posts/Posts";
+import HomeAdmin from "./Components/Admin/HomeAdmin";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Register />} />
         <Route path="/posts" element={<Posts />} />
+        <Route path="/admin" element={<HomeAdmin />} />
 
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<Home />} />
