@@ -15,6 +15,8 @@ server.use('/auth', require('./src/routes/auth'))
 server.use(verifyToken) //Las siguientes rutas contienen este middleware en cada peticion
 server.use('/posts', require('./src/routes/posts'))
 server.use('/request', require('./src/routes/request'))
+server.use('/answer', require('./src/routes/answer'))
+server.use('/comment', require('./src/routes/comment'))
 
 
 server.listen(env.PORT, () => console.log(`Server iniciado en ${env.PORT}!`))
