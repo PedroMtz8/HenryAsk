@@ -49,7 +49,7 @@ const checkStatusUser = async (req, res) => {
 
 const getUserById = async (req, res) => {
     try {
-        const foundUser = await User.findById(req.id)
+        const foundUser = await User.findById(req.id).select({ status: 0 })
         if (!foundUser) return res.status(404).json({ message: 'Usuario no encontrado!' })
 
         res.json({ message: 'Usuario encontrado!', user: foundUser })
@@ -62,26 +62,34 @@ const getUsers = async (req, res) => {
     const { page, mail } = req.query
     if (!page) return res.status(400).json({ message: 'Numero de pagina requerido.' })
 
-    try {
-
-        const numberOfDocs = await User.countDocuments()
-        const maxPages = Math.ceil(numberOfDocs / 10)
-
+    function buildQuery() {
         if (mail) {
-            var foundUsers = await User.findOne({ mail: new RegExp(mail.trim()) }).skip(page * 10 - 10).limit(10).select({ _id: 0, mail: 1, userSlack: 1, status: 1, rol: 1 })
+            var query = User.find({ mail: new RegExp(mail.trim()) })
         } else {
-            foundUsers = await User.
-                find().
-                skip(page * 10 - 10).
-                limit(10).
-                sort({ mail: 1 }).
-                select({ _id: 0, mail: 1, userSlack: 1, status: 1, rol: 1 })
+            query = User.find().sort({ mail: 1 })
         }
-
-        res.json({ message: 'Usuarios encontrados!', foundUsers, maxPages })
-    } catch (error) {
-        res.json({ message: error.message })
+        return query
     }
+
+    //busqueda para obtener usuarios paginados
+    const searchPaginatedUsers = buildQuery().
+        skip(page * 10 - 10).
+        limit(10).
+        select({ _id: 0, mail: 1, userSlack: 1, status: 1, rol: 1 })
+
+    //busqueda para obtener numero maximo de pagina
+    const searchAllUsers = buildQuery().select({ _id: 1 })
+
+    //Ejecuto dos busquedas al mismo tiempo
+    Promise.all([
+        searchPaginatedUsers,
+        searchAllUsers
+    ]).then(([paginatedDocs, allDocs]) => {
+        const maxPages = Math.ceil(allDocs.length / 10)
+        res.json({ message: 'Usuarios encontrados!', foundUsers: paginatedDocs, maxPages })
+    }).catch(error => {
+        res.json({ message: error.message })
+    })
 }
 
 
