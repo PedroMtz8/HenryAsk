@@ -4,6 +4,9 @@ const User = require('../../models/User')
 const createRegisterRequest = async (req, res) => {
     const { rol } = req.body
     try {
+        const duplicated = await Request.findOne({ user: req.id })
+        if (duplicated) return res.status(409).json({ message: `Usuario ${req.id} ya tiene un pedido pendiente!` })
+
         const newRequest = await Request.create({ type: 'Registro', rol, user: req.id })
         res.json({ message: 'Pedido creado!', request: newRequest })
     } catch (error) {
@@ -14,6 +17,9 @@ const createRegisterRequest = async (req, res) => {
 const createRolRequest = async (req, res) => {
     const { rol } = req.body
     try {
+        const duplicated = await Request.findOne({ user: req.id })
+        if (duplicated) return res.status(409).json({ message: `Usuario ${req.id} ya tiene un pedido pendiente!` })
+
         const newRequest = await Request.create({ type: 'Rol', rol, user: req.id })
         res.json({ message: 'Pedido creado!', request: newRequest })
     } catch (error) {
@@ -26,7 +32,8 @@ const completeRegisterRequest = async (req, res) => {
     try {
         const request = await Request.findById(rid)
         if (!request) return res.status(404).json({ message: 'Pedido no existe o ya fue completado' })
-        await Request.findByIdAndDelete(rid)
+        request.remove()
+        await request.save()
 
         if (!approve) {
             return res.json({ message: 'Peticion rechazada!' })
@@ -47,7 +54,8 @@ const completeRolRequest = async (req, res) => {
     try {
         const request = await Request.findById(rid)
         if (!request) return res.status(404).json({ message: 'Pedido no existe o ya fue completado' })
-        await Request.findByIdAndDelete(rid)
+        request.remove()
+        await request.save()
 
         if (!approve) {
             return res.json({ message: 'Peticion rechazada!' })
@@ -70,7 +78,11 @@ const getRequests = async (req, res) => {
     try {
         const numberOfDocs = await Request.countDocuments()
         const maxPages = Math.ceil(numberOfDocs / 10)
-        const requests = await Request.find().sort({ createdAt: 1 }).skip(page * 10 - 10).limit(10)
+        const requests = await Request.find()
+            .sort({ createdAt: 1 })
+            .skip(page * 10 - 10)
+            .limit(10)
+            .populate('user', { mail: 1, userSlack: 1, rol: 1 })
         //te devuelve las requests ordenadas de mas viejas a mas nuevas
         res.json({ message: 'Pedidos encontrados!', requests, maxPages })
     } catch (error) {

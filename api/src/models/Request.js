@@ -1,5 +1,4 @@
 const { Schema, model } = require('mongoose')
-const User = require('./User')
 
 const schema = new Schema({
     type: {
@@ -19,9 +18,9 @@ const schema = new Schema({
     },
     user: {
         type: String,
-        ref: User,
-        immutable: true,
-        required: true
+        ref: 'User',
+        required: true,
+        immutable: true
     },
 }, { timestamps: true })
 
