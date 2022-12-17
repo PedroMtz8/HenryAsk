@@ -19,9 +19,9 @@ const schema = new Schema({
     },
     user: {
         type: String,
-        ref: User,
-        immutable: true,
-        required: true
+        ref: 'User',
+        required: true,
+        immutable: true
     },
 }, { timestamps: true })
 
