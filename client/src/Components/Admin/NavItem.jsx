@@ -15,7 +15,6 @@ const NavItem = ({ navSize, title, icon, active, url }) => {
 
   const handleNavigate = () => {
     navigate(url);
-    console.log(url);
   };
 
   return (
