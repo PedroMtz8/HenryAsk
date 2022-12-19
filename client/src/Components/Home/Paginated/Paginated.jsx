@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import {useSelector, useDispatch} from 'react-redux';
-import {savePosts} from '../../../slices/paginatedSlice'
+import { useSelector, useDispatch } from 'react-redux';
+import { savePosts } from '../../../slices/paginatedSlice'
 import {
     Flex, Button
 } from '@chakra-ui/react'
@@ -18,21 +18,25 @@ const Paginated = () => {
 
     const dispatch = useDispatch()
 
-    const currentPage = useSelector((state) => state.paginated.currentPage)
+    const paginated = useSelector((state) => state.paginated)
 
     const [loadingPosts, setLoadingPosts] = useState(true);
 
     useEffect(() => {
 
         const aFun = async () => {
-            const res = await axios.get(API_URL + `/posts?page=${currentPage}`, { headers: { Authorization: "Bearer " + token } })
+
+            const res = await
+                axios.get(API_URL + `/posts?page=${paginated.currentPage}&module=${paginated.moduleFilter}&tags=${paginated.tagsFilter}&sort=${paginated.order}`, 
+                                      { headers: { Authorization: "Bearer " + token } }
+                                      )
             dispatch(savePosts(res.data));
             setLoadingPosts(false);
         }
 
         aFun();
 
-    }, [])
+    }, [paginated.currentPage, paginated.moduleFilter, paginated.tagsFilter, paginated.order ])
 
 
     return (

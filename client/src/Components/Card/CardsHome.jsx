@@ -6,7 +6,7 @@ import CardHome from "./CardHome";
 const CardsHome = () => {
 
   const currentPosts = useSelector((state) => state.paginated.currentPosts)
-  console.log(currentPosts)
+  
   return (
     <SimpleGrid columns={{lg: 1, xl: 2}} spacing={{lg: 10, xl: 5}} gap={3} >
       
