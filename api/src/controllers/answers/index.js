@@ -1,4 +1,6 @@
 const Answer = require('../../models/Answer')
+const Post = require('../../models/Post')
+const User = require('../../models/User')
 
 const createAnswer = async (req, res) => {
     const { title, body, post_id } = req.body
@@ -11,6 +13,7 @@ const createAnswer = async (req, res) => {
             user: req.id,
             post: post_id
         })
+        await Post.findByIdAndUpdate(post_id, { $inc: { numberAnswers: 1 } })
 
         res.json({ message: 'Respuesta creada con exito!', answer: newAnswer })
     } catch (error) {
@@ -81,7 +84,7 @@ const getAnswersFromUser = async (req, res) => {
     searchPaginatedAnswers = searchPaginatedAnswers
         .skip(page * 5 - 5)
         .limit(5)
-        .select({ user: 0 })
+        .select({ user: 0, voters: 0 })
 
     //Ejecuto dos busquedas al mismo tiempo
     Promise.all([
@@ -96,9 +99,81 @@ const getAnswersFromUser = async (req, res) => {
 
 }
 
+const voteAnswer = async (req, res) => {
+    const { type } = req.params
+    const { answer_id } = req.body
+    try {
+        const voter = await User.findById(req.id)
+        const votedAnswer = await Answer.findById(answer_id)
+        if (!votedAnswer) return res.status(404).json({ message: 'La respuesta no fue encontrada!' })
+        const author = await User.findById(votedAnswer.user) //autor de la respuesta
+        if (author.mail === voter.mail) return res.status(404).json({ message: 'No puedes votar tu propia respuesta!' })
+        const previousVoteType = votedAnswer.voters[req.id] //obtengo voto previo
+        let message = ''
+
+
+        if (previousVoteType === type) {
+            //Si usuario ya votó el mismo tipo de voto que ahora entonces se anula
+            return res.status(400).json({ message: 'El nuevo voto debe ser de un tipo diferente al anterior' })
+        }
+
+        if (type === '1') {
+            votedAnswer.score = previousVoteType === '-1'
+                ? votedAnswer.score + 2 //si voto abajo anteriormente, entonces sumo dos puntos
+                : votedAnswer.score + 1 //si no voto entonces sumo un punto
+            author.score = previousVoteType === '-1'
+                ? author.score + 2
+                : author.score + 1
+            votedAnswer.voters = { ...votedAnswer.voters, [req.id]: type }
+            message = 'El usuario votó arriba'
+        }
+
+        else if (type === '0') {
+
+            if (!previousVoteType) {
+                return res.status(404).json({ message: 'Voto no puede ser borrado porque no existe' })
+            }
+
+            votedAnswer.score = previousVoteType === '1'
+                ? votedAnswer.score - 1 //si voto arriba entonces resto un punto
+                : votedAnswer.score + 1 //si voto abajo entonces sumo un punto
+            author.score = previousVoteType === '1'
+                ? author.score - 1
+                : author.score + 1
+            const voters = votedAnswer.voters
+            delete voters[req.id]
+            votedAnswer.voters = voters
+            votedAnswer.markModified('voters') //porque si voters es un obj vacio, no lo guarda
+            message = 'El usuario borró su voto'
+        }
+
+        else if (type === '-1') {
+            votedAnswer.score = previousVoteType === '1'
+                ? votedAnswer.score - 2 //si voto arriba anteriormente, entonces resto dos puntos
+                : votedAnswer.score - 1 //si no voto entonces resto un punto
+            author.score = previousVoteType === '1'
+                ? author.score - 2
+                : author.score - 1
+            votedAnswer.voters = { ...votedAnswer.voters, [req.id]: type }
+            message = 'El usuario votó abajo'
+        }
+
+        else {
+            return res.status(400).json({ message: 'Tipo de voto inválido' })
+        }
+
+        await votedAnswer.save()
+        await author.save() //actualizo la puntuacion de autor de la respuesta
+        res.json({ message })
+    } catch (error) {
+        res.json({ message: error.message })
+    }
+}
+
 module.exports = {
     createAnswer,
     editAnswer,
     getAnswersFromPost,
-    getAnswersFromUser
+    getAnswersFromUser,
+    voteAnswer
 }
