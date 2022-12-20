@@ -19,7 +19,7 @@ export const useAuth = () => {
 const AuthProvider = ({children}) => {
   const [loadingUser, setLoadingUser] = useState(true);
   const [user, setUser] = useState(null)
-  /* console.log(user) */
+  console.log(user)
 
 
 
