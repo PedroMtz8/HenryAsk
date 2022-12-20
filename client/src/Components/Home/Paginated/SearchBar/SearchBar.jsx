@@ -5,37 +5,43 @@ import {
     InputRightElement,
     Text,
     FormControl,
-    Select,
-    Button
+    Select
 } from '@chakra-ui/react'
 import { SearchIcon } from '@chakra-ui/icons'
 import { useDispatch } from 'react-redux'
-import { changeModuleFilter, changeOrder } from '../../../../slices/paginatedSlice'
+import { changeModuleFilter, changeOrder, changeTitleFilter } from '../../../../slices/paginatedSlice'
+import FilterTags from './FilterTags/FilterTags'
+import { useState } from 'react'
 
 const SearchBar = () => {
 
     const dispatch = useDispatch()
 
+    const [searchInput, setSearchInput] = useState("")
+
     return (
-        <FormControl w="95%" fontSize=".9rem" >
+        <FormControl w="70%" fontSize=".9rem" >
             <HStack position="relative"
                 align="center"
                 bg="#F2F2F2"
                 p="1% 2%"
                 spacing="1%"
                 borderRadius="1.5rem">
-                <InputGroup w="25%" >
-                    <Input placeholder='Buscar'
+                <InputGroup w="32%" >
+                    <Input value={searchInput}
+                        onChange={e => setSearchInput(e.target.value)}
+                        onKeyDown={e => (e.key === "Enter") ? dispatch(changeTitleFilter(searchInput)) : null}
+                        placeholder='Buscar'
                         borderRadius="10rem" />
                     <InputRightElement width='3rem'>
                         <SearchIcon
                             fontSize="1.1rem"
-                            onClick={e => console.log(e)} />
+                            onClick={e => dispatch(changeTitleFilter(searchInput))} />
                     </InputRightElement>
                 </InputGroup>
-                <HStack w="25%">
+                <HStack w="32%">
                     <Text w="8rem">
-                        Ordenar por :
+                        Ordenar por:
                     </Text>
                     <Select borderRadius="10rem"
                         onChange={e => dispatch(changeOrder(e.target.value))}>
@@ -43,9 +49,9 @@ const SearchBar = () => {
                         <option value={"score"}>Puntuación</option>
                     </Select>
                 </HStack>
-                <HStack w="25%">
-                    <Text w="6rem">
-                        Filtrar por :
+                <HStack w="32%">
+                    <Text w="8rem">
+                        Filtrar por:
                     </Text>
                     <Select borderRadius="10rem"
                         placeholder='Modulos'
@@ -55,6 +61,7 @@ const SearchBar = () => {
                         <option value={"M3"}>M3</option>
                         <option value={"M4"}>M4</option>
                     </Select>
+                    <FilterTags/> 
                 </HStack>
             </HStack>
         </FormControl>

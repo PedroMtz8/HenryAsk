@@ -1,20 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 
 export const getUserInfo = createAsyncThunk("user/info");
-
-/* export const getPosts = createAsyncThunk("posts/getPostsPage",
-  async (currentPage) => {
-    const res = await axios.get(API_URL + `/posts?page=${currentPage}`, { headers: { Authorization: "Bearer " + token } })
-    return response.data
-  }
-); */
 
 const initialState = {
   currentPosts: [],
   currentPage: 1,
   maxPages:1,
   order: "newest",
+  titleFilter: "",
   tagsFilter: "",
   moduleFilter: ""
 };
@@ -41,11 +34,25 @@ export const paginatedSlice = createSlice({
     },
     changeOrder: (state, action) => {
       state.order = action.payload
-    },    
+    },
+    addFilterByTags: (state, action) => {
+      state.tagsFilter = action.payload
+    },
+    changeTitleFilter: (state, action) => {
+      state.titleFilter = action.payload
+    },
   },
   extraReducers: (builder) => { },
 });
 
-export const { savePosts, incrementPage, decrementPage, changePage, changeModuleFilter, changeOrder} = paginatedSlice.actions
+export const { savePosts, 
+  incrementPage, 
+  decrementPage, 
+  changePage, 
+  changeModuleFilter, 
+  changeOrder,
+  addFilterByTags,
+  changeTitleFilter
+} = paginatedSlice.actions
 
 export default paginatedSlice.reducer;
