@@ -64,7 +64,6 @@ const Profile = () => {
 
     const getUserData = async () => {
         let userData = await axios(`${API_URL}/auth`, { headers: { Authorization: "Bearer " + token } })
-        console.log(userData.data.user)
         setUserData(userData.data.user)
     }
 
