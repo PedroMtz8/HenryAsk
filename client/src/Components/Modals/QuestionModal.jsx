@@ -26,6 +26,12 @@ import JoditEditor, { Jodit } from "jodit-react";
 let modulos = ["Modulo 1", "Modulo 2", "Modulo 3", "Modulo 4", "Sin modulos"]
 
 export default function QuestionModal({title}) {
+  const [post, setPost] = useState({
+    title: "",
+    body: "",
+    tags: ["javascript", "node"],
+    module: ""
+  })
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [size, setSize] = useState("xl")
   const { user } = useAuth()
@@ -45,12 +51,6 @@ export default function QuestionModal({title}) {
     toolbarSticky: true,
   };
 
-  const [post, setPost] = useState({
-    title: "",
-    body: "",
-    tags: ["javascript", "node"],
-    module: ""
-  })
 
   const initialRef = useRef(null)
   const finalRef = useRef(null)
@@ -97,16 +97,16 @@ export default function QuestionModal({title}) {
             <FormControl mt={4}>
               <FormLabel fontSize={"24px"}>Cuerpo</FormLabel>
               <Text mb={"5px"} >El cuerpo de la pregunta contiene los detalles de tu problema y, a futuro, la resolucion de este.</Text>
-                <JoditEditor
+                {/*  <JoditEditor
                   ref={editor}
                   config={config}
                   name="body"
                   value={post.body}
                   tabIndex={1} // tabIndex of textarea
                   onChange={handleChange}
-                />
+                /> */}
 
-                {/* <Textarea name="body" value={post.body} onChange={handleChange} h={"400px"} placeholder="Describe tu problema..." /> */}
+                <Textarea name="body" value={post.body} onChange={handleChange} h={"400px"} placeholder="Describe tu problema..." />
             </FormControl>
 
             <FormControl mt={4}>
