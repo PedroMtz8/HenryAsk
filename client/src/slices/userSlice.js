@@ -1,7 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const getUserInfo = createAsyncThunk("user/info");
+export const getUsers = createAsyncThunk("get/users", async (token) => {
+  try {
+  } catch (error) {}
+});
 
 export const userSlice = createSlice({
   name: "user",

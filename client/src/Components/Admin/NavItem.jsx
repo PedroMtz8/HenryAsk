@@ -8,8 +8,15 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-const NavItem = ({ navSize, title, icon, active }) => {
+const NavItem = ({ navSize, title, icon, active, url }) => {
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    navigate(url);
+  };
+
   return (
     <Flex
       mt={30}
@@ -19,7 +26,6 @@ const NavItem = ({ navSize, title, icon, active }) => {
     >
       <Menu placement="right">
         <Link
-          background={active && "#AEC8CA"}
           p={3}
           borderRadius={8}
           _hover={{
@@ -28,6 +34,7 @@ const NavItem = ({ navSize, title, icon, active }) => {
             fontSize: "17px",
           }}
           w={navSize == "large" && "100%"}
+          onClick={handleNavigate}
         >
           <MenuButton w="100%">
             <Flex>

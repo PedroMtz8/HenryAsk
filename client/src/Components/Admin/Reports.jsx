@@ -2,13 +2,13 @@ import { Flex } from "@chakra-ui/react";
 import React from "react";
 import Sidebar from "./Sidebar";
 
-const HomeAdmin = () => {
+const Reports = () => {
   return (
     <Flex>
       <Sidebar />
-      <h2>Este es el home de admin</h2>
+      <h2>Estos son los reports</h2>
     </Flex>
   );
 };
 
-export default HomeAdmin;
+export default Reports;

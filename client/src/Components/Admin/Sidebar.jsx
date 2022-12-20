@@ -1,10 +1,12 @@
 import { Divider, Flex, Heading, IconButton, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { FiBriefcase, FiHome, FiMenu, FiUser } from "react-icons/fi";
+import { Navigate, useNavigate } from "react-router-dom";
 import NavItem from "./NavItem";
 
 const Sidebar = () => {
   const [navSize, setNavSize] = useState("large");
+  const navigate = useNavigate();
 
   const handleMenuSize = () => {
     if (navSize === "small") {
@@ -35,14 +37,28 @@ const Sidebar = () => {
           icon={<FiMenu />}
           onClick={handleMenuSize}
         />
-        <NavItem navSize={navSize} icon={FiHome} title="Tablero" />
-        <NavItem navSize={navSize} icon={FiUser} title="Cuentas" />
-        <NavItem navSize={navSize} icon={FiBriefcase} title="Denuncias" />
+        <NavItem navSize={navSize} icon={FiHome} title="Tablero" url="/admin" />
+        <NavItem
+          navSize={navSize}
+          icon={FiUser}
+          title="Cuentas"
+          url="/admin/accounts"
+        />
+        <NavItem
+          navSize={navSize}
+          icon={FiBriefcase}
+          title="Denuncias"
+          url="/admin/reports"
+        />
       </Flex>
 
-      <Flex p="5%" flexDir="column" w="100%" alignItems="flex-start" mb={4}>
-        <Divider />
-      </Flex>
+      <Flex
+        p="5%"
+        flexDir="column"
+        w="100%"
+        alignItems="flex-start"
+        mb={4}
+      ></Flex>
 
       <Divider display={navSize === "small" ? "none" : "flex"} />
       <Flex
