@@ -4,6 +4,8 @@ const schema = new Schema({
     title: { type: String, required: true },
     body: { type: String, required: true },
     score: { type: Number, default: 0 },
+    voters: { type: Object, default: {} },
+    numberComments: { type: Number, default: 0 },
     user: {
         type: String,
         ref: 'User',
@@ -13,7 +15,7 @@ const schema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Post',
         immutable: true
-    },
-}, { timestamps: true })
+    }
+}, { timestamps: true, minimize: false })
 
 module.exports = model('Answer', schema)
