@@ -70,7 +70,8 @@ const CardHome = ({ cardData }) => {
             alignItems="center"
             gap=".5rem">
             {cardData.tags.map((elem, i) =>
-              <Button p=".5rem .5rem"
+              <Button key={i}
+                p=".5rem .5rem"
                 variant="solid"
                 bgColor="#ffff01">
                 {elem}
