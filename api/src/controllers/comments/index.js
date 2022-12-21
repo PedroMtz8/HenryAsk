@@ -1,4 +1,6 @@
+const Answer = require('../../models/Answer')
 const Comment = require('../../models/Comment')
+const Post = require('../../models/Post')
 
 const createComment = async (req, res) => {
     const { body, post_id, answer_id } = req.body
@@ -13,6 +15,7 @@ const createComment = async (req, res) => {
                 user: req.id,
                 post: post_id
             })
+            await Post.findByIdAndUpdate(post_id, { $inc: { numberComments: 1 } })
             return res.json({ message: 'Comentario añadido con exito!', comment: newComment })
         } else {
             const newComment = await Comment.create({
@@ -20,6 +23,7 @@ const createComment = async (req, res) => {
                 user: req.id,
                 answer: answer_id
             })
+            await Answer.findByIdAndUpdate(answer_id, { $inc: { numberComments: 1 } })
             return res.json({ message: 'Comentario añadido con exito!', comment: newComment })
         }
 

@@ -1,4 +1,5 @@
 const Post = require('../../models/Post')
+const User = require('../../models/User')
 
 const createPost = async (req, res) => {
     const { title, body, tags, module } = req.body
@@ -27,7 +28,10 @@ const editPost = async (req, res) => {
         if (!post) return res.status(404).json({ message: 'El post no fue encontrado!' })
         if (post.user !== req.id) return res.status(401).json({ message: 'Usted no es el autor de este post!' })
 
-        await post.update({ title, body, tags, module }, { new: true })
+        post.title = title
+        post.body = body
+        post.tags = tags
+        post.module = module
         await post.save()
 
         res.json({ message: 'Post actualizado!', post })
@@ -49,7 +53,7 @@ const getPostsByUserId = async (req, res) => {
 
     //Ejecuto dos busquedas al mismo tiempo
     Promise.all([
-        searchPaginatedPosts.skip(page * 6 - 6).limit(6).select({ user: 0 }),
+        searchPaginatedPosts.skip(page * 6 - 6).limit(6).select({ user: 0, voters: 0, numberComments: 0 }),
         searchAllPosts.select({ _id: 1 })
     ]).then(([paginatedDocs, allDocs]) => {
         const maxPages = Math.ceil(allDocs.length / 6)
@@ -78,8 +82,8 @@ const getPosts = async (req, res) => {
     function buildQuery() {
         let query = null
         if (q) { //si filtra por titulo
-            q = q.replace(/[^\w\+]+/g, '')
-            query = Post.find({ title: new RegExp(q.trim().replace('+', ' '), 'i') })
+            q = q.replace(/[^\w ]+/g, '')
+            query = Post.find({ title: new RegExp(q.trim(), 'i') })
         }
 
         if (tags) {
@@ -105,6 +109,7 @@ const getPosts = async (req, res) => {
 
     //busqueda para obtener posts paginados
     const searchPaginatedPosts = buildQuery()
+        .select({ numberComments: 0, voters: 0 })
         .skip(page * 10 - 10)
         .limit(10)
         .populate('user', { userSlack: 1, score: 1, rol: 1 })
@@ -125,23 +130,83 @@ const getPosts = async (req, res) => {
 
 }
 
-const sumPostScore = async (req, res) => {
+const votePost = async (req, res) => {
+    const { type } = req.params
     const { post_id } = req.body
     try {
-        const updatedPost = await Post.findByIdAndUpdate(post_id, { $inc: { score: 1 } }, { new: true })
-        if (!updatedPost) return res.status(404).json({ message: 'El post no fue encontrado!' })
+        const voter = await User.findById(req.id) //votante
+        const votedPost = await Post.findById(post_id)
+        if (!votedPost) return res.status(404).json({ message: 'El post no fue encontrado!' })
+        const author = await User.findById(votedPost.user) //autor del post
+        if (author.mail === voter.mail) return res.status(400).json({ message: 'No puedes votar tu propio post!' })
+        const previousVoteType = votedPost.voters[voter.mail] //obtengo voto previo
+        let message = ''
 
-        res.json(updatedPost)
+        if (previousVoteType === type) {
+            //Si usuario ya votó el mismo tipo de voto que ahora entonces se anula
+            return res.status(400).json({ message: 'El nuevo voto debe ser de un tipo diferente al anterior' })
+        }
+
+        if (type === '1') {
+            votedPost.score = previousVoteType === '-1'
+                ? votedPost.score + 2 //si voto abajo anteriormente, entonces sumo dos puntos
+                : votedPost.score + 1 //si no voto entonces sumo un punto
+            author.score = previousVoteType === '-1'
+                ? author.score + 2
+                : author.score + 1
+            votedPost.voters = { ...votedPost.voters, [voter.mail]: type }
+            message = 'El usuario votó arriba'
+        }
+
+        else if (type === '0') {
+
+            if (!previousVoteType) {
+                return res.status(404).json({ message: 'Voto no puede ser borrado porque no existe' })
+            }
+
+            votedPost.score = previousVoteType === '1'
+                ? votedPost.score - 1 //si voto arriba entonces resto un punto
+                : votedPost.score + 1 //si voto abajo entonces sumo un punto
+            author.score = previousVoteType === '1'
+                ? author.score - 1
+                : author.score + 1
+            const voters = votedPost.voters
+            delete voters[voter.mail]
+            votedPost.voters = voters
+            votedPost.markModified('voters') //porque si voters es un obj vacio, no lo guarda
+            message = 'El usuario borró su voto'
+        }
+
+        else if (type === '-1') {
+            votedPost.score = previousVoteType === '1'
+                ? votedPost.score - 2 //si voto arriba anteriormente, entonces resto dos puntos
+                : votedPost.score - 1 //si no voto entonces resto un punto
+            author.score = previousVoteType === '1'
+                ? author.score - 2
+                : author.score - 1
+            votedPost.voters = { ...votedPost.voters, [voter.mail]: type }
+            message = 'El usuario votó abajo'
+        }
+
+        else {
+            return res.status(400).json({ message: 'Tipo de voto inválido' })
+        }
+
+        await votedPost.save()
+        await author.save() //actualizo la puntuacion de autor de la respuesta
+        res.json({ message })
+
     } catch (error) {
         res.json({ message: error.message })
     }
 }
+
 
 module.exports = {
     createPost,
     editPost,
     getPostsByUserId,
     getPosts,
-    sumPostScore,
+    votePost,
     getPostDetail
 }
