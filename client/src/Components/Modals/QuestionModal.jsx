@@ -13,29 +13,31 @@ import {
   FormControl,
   Text,
   Textarea,
-  Select
+  Select,
+  Box,
+  Flex
  } from "@chakra-ui/react"
 import { useState } from "react"
 import { useRef } from "react"
 import axios from "axios"
 import API_URL from "../../config/environment"
 import { useAuth } from "../AuthComponents/AuthContext"
-import TextEditor from "../Posts/TextEditor"
+/* import TextEditor from "../Posts/TextEditor" */
 import JoditEditor, { Jodit } from "jodit-react";
-
 let modulos = ["Modulo 1", "Modulo 2", "Modulo 3", "Modulo 4", "Sin modulos"]
 
+
 export default function QuestionModal({title}) {
-  const [post, setPost] = useState({
-    title: "",
-    body: "",
-    tags: ["javascript", "node"],
-    module: ""
-  })
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [size, setSize] = useState("xl")
   const { user } = useAuth()
   const editor = useRef(null);
+  const [post, setPost] = useState({
+    title: "",
+    body: "",
+    tags: [],
+    module: ""
+  })
 
   const config = {
     readonly: false,
@@ -49,21 +51,21 @@ export default function QuestionModal({title}) {
     showWordsCounter: false,
     toolbarAdaptive: true,
     toolbarSticky: true,
+    uploader: {
+      insertImageAsBase64URI: true
+    },
   };
-
 
   const initialRef = useRef(null)
   const finalRef = useRef(null)
 
-
-
   const handleChange = (e) => {
-    /*  e.preventDefault() */
     setPost({
       ...post,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     })
   }
+
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -97,29 +99,30 @@ export default function QuestionModal({title}) {
             <FormControl mt={4}>
               <FormLabel fontSize={"24px"}>Cuerpo</FormLabel>
               <Text mb={"5px"} >El cuerpo de la pregunta contiene los detalles de tu problema y, a futuro, la resolucion de este.</Text>
-                {/*  <JoditEditor
+                <JoditEditor
                   ref={editor}
                   config={config}
-                  name="body"
-                  value={post.body}
-                  tabIndex={1} // tabIndex of textarea
-                  onChange={handleChange}
-                /> */}
 
-                <Textarea name="body" value={post.body} onChange={handleChange} h={"400px"} placeholder="Describe tu problema..." />
+                  tabIndex={1} // tabIndex of textarea
+
+                />
+
+                {/* <Textarea name="body" value={post.body} onChange={handleChange} h={"400px"} placeholder="Describe tu problema..." /> */}
             </FormControl>
+              <input type="file" name="" id="" onChange={(e) => console.log(e.target.value)} />
 
             <FormControl mt={4}>
               <FormLabel fontSize={"24px"}>Tags</FormLabel>
               <Text mb={"5px"} >Añade hasta 3 tags para describir sobre que tecnologias es tu problema</Text>
-                <Input name="tags" value={post.tags} onChange={handleChange} placeholder="JAVASCRIPT, REACT..." />
-            </FormControl>
-
+                <Text fontSize={"14px"}>*Pulsa espacio para agregar cada tag</Text>
+                {/* <Input name="tags" value={post.tags} onChange={handleChange}  placeholder="JAVASCRIPT, REACT..." /> */}
+                <TagsInput post={post} setPost={setPost} />
+              </FormControl>
               <FormControl mt={4}>
                 <FormLabel fontSize={"24px"}>Modulo</FormLabel>
                 <Text mb={"5px"} >Agrega a que modulo corresponde esta pregunta</Text>
                 <Select name="module" onChange={handleChange} >
-                  <option /* value="anything" */ disabled /* selected */ >Selecciona el modulo</option>
+                  <option disabled selected >Selecciona el modulo</option>
                   {
                     modulos.map((m, i) => {
                       return <option key={i} value={m}>{m}</option>
@@ -141,3 +144,71 @@ export default function QuestionModal({title}) {
     </>
   )
 }
+
+
+
+function TagsInput({ post, setPost }) {
+  function handleKeyDown(e) {
+    if (e.code !== 'Space' || e.keyCode !== 32) return
+
+    const value = e.target.value
+    if (!value.trim()) return
+
+    let same = post.tags.some((t, i) => t === value.toUpperCase())
+    if (same) return alert("no puedes agregar un mismo tag")
+    if (post.tags.length > 2) return alert("no puedes agregar mas de 3 tags")
+
+    setPost({
+      ...post,
+      tags: [...post.tags, value.toUpperCase().trim()]
+
+    })
+    e.target.value = ''
+  }
+
+  function removeTag(index) {
+
+    let remove = post.tags.filter((el, i) => i !== index)
+    setPost({
+      ...post,
+      tags: remove
+    })
+    /* setPost(post.tags.filter((el, i) => i !== index)) */
+  }
+
+  return (
+    <Flex
+      border={"1px solid black"}
+      h={"50px"}
+      alignItems="center"
+    >
+      {post.tags.map((tag, index) => (
+        <Flex
+          backgroundColor={"#ffff01"} h={"30px"}
+          alignItems="center"
+          borderRadius={"15px"} p={"10px"}
+          key={index}
+          marginLeft={"10px"}>
+          <Text marginRight={"5px"} >{tag}</Text>
+          <Box
+            bgColor={"black"}
+            color="white"
+            borderRadius={"50%"}
+            w="25px" h={"25px"}
+            textAlign="center"
+            cursor={"pointer"}
+            onClick={() => removeTag(index)}>
+            <Text>x</Text>
+          </Box>
+        </Flex>
+      ))
+      }
+      <Input
+        alignSelf={"center"}
+        border="none"
+        marginLeft={"15px"}
+        borderRadius={"none"} w={"200px"} h={"30px"} type="text" onKeyUp={handleKeyDown} placeholder="REACT JAVASCRIPT..." />
+    </Flex >
+  )
+}
+

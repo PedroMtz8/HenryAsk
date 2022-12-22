@@ -53,16 +53,15 @@ const CardHome = ({ cardData }) => {
           <Image w="2.1rem" mt=".5rem"
             src="https://i.postimg.cc/rw0MgSxN/medalla-6.png" alt="userImage" />
         </GridItem >
-
         <GridItem rowSpan={1} colSpan={7} direction="column">
           <Flex alignItems={"center"} gap=".4rem" fontSize=".75rem" fontWeight="bold">
             <Text >
-              {`${cardData.user?.mail} • ${formatDate(cardData.createdAt)}`}
+              {`${cardData.user?.userSlack} • ${formatDate(cardData.createdAt)}`}
             </Text>
             <Image w="1.4rem" alignSelf="flex-start"
               src="https://i.postimg.cc/TwrFYv4p/image-30.png" alt="userImage" />
             <Text >
-              {`123548`}
+              {cardData.user?.score}
             </Text>
           </Flex>
           <Heading size="sm">
