@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext, createContext } from "react";
-import { app, auth, firestore } from "./Credentials"
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut  } from "firebase/auth"
-import { doc, setDoc } from "firebase/firestore"
+import { app, auth, storage } from "./Credentials"
+import { createUserWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth"
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import axios from 'axios'
 import API_URL from "../../config/environment";
 
@@ -21,8 +21,9 @@ const AuthProvider = ({children}) => {
   const [user, setUser] = useState(null)
   console.log(user)
 
-
-
+  const updateUsername = async (userUpdate, username) => {
+    await updateProfile(userUpdate, { displayName: username })
+  }
 
   const signup = async(email, password, userSlack, country) => {
 
@@ -30,6 +31,7 @@ const AuthProvider = ({children}) => {
 
     await axios.post(API_URL + "/auth/register", { uid: infoUser.user.uid, mail: email, country, userSlack })
 
+    return infoUser
   }
 
 
@@ -41,13 +43,28 @@ const AuthProvider = ({children}) => {
         Authorization: `Bearer ${token}`
       }
     })
-    /* console.log(result.data) */ //Estado actual del usuario: awaiting
-    
+  }
+
+  function forgotPasswordFunction(email) {
+    return sendPasswordResetEmail(auth, email)
   }
 
   const signout = async() => {
     await signOut(auth)
   }
+
+  async function uploadFile(file, uid) {
+    const storageRef = ref(storage, `${uid}/${uid}`)
+    await uploadBytes(storageRef, file)
+
+    const url = getDownloadURL(storageRef)
+    return url
+  }
+
+  /* async function loadFIle(url, uid) {
+    const fileRef = doc(firestore, `${uid}/${uid}`);
+    await setDoc(fileRef, { link: url, time: Date.now() });
+  } */
 
   useEffect(() => {
     onAuthStateChanged(auth, (currentUser) => {
@@ -58,7 +75,7 @@ const AuthProvider = ({children}) => {
 
 
   return (
-    <authContext.Provider value={{ signup, login, signout, loadingUser, user }}>
+    <authContext.Provider value={{ signup, login, signout, loadingUser, user, forgotPasswordFunction, updateUsername, uploadFile }}>
       {children}
     </authContext.Provider>
   )

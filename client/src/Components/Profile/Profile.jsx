@@ -8,7 +8,9 @@ import { Box, CardBody, Center, Flex, Heading, Img, Stack, Text,
     TabList,
     Tab,
     TabPanels,
-    TabPanel, } from "@chakra-ui/react";
+    TabPanel,
+    Input,
+} from "@chakra-ui/react";
 import { useState } from "react";
 import NavBar from "../NavBar/NavBar";
 import CardProfile from "./Card Profile/CardProfile";
@@ -18,27 +20,30 @@ import axios from "axios";
 import { useAuth } from "../AuthComponents/AuthContext";
 
 let examplePost = [
-    { title: "Como hacer un map", body: "No entiendo como hacer un map con el metodo map..." },
-    { title: "Problema con QuickSort", body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos culpa rem consectetur earum iure reiciendis repellat, sint aspernatur enim quaerat?" },
-    { title: "Me esta dando un error al hacer un post", body: "Al intentar hacer un post me da un error..." },
-    { title: "Ayuda con un evento", body: "El evento onClick blablabla" },
-    { title: "Ayuda con un evento", body: "El evento onClick blablabla" },
-    { title: "Ayuda con un evento", body: "El evento onClick blablabla" },
-    { title: "Ayuda con un evento", body: "El evento onClick blablabla" },
-    { title: "Ayuda con un evento", body: "El evento onClick blablabla" },
-    { title: "Ayuda con un evento", body: "El evento onClick blablabla" },
+    { title: "Como hacer un map", body: "No entiendo como hacer un map con el metodo map...", _id: "43971" },
+    { title: "Problema con QuickSort", body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos culpa rem consectetur earum iure reiciendis repellat, sint aspernatur enim quaerat?", _id: "9311" },
+    { title: "Me esta dando un error al hacer un post", body: "Al intentar hacer un post me da un error...", _id: "845" },
+    { title: "Ayuda con un evento", body: "El evento onClick blablabla", _id: "143" },
+    { title: "Ayuda con un evento", body: "El evento onClick blablabla", _id: "31" },
+    { title: "Ayuda con un evento", body: "El evento onClick blablabla", _id: "1" },
+    { title: "Ayuda con un evento", body: "El evento onClick blablabla", _id: "971" },
+    { title: "Ayuda con un evento", body: "El evento onClick blablabla", _id: "863971" },
+    { title: "Ayuda con un evento", body: "El evento onClick blablabla", _id: "56471" },
 ]
 
 const Profile = () => {
-    const { user } = useAuth()
+    const { user, uploadFile } = useAuth()
     const [userData, setUserData] = useState(null)
     const [page, setPage] = useState(1)
     const [answers, setanswers] = useState(examplePost)
     const [myQuestions, setMyQuestions] = useState([])
+    const [file, setFile] = useState(null)
+    const [photo, setPhoto] = useState(null)
 
     const indexOfLast = page * 6
     const indexFirst = indexOfLast - 6
     const currentQuestions = answers.slice(indexFirst, indexOfLast)
+
 
     let totalPages = Math.ceil(answers.length / 6);
 
@@ -67,6 +72,14 @@ const Profile = () => {
         setUserData(userData.data.user)
     }
 
+    async function handleSubmit(e) {
+        e.preventDefault()
+        /* let uid = v4() */
+        let res = await uploadFile(file, user.uid)
+        setPhoto(res)
+        console.log("Archivo cargado", res)
+    }
+
     useEffect(() => {
         getUserData()
         getQuestions()
@@ -79,14 +92,27 @@ const Profile = () => {
                 <Box backgroundColor={"#F2F2F2"} height={"100%"} mb={"50px"} w={{ base: "90%", md: "80%", lg: "70%" }} mt={"50px"} borderRadius={"10px"} >
                     <Flex flexDirection={{ base: "column", md: "initial", lg: "initial" }}  >
                         <Center>
-                            <Flex flexDirection={"column"} margin={{ base: "10px", md: "30px", lg: "30px" }} w={"max-content"}  >
-                                <Img
-                                    src="https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60"
+                            <Flex flexDirection={"column"} w={"100px"}
+                                margin={{ base: "10px", md: "30px", lg: "30px" }}
+                            >
+                                <Box
                                     width={"100px"}
-                                    height={"100px"}
+                                    h={"100px"}
+                                    backgroundImage={`url(${photo})`}
+                                    backgroundSize={"contain"}
+                                    backgroundRepeat={"no-repeat"}
+                                    backgroundPosition={"center"}
                                     borderRadius={"50%"}
-                                    border={"1px solid black"} />
-                                <Button >Edit photo</Button>
+                                    border={"1px solid black"}
+                                />
+                                <Input
+                                    fontSize={"15px"}
+                                    border="none"
+                                    marginTop={"5px"}
+                                    type="file"
+                                    onChange={e => setFile(e.target.files[0])}
+                                />
+                                <Button w={"100px"} onClick={handleSubmit}  >Submit</Button>
                             </Flex>
                         </Center>
                         <Flex flexDirection={"column"} mt={{ base: "0px", md: "20px", lg: "20px" }} h={"inherit"} textAlign="center" >
@@ -121,12 +147,13 @@ const Profile = () => {
                                 <Tab _selected={{ color: 'white', bg: "#1F1F1F" }} >Mis respuestas: ({answers.length}) </Tab>
                     </TabList>
                     <TabPanels>
-                                <TabPanel position={"relative"} bg={"#1F1F1F"} minHeight={{ base: "1080", md: "590px", lg: "590px" }} mb={"50px"} borderRightRadius={"10px"} borderBottomLeftRadius={"10px"}>
+                                <TabPanel position={"relative"} bg={"#1F1F1F"} minHeight={{ base: "1080", md: "590px", lg: "590px" }} mb={"50px"} borderBottomRightRadius={"10px"} borderBottomLeftRadius={"10px"}>
                                     <SimpleGrid columns={{ base: 1, md: 2, lg: 2 }} gap={4} mt={"10px"}>
                                     {
                                             myQuestions ? myQuestions.map((q, i) => {
                                                 return <CardProfile title={q.title} description={q.body} key={i} />
                                             }) : null
+
                                     }
                                     </SimpleGrid>
                              <Center>
@@ -147,11 +174,11 @@ const Profile = () => {
                         </TabPanel>
 
 
-                                <TabPanel position={"relative"} bg={"#1F1F1F"} minHeight={{ base: "1080", md: "590px", lg: "590px" }} mb={"50px"} borderRightRadius={"10px"} borderBottomLeftRadius={"10px"}>
+                                <TabPanel position={"relative"} bg={"#1F1F1F"} minHeight={{ base: "1080", md: "590px", lg: "590px" }} mb={"50px"} borderBottomRightRadius={"10px"} borderBottomLeftRadius={"10px"}>
                                     <SimpleGrid columns={{ base: 1, md: 2, lg: 2 }} gap={4} mt={"10px"}>
                                         {
                                             answers ? currentQuestions.map((q, i) => {
-                                                return <CardProfile title={q.title} description={q.body} key={i} />
+                                                return <CardProfile title={q.title} description={q.body} id={q._id} key={i} />
                                             }) : null
                                         }
                                     </SimpleGrid>

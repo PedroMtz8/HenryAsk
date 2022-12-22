@@ -14,7 +14,8 @@ import {
     Text,
     Image,
     InputGroup,
-    InputRightElement
+    InputRightElement,
+    useToast
 } from '@chakra-ui/react'
 import { CheckCircleIcon, InfoIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { useNavigate } from 'react-router-dom'
@@ -26,8 +27,8 @@ const paises = ['Argentina', 'Brasil', 'Bolivia', 'Chile', 'Colombia', 'Costa Ri
 const FormRegister = () => {
 
     const navigate = useNavigate()
-
-    const { signup, signout } = useAuth()
+    const toast = useToast()
+    const { signup, signout, updateUsername, user } = useAuth()
 
     const [infoUser, setInfoUser] = useState({
         userSlack: "",
@@ -108,45 +109,43 @@ const FormRegister = () => {
     const [show, setShow] = useState(false)
     const handleClick = () => setShow(!show)
 
-    const showPasswordErrorText = (colorError) => {
-
-        return (
-            <SimpleGrid columns={2}
-                spacing={3}>
-                <Flex alignItems="center"
-                    gap={".4rem"}
-                    color={colorError.eightCharacters}>
-                    {colorError.eightCharacters === "green" ? <CheckCircleIcon /> : <InfoIcon />}
-                    Más de 8 caracteres
-                </Flex>
-                <Flex alignItems="center"
-                    gap={".4rem"}
-                    color={colorError.capitalLetter}>
-                    {colorError.capitalLetter === "green" ? <CheckCircleIcon /> : <InfoIcon />}
-                    Una mayúscula
-                </Flex>
-                <Flex alignItems="center"
-                    gap={".4rem"}
-                    color={colorError.specialCharacter}>
-                    {colorError.specialCharacter === "green" ? <CheckCircleIcon /> : <InfoIcon />}
-                    Un caracter especial
-                </Flex>
-                <Flex alignItems="center"
-                    gap={".4rem"}
-                    color={colorError.digit}>
-                    {colorError.digit === "green" ? <CheckCircleIcon /> : <InfoIcon />}
-                    Al menos un número
-                </Flex>
-            </SimpleGrid>
-        )
-    }
-
-
     const submitHandler = async (e) => {
         e.preventDefault()
-        await signup(infoUser.email, infoUser.password, infoUser.userSlack, infoUser.country)
-        console.log(infoUser)
-        await signout()
+        try {
+            let res = await signup(infoUser.email, infoUser.password, infoUser.userSlack, infoUser.country)
+            await updateUsername(res.user, infoUser.userSlack)
+            console.log("Logeo", res)
+            toast({
+                title: "Registered Successfully",
+                description: "You will have to wait for your account to be approved",
+                status: "success",
+                duration: 6000,
+                isClosable: true,
+                position: "top"
+            })
+            await signout()
+            navigate("/login")
+
+        }
+        catch (error) {
+            if (error.message.includes("already")) return toast({
+                description: "Email already in use",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+                position: "top"
+            })
+
+            if (error.message.includes("Password")) {
+                toast({
+                    description: "You should add at least 8 characters",
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                    position: "top"
+                })
+            }
+        }
     }
 
     return (
@@ -210,6 +209,7 @@ const FormRegister = () => {
                             type="email"
                             borderColor={errorInfoUser.email}
                             focusBorderColor='black'
+                            autoComplete="true"
                             _hover={{ borderColor: errorInfoUser.email }}
                             value={infoUser.email}
                             onChange={onChangeInput} />
@@ -224,6 +224,7 @@ const FormRegister = () => {
                                 type={show ? 'text' : 'password'}
                                 borderColor={errorInfoUser.password.complete}
                                 focusBorderColor='black'
+                                autoComplete="false"
                                 _hover={{ borderColor: errorInfoUser.password.complete }}
                                 value={infoUser.password}
                                 onChange={onChangeInput} />
@@ -262,3 +263,39 @@ const FormRegister = () => {
 }
 
 export default FormRegister;
+
+
+
+
+const showPasswordErrorText = (colorError) => {
+
+    return (
+        <SimpleGrid columns={2}
+            spacing={3}>
+            <Flex alignItems="center"
+                gap={".4rem"}
+                color={colorError.eightCharacters}>
+                {colorError.eightCharacters === "green" ? <CheckCircleIcon /> : <InfoIcon />}
+                Más de 8 caracteres
+            </Flex>
+            <Flex alignItems="center"
+                gap={".4rem"}
+                color={colorError.capitalLetter}>
+                {colorError.capitalLetter === "green" ? <CheckCircleIcon /> : <InfoIcon />}
+                Una mayúscula
+            </Flex>
+            <Flex alignItems="center"
+                gap={".4rem"}
+                color={colorError.specialCharacter}>
+                {colorError.specialCharacter === "green" ? <CheckCircleIcon /> : <InfoIcon />}
+                Un caracter especial
+            </Flex>
+            <Flex alignItems="center"
+                gap={".4rem"}
+                color={colorError.digit}>
+                {colorError.digit === "green" ? <CheckCircleIcon /> : <InfoIcon />}
+                Al menos un número
+            </Flex>
+        </SimpleGrid>
+    )
+}
