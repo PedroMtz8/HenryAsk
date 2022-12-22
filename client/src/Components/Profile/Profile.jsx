@@ -18,15 +18,15 @@ import axios from "axios";
 import { useAuth } from "../AuthComponents/AuthContext";
 
 let examplePost = [
-    { title: "Como hacer un map", description: "No entiendo como hacer un map con el metodo map..." },
-    { title: "Problema con QuickSort", description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos culpa rem consectetur earum iure reiciendis repellat, sint aspernatur enim quaerat?" },
-    { title: "Me esta dando un error al hacer un post", description: "Al intentar hacer un post me da un error..." },
-    { title: "Ayuda con un evento", description: "El evento onClick blablabla" },
-    { title: "Ayuda con un evento", description: "El evento onClick blablabla" },
-    { title: "Ayuda con un evento", description: "El evento onClick blablabla" },
-    { title: "Ayuda con un evento", description: "El evento onClick blablabla" },
-    { title: "Ayuda con un evento", description: "El evento onClick blablabla" },
-    { title: "Ayuda con un evento", description: "El evento onClick blablabla" },
+    { title: "Como hacer un map", body: "No entiendo como hacer un map con el metodo map..." },
+    { title: "Problema con QuickSort", body: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos culpa rem consectetur earum iure reiciendis repellat, sint aspernatur enim quaerat?" },
+    { title: "Me esta dando un error al hacer un post", body: "Al intentar hacer un post me da un error..." },
+    { title: "Ayuda con un evento", body: "El evento onClick blablabla" },
+    { title: "Ayuda con un evento", body: "El evento onClick blablabla" },
+    { title: "Ayuda con un evento", body: "El evento onClick blablabla" },
+    { title: "Ayuda con un evento", body: "El evento onClick blablabla" },
+    { title: "Ayuda con un evento", body: "El evento onClick blablabla" },
+    { title: "Ayuda con un evento", body: "El evento onClick blablabla" },
 ]
 
 const Profile = () => {
@@ -96,7 +96,7 @@ const Profile = () => {
 
                                 <Box display={"inline-flex"} alignItems={"center"} justifyContent={{ base: "center", md: "start", lg: "start" }} gap={2} >
                                     <Img src="https://cdn-icons-png.flaticon.com/512/1041/1041897.png" w={"16px"} h={"16px"} />
-                                    <Text  >Ciudad, {userData?.country}</Text>
+                                    <Text  >{userData?.country}</Text>
                                 </Box>
                                 <Box display={"inline-flex"} alignItems={"center"} justifyContent={{ base: "center", md: "start", lg: "start" }} gap={2}>
                                     <Img src="https://cdn-icons-png.flaticon.com/512/3176/3176294.png" w={"16px"} h={"16px"} />
@@ -104,7 +104,7 @@ const Profile = () => {
                                 </Box>
                                 <Box display={"inline-flex"} alignItems={"center"} justifyContent={{ base: "center", md: "start", lg: "start" }} gap={2}>
                                     <Img src="https://cdn-icons-png.flaticon.com/512/2720/2720867.png" w={"16px"} h={"16px"} />
-                                    <Text >324</Text>
+                                    <Text >{userData?.score}</Text>
                                 </Box>
                             </Flex>
 
