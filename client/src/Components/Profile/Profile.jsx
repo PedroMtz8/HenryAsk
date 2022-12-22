@@ -153,6 +153,7 @@ const Profile = () => {
                                             myQuestions ? myQuestions.map((q, i) => {
                                                 return <CardProfile title={q.title} description={q.body} key={i} />
                                             }) : null
+
                                     }
                                     </SimpleGrid>
                              <Center>
