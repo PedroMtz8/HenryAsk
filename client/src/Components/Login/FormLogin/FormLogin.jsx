@@ -15,10 +15,12 @@ import {
     Image,
     InputGroup,
     InputRightElement,
-    Checkbox
+    Checkbox,
+    Center,
+    Box
 } from '@chakra-ui/react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link as RouteLink } from 'react-router-dom'
 import { useAuth } from "../../AuthComponents/AuthContext"
 
 const FormLogin = () => {
@@ -30,6 +32,9 @@ const FormLogin = () => {
         email: "",
         password: ""
     });
+    const [wrongPass, setWrongPass] = useState(false)
+    const [wrongEmail, setWrongEmail] = useState(false)
+    const [attempts, setAttempts] = useState(false)
 
     const [errorInfoUser, setErrorInfoUser] = useState({
         email: "black",
@@ -106,8 +111,21 @@ const FormLogin = () => {
 
     const submitHandler = async (e) => {
         e.preventDefault()
-        await login(infoUser.email, infoUser.password)
-        navigate("/home")
+        try {
+            setWrongPass(false)
+            setWrongEmail(false)
+            setAttempts(false)
+            await login(infoUser.email, infoUser.password)
+            navigate("/home")
+        } catch (error) {
+            console.log(error.message)
+            if (error.message.includes("auth/wrong-password")) setWrongPass(true)
+            else setWrongPass(false)
+            if (error.message.includes("not-found")) setWrongEmail(true)
+            else setWrongEmail(false)
+            if (error.message.includes("login attempts")) setAttempts(true)
+            else setAttempts(false)
+        }
     }
 
     return (
@@ -152,6 +170,7 @@ const FormLogin = () => {
                                 type={show ? 'text' : 'password'}
                                 borderColor={errorInfoUser.password.complete}
                                 focusBorderColor='black'
+                                autoComplete="false"
                                 _hover={{ borderColor: errorInfoUser.password.complete }}
                                 value={infoUser.password}
                                 onChange={onChangeInput} />
@@ -169,9 +188,11 @@ const FormLogin = () => {
                             align={'start'}
                             justify={'space-between'}>
                             <Checkbox>Recordarme</Checkbox>
+                            <RouteLink to="/forgotpassword">
                             <Link as={"u"} fontWeight="semibold" textDecoration={"underline"}>
                                 Olvidé mi contraseña
                             </Link>
+                            </RouteLink>
                         </Stack>
                         <Button type='submit'
                             bg='#ffff01'
@@ -180,6 +201,33 @@ const FormLogin = () => {
                         >
                             Ingresar
                         </Button>
+                        {
+                            wrongEmail ?
+                                <Center>
+                                    <Box border={"2px solid red"} color={"red"} w={"90%"} borderRadius={"5px"} p={"5px"} textAlign="center">
+                                        <Text>Email no encontrado</Text>
+                                    </Box>
+                                </Center>
+                                : null
+                        }
+                        {
+                            wrongPass ?
+                                <Center>
+                                    <Box border={"2px solid red"} color={"red"} w={"90%"} borderRadius={"5px"} p={"5px"} textAlign="center">
+                                        <Text>La contraseña es incorrecta</Text>
+                                    </Box>
+                                </Center>
+                                : null
+                        }
+                        {
+                            attempts ?
+                                <Center>
+                                    <Box /* border={"2px solid red"} color={"red"} w={"90%"} borderRadius={"5px"} p={"5px"} */ textAlign="center">
+                                        <Text>El acceso a esta cuenta se ha inhabilitado temporalmente debido a muchos intentos fallidos de inicio de sesión. Puede restaurarlo inmediatamente restableciendo su contraseña o puede volver a intentarlo más tarde</Text>
+                                    </Box>
+                                </Center>
+                                : null
+                        }
                         <HStack justifyContent="flex-start"
                             gap={"0.2rem"}
                             fontSize=".9rem">
