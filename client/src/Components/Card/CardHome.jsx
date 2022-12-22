@@ -4,34 +4,43 @@ import {
   Button,
   Card,
   Flex,
-  CardBody,
-  CardFooter,
   Heading,
   Image,
-  HStack,
   Text
 } from "@chakra-ui/react";
+import {Link} from 'react-router-dom'
 import React from "react";
 import { ChatIcon } from "@chakra-ui/icons";
 
 const CardHome = ({ cardData }) => {
+
+  const formatDate = (date) => {
+
+    const arrDate = date.split('-')
+
+    const arrTime = arrDate[2].split('T')
+
+    return arrTime[1].slice(0, 8) + ' ' + arrTime[0] + '-' + arrDate[1] + '-' + arrDate[0] 
+
+  }
+
+
   return (
     <Card position="relative"
       bg="#F2F2F2"
       p=".8rem"
-      w="38rem"
-      h="13rem"
+      w="100%"
+      h={["14rem", "13rem", "12rem", "11rem", "10rem"]}
       overflow="hidden"
       variant="outline"
       boxShadow="dark-lg"
-      direction={{ base: "column", sm: "row" }}
     >
-      <Grid templateRows='repeat(3, 1fr)'
+      <Grid templateRows='repeat(2, 1fr)'
         templateColumns='repeat(8, 1fr)'
         boxSize="100%"
         gap="1rem"
       >
-        <GridItem rowSpan={3} colSpan={1} align={"center"} >
+        <GridItem rowSpan={2} colSpan={1} align={"center"} >
           <Image
             objectFit="cover"
             mt=".8rem"
@@ -42,26 +51,26 @@ const CardHome = ({ cardData }) => {
             alt="Caffe Latte"
           />
           <Image w="2.1rem" mt=".5rem"
-            src="https://i.postimg.cc/rw0MgSxN/medalla-6.png" alt="userImage"/>
+            src="https://i.postimg.cc/rw0MgSxN/medalla-6.png" alt="userImage" />
         </GridItem >
 
-        <GridItem rowSpan={2} colSpan={7} direction="column">
+        <GridItem rowSpan={1} colSpan={7} direction="column">
           <Flex alignItems={"center"} gap=".4rem" fontSize=".75rem" fontWeight="bold">
             <Text >
-              {`${cardData.user?.mail} • ${cardData.createdAt}`}
+              {`${cardData.user?.mail} • ${formatDate(cardData.createdAt)}`}
             </Text>
             <Image w="1.4rem" alignSelf="flex-start"
-            src="https://i.postimg.cc/TwrFYv4p/image-30.png" alt="userImage"/>
+              src="https://i.postimg.cc/TwrFYv4p/image-30.png" alt="userImage" />
             <Text >
               {`123548`}
             </Text>
           </Flex>
-          <Heading size="md">
-            {cardData.title}
+          <Heading size="sm">
+            <Link to={`/details/${cardData._id}`}>
+              {cardData.title.slice(0, 180)}
+              {cardData.title.length > 180? "..." : ""}
+            </Link>
           </Heading>
-          <Text py="2">
-            {cardData.body}
-          </Text>
         </GridItem>
 
         <GridItem rowSpan={1} colSpan={7} display={"flex"} justifyContent="space-between"
@@ -84,11 +93,13 @@ const CardHome = ({ cardData }) => {
             <Button variant="outline">
               <ChatIcon marginRight={"3px"} /> Comentarios
             </Button>
-            <Button variant="ghost" 
-            color="white"
-            _hover={{color: "black",
-                    bg: "#FFFF01"}}
-            bg="#272930">
+            <Button variant="ghost"
+              color="white"
+              _hover={{
+                color: "black",
+                bg: "#FFFF01"
+              }}
+              bg="#272930">
               Responder
             </Button>
           </Flex>
