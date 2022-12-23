@@ -13,7 +13,7 @@ import { ChatIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
 
 
-const CardProfile = ({title, description}) => {
+const CardProfile = ({ title, description, id }) => {
 
     return(
         <>
@@ -37,7 +37,7 @@ const CardProfile = ({title, description}) => {
 
           <Stack color={"black"}>
           <CardBody  overflow={"hidden"}>
-            <Link to={"/post/id"}>
+              <Link to={`/post/${id}`}>
             <Heading  size="md">{title}</Heading>
             </Link>
             <Box display={"flex"} overflow={"hidden"}>

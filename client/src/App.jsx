@@ -11,6 +11,7 @@ import HomeAdmin from "./Components/Admin/HomeAdmin";
 import Accounts from "./Components/Admin/Accounts";
 import Reports from "./Components/Admin/Reports";
 import Details from "./Components/Details/Details"
+import ForgotPassword from "./Components/ForgotPassword/ForgotPassword";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Register />} />
         <Route path="/posts" element={<Posts />} />
+        <Route path="/forgotpassword" element={<ForgotPassword />} />
         // Rutas de admin
         <Route element={<ProtectedRoute />}>
           <Route path="/admin" element={<HomeAdmin />} />
