@@ -6,11 +6,11 @@ import AuthProvider from "./Components/AuthComponents/AuthContext";
 import ProtectedRoute from "./Components/AuthComponents/ProtectedRoutes";
 import Home from "./Components/Home/Home";
 import Profile from "./Components/Profile/Profile";
-import CardsHome from "./Components/Card/CardHome";
 import Posts from "./Components/Posts/Posts";
 import HomeAdmin from "./Components/Admin/HomeAdmin";
 import Accounts from "./Components/Admin/Accounts";
 import Reports from "./Components/Admin/Reports";
+import Details from "./Components/Details/Details"
 import ForgotPassword from "./Components/ForgotPassword/ForgotPassword";
 
 function App() {
@@ -23,12 +23,12 @@ function App() {
         <Route path="/posts" element={<Posts />} />
         <Route path="/forgotpassword" element={<ForgotPassword />} />
         // Rutas de admin
-        <Route path="/admin" element={<HomeAdmin />} />
-        <Route path="/admin/accounts" element={<Accounts />} />
-        <Route path="/admin/reports" element={<Reports />} />
         <Route element={<ProtectedRoute />}>
+          <Route path="/admin" element={<HomeAdmin />} />
+          <Route path="/admin/accounts" element={<Accounts />} />
+          <Route path="/admin/reports" element={<Reports />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/card" element={<CardsHome />} />
+          <Route path="/details/:id" element={<Details />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
       </Routes>
