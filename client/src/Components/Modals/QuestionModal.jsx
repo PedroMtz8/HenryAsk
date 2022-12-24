@@ -15,7 +15,8 @@ import {
   Textarea,
   Select,
   Box,
-  Flex
+  Flex,
+  useToast
  } from "@chakra-ui/react"
 import { useState } from "react"
 import { useRef } from "react"
@@ -75,7 +76,7 @@ export default function QuestionModal({title}) {
 
   return (
     <>
-      <Button marginTop={"5px"} backgroundColor={"#FFFF01"} key={size} m={4} onClick={onOpen}>{title}</Button>
+      <Button marginTop={"5px"} fontSize={{base: "14px", sm: "initial", md: "inital", lg: "initial"}} backgroundColor={"#FFFF01"} key={size} m={4} onClick={onOpen}>{title}</Button>
 
       <Modal
         initialFocusRef={initialRef}
@@ -148,15 +149,30 @@ export default function QuestionModal({title}) {
 
 
 function TagsInput({ post, setPost }) {
+  const toast = useToast()
+
   function handleKeyDown(e) {
     if (e.code !== 'Space' || e.keyCode !== 32) return
 
     const value = e.target.value
     if (!value.trim()) return
 
-    let same = post.tags.some((t, i) => t === value.toUpperCase())
-    if (same) return alert("no puedes agregar un mismo tag")
-    if (post.tags.length > 2) return alert("no puedes agregar mas de 3 tags")
+    let same = post.tags.find(t => t === value.toUpperCase().trim())
+    console.log(same)
+    if (same) return toast({
+      description: "No puedes agregar el mismo tag",
+      status: "error",
+      duration: 4000,
+      isClosable: true,
+      position: "top"
+    })
+    if (post.tags.length > 2) return toast({
+      description: "No puedes agregar más de 3 tags",
+      status: "error",
+      duration: 4000,
+      isClosable: true,
+      position: "top"
+    })
 
     setPost({
       ...post,

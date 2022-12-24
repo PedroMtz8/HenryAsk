@@ -38,12 +38,14 @@ export default function NavBar() {
   return (
     <>
       <Box bg={useColorModeValue('black', 'black')} px={4}>
-        <Flex h={"96px"} alignItems={'center'} justifyContent={'space-around'}>
+        <Flex h={"96px"} alignItems={'center'} justifyContent={"space-around"}>
           <RouteLink to={"/home"} >
-          <Img h={"25px"} src='https://assets.soyhenry.com/henry-landing/assets/Henry/logo-white.png' />
+            <Flex alignItems={"center"} h={"30px"} w={{base: "100px", sm: "120px", md: "120px", lg: "120px"}}>
+              <Img /* h={"25px"} */ /* w={"120px"} */ src='https://assets.soyhenry.com/henry-landing/assets/Henry/logo-white.png' />
+            </Flex>
           </RouteLink>
           <Flex alignItems={'center'}>
-            <Stack direction={'row'} spacing={7} margin={0}>
+            <Stack direction={'row'} spacing={{base: 0,  md: 7, lg: 7}} margin={0}>
             <QuestionModal title={"Hacer pregunta"} />
              {/*  <Button onClick={toggleColorMode}>
                 {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
@@ -75,6 +77,9 @@ export default function NavBar() {
                   <Center>
                     <Text>Username</Text>
                   </Center>
+                    <RouteLink to={'/home'}>
+                      <MenuItem> Home </MenuItem>
+                    </RouteLink>
                     <RouteLink to={'/profile'}>
                       <MenuItem> Profile </MenuItem>
                     </RouteLink>
