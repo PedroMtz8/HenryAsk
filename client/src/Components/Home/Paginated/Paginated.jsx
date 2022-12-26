@@ -30,7 +30,7 @@ const Paginated = () => {
                 axios.get(API_URL + `/posts?page=${paginated.currentPage}&q=${paginated.titleFilter}&module=${paginated.moduleFilter}&tags=${paginated.tagsFilter}&sort=${paginated.order}`, 
                                       { headers: { Authorization: "Bearer " + token } }
                                       )
-            console.log(res.data)
+            
             dispatch(savePosts(res.data));
             setLoadingPosts(false);
         }

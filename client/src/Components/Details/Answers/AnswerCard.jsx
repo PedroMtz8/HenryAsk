@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { TriangleUpIcon, TriangleDownIcon } from "@chakra-ui/icons";
 
-const CardAnswer = () => {
+const AnswerCard = () => {
 
     return (
         <Grid position="relative"
@@ -61,4 +61,4 @@ const CardAnswer = () => {
     )
 }
 
-export default CardAnswer;
+export default AnswerCard;

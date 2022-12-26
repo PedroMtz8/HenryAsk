@@ -11,7 +11,7 @@ import {
     Button,
     HStack
 } from '@chakra-ui/react'
-import CardAnswer from './CardAnswer'
+import AnswerCard from './AnswerCard'
 
 const Answers = () => {
 
@@ -101,7 +101,7 @@ const Answers = () => {
                         borderRadius="md"
                         fontWeight="semibold"
                         gap="2%">
-                        {responseData.answersArr.map(elem => <CardAnswer />)}
+                        {responseData.answersArr.map(elem => <AnswerCard />)}
                     </Flex>
                     <HStack spacing={2} alignSelf="center">
                         <Button name={'<'} onClick={clickSideButtons} > {'<'} </Button>
