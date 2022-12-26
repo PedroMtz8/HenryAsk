@@ -13,8 +13,16 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { ChatIcon } from "@chakra-ui/icons";
+import moment from "moment"
+import { localeData } from 'moment_spanish_locale';
+import 'moment/locale/es';
 
 const CardHome = ({ cardData }) => {
+
+    moment.updateLocale('es', localeData)
+    
+    let dif = moment(cardData.createdAt).startOf('minutes').fromNow()
+
   return (
     <Card position="relative"
       bg="#F2F2F2"
@@ -47,7 +55,7 @@ const CardHome = ({ cardData }) => {
         <GridItem rowSpan={2} colSpan={7} direction="column">
           <Flex alignItems={"center"} gap=".4rem" fontSize=".75rem" fontWeight="bold">
             <Text >
-              {`${cardData.user?.userSlack} • ${cardData.createdAt}`}
+              {`${cardData.user?.userSlack} • ${dif}`}
             </Text>
             <Image w="1.4rem" alignSelf="flex-start"
             src="https://i.postimg.cc/TwrFYv4p/image-30.png" alt="userImage"/>

@@ -18,6 +18,7 @@ import {
   HStack,
   VStack,
   Text,
+  useToast
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import QuestionModal from "../Modals/QuestionModal";
@@ -33,7 +34,8 @@ export default function NavBar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const userData = useSelector((state) => state.user.user);
 
- /*  console.log(userData) */
+  const toast = useToast()
+  console.log(userData)
 
   const { user, signout } = useAuth();
 
@@ -44,6 +46,17 @@ export default function NavBar() {
   useEffect(() => {
     dispatch(getUserData(user.accessToken))
   }, []);
+
+  if(userData && userData.status === "Esperando") {
+     toast({
+      description: "Tu confirmación esta pendiente, espera a que sea aprobada",
+      duration: 6000,
+      isClosable: true,
+      status: "info",
+      position: "top",
+    })
+    signout()
+  } 
 
   return (
     <>

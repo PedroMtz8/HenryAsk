@@ -49,7 +49,7 @@ const checkStatusUser = async (req, res) => {
 
 const getUserById = async (req, res) => {
     try {
-        const foundUser = await User.findById(req.id).select({ status: 0 })
+        const foundUser = await User.findById(req.id)
         if (!foundUser) return res.status(404).json({ message: 'Usuario no encontrado!' })
 
         res.json({ message: 'Usuario encontrado!', user: foundUser })
