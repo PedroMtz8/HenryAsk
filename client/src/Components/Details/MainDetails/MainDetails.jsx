@@ -7,6 +7,7 @@ import {
     Stack
 } from '@chakra-ui/react'
 import { TriangleUpIcon, TriangleDownIcon } from '@chakra-ui/icons'
+import Editor from '../../DetailBody/DetailBody'
 
 const MainDetails = ({ dataPost }) => {
 
@@ -55,9 +56,7 @@ const MainDetails = ({ dataPost }) => {
                         <Heading fontSize="1.2rem" as="h2">
                             {dataPost.post.title}
                         </Heading>
-                        <Text fontSize=".9rem"
-                        >{dataPost.post.body}
-                        </Text>
+                        <Editor body={dataPost.post.body} />
                     </Stack>
                     <Flex justifyContent="space-between">
                         <Text>Comentarios: (5) <TriangleDownIcon /></Text>
@@ -77,7 +76,7 @@ const MainDetails = ({ dataPost }) => {
                 </Flex>
             </Flex>
             <Flex>
-                
+
             </Flex>
         </>
     )
