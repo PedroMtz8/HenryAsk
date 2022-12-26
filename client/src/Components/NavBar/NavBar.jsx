@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import {
   Box,
   Flex,
@@ -18,75 +17,100 @@ import {
   Img,
   HStack,
   VStack,
-  Text
-} from '@chakra-ui/react';
-import { MoonIcon, SunIcon } from '@chakra-ui/icons';
-import QuestionModal from '../Modals/QuestionModal';
-import { Link as RouteLink } from 'react-router-dom';
-import { useAuth } from '../AuthComponents/AuthContext';
+  Text,
+} from "@chakra-ui/react";
+import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+import QuestionModal from "../Modals/QuestionModal";
+import { Link as RouteLink } from "react-router-dom";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserData } from "../../slices/userSlice";
+import { useAuth } from "../AuthComponents/AuthContext";
 
 export default function NavBar() {
+  const dispatch = useDispatch();
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const userData = useSelector((state) => state.user.user);
 
-  const { signout } = useAuth()
+ /*  console.log(userData) */
 
-  const logout = async() => {
-    await signout()
-  }
+  const { user, signout } = useAuth();
+
+  const logout = async () => {
+    await signout();
+  };
+
+  useEffect(() => {
+    dispatch(getUserData(user.accessToken))
+  }, []);
 
   return (
     <>
-      <Box bg={useColorModeValue('black', 'black')} px={4}>
-        <Flex h={"96px"} alignItems={'center'} justifyContent={"space-around"}>
-          <RouteLink to={"/home"} >
-            <Flex alignItems={"center"} h={"30px"} w={{base: "100px", sm: "120px", md: "120px", lg: "120px"}}>
-              <Img /* h={"25px"} */ /* w={"120px"} */ src='https://assets.soyhenry.com/henry-landing/assets/Henry/logo-white.png' />
+      <Box bg={useColorModeValue("black", "black")} px={4}>
+        <Flex h={"96px"} alignItems={"center"} justifyContent={"space-around"}>
+          <RouteLink to={"/home"}>
+            <Flex
+              alignItems={"center"}
+              h={"30px"}
+              w={{ base: "100px", sm: "120px", md: "120px", lg: "120px" }}
+            >
+              <Img src="https://assets.soyhenry.com/henry-landing/assets/Henry/logo-white.png" />
             </Flex>
           </RouteLink>
-          <Flex alignItems={'center'}>
-            <Stack direction={'row'} spacing={{base: 0,  md: 7, lg: 7}} margin={0}>
-            <QuestionModal title={"Hacer pregunta"} />
-             {/*  <Button onClick={toggleColorMode}>
-                {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-              </Button> */}
-            
-                <Flex>
-
-              <Menu>
-                <MenuButton
-                  transition="all 0.3s"
-                  _focus={{ boxShadow: 'none' }}>
-                  <Avatar
-                    size={'md'}
-                    src={'https://avatars.dicebear.com/api/male/username.svg'}
+          <Flex alignItems={"center"}>
+            <Stack
+              direction={"row"}
+              spacing={{ base: 0, md: 7, lg: 7 }}
+              margin={0}
+            >
+              <QuestionModal title={"Hacer pregunta"} />
+              <Flex>
+                <Menu>
+                  <MenuButton
+                    transition="all 0.3s"
+                    _focus={{ boxShadow: "none" }}
+                  >
+                    <Avatar
+                      size={"md"}
+                      src={"https://avatars.dicebear.com/api/male/username.svg"}
                     />
-                </MenuButton>
-                <MenuList
-                    bg={useColorModeValue('white', 'gray.900')}
-                    borderColor={useColorModeValue('gray.200', 'gray.700')}
+                  </MenuButton>
+                  <MenuList
+                    bg={useColorModeValue("white", "gray.900")}
+                    borderColor={useColorModeValue("gray.200", "gray.700")}
                   >
                     <br />
                     <Center>
-                    <Avatar
-                      size={'2xl'}
-                      src={'https://avatars.dicebear.com/api/male/username.svg'}
-                    />
-                  </Center>
-                  <br />
-                  <Center>
-                    <Text>Username</Text>
-                  </Center>
-                    <RouteLink to={'/home'}>
+                      <Avatar
+                        size={"2xl"}
+                        src={
+                          "https://avatars.dicebear.com/api/male/username.svg"
+                        }
+                      />
+                    </Center>
+                    <br />
+                    <Center>
+                      <Text>{userData.userSlack}</Text>
+                    </Center>
+                    <RouteLink to={"/home"}>
                       <MenuItem> Home </MenuItem>
                     </RouteLink>
-                    <RouteLink to={'/profile'}>
+                    <RouteLink to={"/profile"}>
                       <MenuItem> Profile </MenuItem>
                     </RouteLink>
+                    {
+                      userData.rol === "Administrador" ?
+                      <RouteLink to={"/admin"}>
+                      <MenuItem> Panel de Admin </MenuItem>
+                    </RouteLink>
+                      :
+                    null
+                    }
                     <MenuDivider />
-                    <MenuItem onClick={logout} >Log out</MenuItem>
+                    <MenuItem onClick={logout}>Log out</MenuItem>
                   </MenuList>
-              </Menu>
+                </Menu>
               </Flex>
             </Stack>
           </Flex>

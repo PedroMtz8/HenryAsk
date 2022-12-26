@@ -18,6 +18,9 @@ import Footer from "../Footer/Footer";
 import { useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../AuthComponents/AuthContext";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserQuestions } from "../../slices/userSlice";
+import { getUserData } from "../../slices/userSlice";
 
 let examplePost = [
     { title: "Como hacer un map", body: "No entiendo como hacer un map con el metodo map...", _id: "43971" },
@@ -32,13 +35,15 @@ let examplePost = [
 ]
 
 const Profile = () => {
+    const dispatch = useDispatch()
     const { user, uploadFile } = useAuth()
-    const [userData, setUserData] = useState(null)
     const [page, setPage] = useState(1)
     const [answers, setanswers] = useState(examplePost)
-    const [myQuestions, setMyQuestions] = useState([])
     const [file, setFile] = useState(null)
     const [photo, setPhoto] = useState(null)
+
+    const userData = useSelector(state => state.user.user)
+    const myQuestions = useSelector(state => state.user.userQuestions)
 
     const indexOfLast = page * 6
     const indexFirst = indexOfLast - 6
@@ -57,39 +62,24 @@ const Profile = () => {
         if (page !== totalPages) return setPage(page + 1);
     };
 
-
-    const API_URL = "http://localhost:3001"
-
-    const token = user.accessToken
-    const getQuestions = async () => {
-        let userID = user.uid
-        let info = await axios(`${API_URL}/posts/user?page=${page}&user_id=${userID}`, { headers: { Authorization: "Bearer " + token } })
-        setMyQuestions(info.data.foundPosts)
-    }
-
-    const getUserData = async () => {
-        let userData = await axios(`${API_URL}/auth`, { headers: { Authorization: "Bearer " + token } })
-        setUserData(userData.data.user)
-    }
-
     async function handleSubmit(e) {
         e.preventDefault()
-        /* let uid = v4() */
         let res = await uploadFile(file, user.uid)
         setPhoto(res)
         console.log("Archivo cargado", res)
     }
 
     useEffect(() => {
-        getUserData()
-        getQuestions()
+        /* dispatch(getUserData(user.accessToken)) */
+        dispatch(getUserQuestions(user.accessToken, user.uid, page))
     }, [])
 
     return(
         <Flex backgroundColor={"#1F1F1F"} h={"auto"} w='100%' flexFlow={"column"} >
             <NavBar />
             <Center>
-                <Box backgroundColor={"#F2F2F2"} height={"100%"} mb={"50px"} w={{ base: "90%", md: "80%", lg: "70%" }} mt={"50px"} borderRadius={"10px"} >
+                <Box backgroundColor={"#F2F2F2"} height={"100%"} mb={"50px"} 
+                    w={{ base: "90%", md: "80%", lg: "70%" }} mt={"50px"} borderRadius={"10px"} >
                     <Flex flexDirection={{ base: "column", md: "initial", lg: "initial" }}  >
                         <Center>
                             <Flex flexDirection={"column"} w={"100px"}
