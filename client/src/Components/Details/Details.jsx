@@ -5,6 +5,7 @@ import {
     Flex
 } from '@chakra-ui/react'
 import MainDetails from "./MainDetails/MainDetails";
+import Answers from './Answers/Answers'
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../Components/AuthComponents/AuthContext"
@@ -22,16 +23,17 @@ const Details = () => {
 
     useEffect(() => {
 
-        const aFun = async () => {
+        const getPost = async () => {
 
             const res = await
                 axios.get(API_URL + `/posts/${idPost}`, { headers: {Authorization: "Bearer " + token }})
-            
+
             setDataPost(res.data)
             setLoading(false)
+            
         }
 
-       aFun()
+        getPost()
 
     }, [])
 
@@ -46,7 +48,7 @@ const Details = () => {
                 minH="70vh"
                 gap="1rem">
                 {
-                loading? "cargando" : <MainDetails dataPost={dataPost}/>
+                loading? "cargando" : <><MainDetails dataPost={dataPost}/> <Answers /></>
                 }
             </Flex>
             <Footer />
