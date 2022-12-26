@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext, createContext } from "react";
-import { app, auth, storage } from "./Credentials"
+import { auth, storage } from "./Credentials"
 import { createUserWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth"
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage"
 import axios from 'axios'
 import API_URL from "../../config/environment";
 
@@ -16,7 +16,7 @@ export const useAuth = () => {
 
 
 
-const AuthProvider = ({children}) => {
+const AuthProvider = ({ children }) => {
   const [loadingUser, setLoadingUser] = useState(true);
   const [user, setUser] = useState(null)
   console.log(user)
@@ -25,7 +25,7 @@ const AuthProvider = ({children}) => {
     await updateProfile(userUpdate, { displayName: username })
   }
 
-  const signup = async(email, password, userSlack, country) => {
+  const signup = async (email, password, userSlack, country) => {
 
     let infoUser = await createUserWithEmailAndPassword(auth, email, password).then((userFirebase) => userFirebase);
 
@@ -35,7 +35,7 @@ const AuthProvider = ({children}) => {
   }
 
 
-  const login = async(email, password) => {
+  const login = async (email, password) => {
     let user = await signInWithEmailAndPassword(auth, email, password)
     const token = await user.user.getIdToken() //devuelve el token de acceso, si existe uno pero vencio, lo refresca
     const result = await axios.get(`${API_URL}/auth/status`, {
@@ -49,16 +49,21 @@ const AuthProvider = ({children}) => {
     return sendPasswordResetEmail(auth, email)
   }
 
-  const signout = async() => {
+  const signout = async () => {
     await signOut(auth)
   }
 
   async function uploadFile(file, uid) {
-    const storageRef = ref(storage, `${uid}/${uid}`)
+    const storageRef = ref(storage, `${uid}/${file.name}`)
     await uploadBytes(storageRef, file)
 
     const url = getDownloadURL(storageRef)
     return url
+  }
+
+  async function deleteFile(url) {
+    const storageRef = ref(storage, url)
+    await deleteObject(storageRef);
   }
 
   /* async function loadFIle(url, uid) {
@@ -75,7 +80,7 @@ const AuthProvider = ({children}) => {
 
 
   return (
-    <authContext.Provider value={{ signup, login, signout, loadingUser, user, forgotPasswordFunction, updateUsername, uploadFile }}>
+    <authContext.Provider value={{ signup, login, signout, loadingUser, user, forgotPasswordFunction, updateUsername, uploadFile, deleteFile }}>
       {children}
     </authContext.Provider>
   )
