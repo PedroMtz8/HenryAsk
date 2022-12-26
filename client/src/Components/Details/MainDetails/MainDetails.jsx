@@ -10,13 +10,15 @@ import { TriangleUpIcon, TriangleDownIcon } from '@chakra-ui/icons'
 
 const MainDetails = ({ dataPost }) => {
 
+    console.log(dataPost)
+
     return (
         <>
             <Flex position="relative"
                 alignItems="flex-start"
                 w="80%"
                 minH="10rem"
-                my="3rem"
+                mt="3rem"
                 p="1%"
                 bg="#F2F2F2"
                 borderRadius="md"
