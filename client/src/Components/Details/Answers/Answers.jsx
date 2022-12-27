@@ -28,13 +28,12 @@ const Answers = ({ dataPost, setDataPost }) => {
             const res = await
                 axios.get(API_URL + `/answer/post?page=${responseData.answersPage}&sort=${responseData.answersSort}&post_id=${idPost}`, { headers: { Authorization: "Bearer " + token } })
 
-
-            setResponseData({ ...responseData, answersArr: res.data.foundAnswers, maxPages: res.data.maxPages })
-        }
+            setResponseData({ ...responseData, answersArr: res.data.foundAnswers, maxPages: res.data.maxPages })}
 
         getAnswers()
 
     }, [responseData.answersPage, responseData.answersSort, dataPost]);
+
 
     const clickButtonNumbers = (e) => {
 

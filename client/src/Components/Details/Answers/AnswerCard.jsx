@@ -9,7 +9,6 @@ import {
     Text
 } from "@chakra-ui/react";
 import { TriangleUpIcon, TriangleDownIcon } from "@chakra-ui/icons";
-import { formatDate } from "../../Card/CardHome";
 import axios from "axios";
 import { useAuth } from "../../AuthComponents/AuthContext"
 import API_URL from "../../../config/environment"
@@ -20,7 +19,6 @@ const AnswerCard = ({ answerCardData, setDataPost }) => {
     let token = user.accessToken
     const idPost = useParams().id;
     
-
     const [numberOfVotesAnswerd, setNumberOfVotesAnswerd] = useState(parseInt(answerCardData.score))
     const [numberOfVotesUser, setNumberOfVotesUser] = useState(parseInt(answerCardData.user.score))
     const [currentVote, setCurrentVote] = useState(Object.keys(answerCardData.voters).includes(user.uid) ? parseInt(answerCardData.voters[user.uid]) : 0)
@@ -39,7 +37,6 @@ const AnswerCard = ({ answerCardData, setDataPost }) => {
             axios.get(API_URL + `/posts/${idPost}`, { headers: { Authorization: "Bearer " + token } })
                 .then(res => { setDataPost(res.data) })
         }
-        
 
     }, [numberOfVotesUser])
 
@@ -50,7 +47,6 @@ const AnswerCard = ({ answerCardData, setDataPost }) => {
                 setNumberOfVotesAnswerd(res.data.voteAnswer)
                 setNumberOfVotesUser(res.data.authorScore)
                 setCurrentVote(type)
-        
     }
 
     return (
@@ -79,7 +75,7 @@ const AnswerCard = ({ answerCardData, setDataPost }) => {
                     fontSize=".75rem"
                     fontWeight="bold">
                     <Text >
-                        {`${answerCardData.user.userSlack} • ${formatDate(answerCardData.createdAt)}`}
+                        {`${answerCardData.user.userSlack} • ${answerCardData.createdAt}`}
                     </Text>
                     <Image w="1.4rem" alignSelf="flex-start"
                         src="https://i.postimg.cc/TwrFYv4p/image-30.png" alt="userImage" />

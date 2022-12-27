@@ -23,7 +23,7 @@ const Details = () => {
     const [loading, setLoading] = useState(true)
     
     useEffect(() => {
-        
+    
         const getPost = async () => {
 
             const res = await
@@ -52,7 +52,16 @@ const Details = () => {
                 minH="70vh"
                 gap="1rem">
                 {
-                loading? "cargando" : <><MainDetails dataPost={dataPost} setDataPost={setDataPost} votingData={votingData} setVotingData={setVotingData} userScore={dataPost.post.user.score}/> <Answers dataPost={dataPost} setDataPost={setDataPost} /></>
+                loading? "cargando" 
+                          : 
+                          <>
+                            <MainDetails dataPost={dataPost} 
+                                        setDataPost={setDataPost} 
+                                        votingData={votingData} 
+                                        setVotingData={setVotingData} 
+                                        userScore={dataPost.post.user.score}/> 
+                            <Answers dataPost={dataPost} setDataPost={setDataPost} />
+                           </>
                 }
             </Flex>
             <Footer />
