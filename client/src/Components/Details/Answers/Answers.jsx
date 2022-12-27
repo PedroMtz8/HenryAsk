@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react'
 import AnswerCard from './AnswerCard'
 
-const Answers = () => {
+const Answers = ({ dataPost, setDataPost }) => {
 
     const { user } = useAuth();
     let token = user.accessToken
@@ -28,12 +28,13 @@ const Answers = () => {
             const res = await
                 axios.get(API_URL + `/answer/post?page=${responseData.answersPage}&sort=${responseData.answersSort}&post_id=${idPost}`, { headers: { Authorization: "Bearer " + token } })
 
+
             setResponseData({ ...responseData, answersArr: res.data.foundAnswers, maxPages: res.data.maxPages })
         }
 
         getAnswers()
 
-    }, [responseData.answersPage, responseData.answersSort]);
+    }, [responseData.answersPage, responseData.answersSort, dataPost]);
 
     const clickButtonNumbers = (e) => {
 
@@ -49,6 +50,14 @@ const Answers = () => {
         }
     }
 
+    const mapCards = (arrRes) => {      
+
+       let arr = arrRes.answersArr.map((dataCard, i) => <AnswerCard key={i}
+                                answerCardData={dataCard} setDataPost={setDataPost} />)
+        
+        return arr;
+    }
+
     return (
         <>
             <Flex position="relative"
@@ -57,7 +66,7 @@ const Answers = () => {
                 w="80%"
             >
                 <Text color="white">
-                    Respuestas: (5)
+                    Respuestas: {`(${dataPost.post.numberAnswers})`}
                 </Text>
                 <Flex position="relative"
                     w="50%"
@@ -93,15 +102,15 @@ const Answers = () => {
                     w="80%"
                     mb="1rem"
                     gap="1rem">
-                    <Flex
-                        alignItems="flex-start"
+                    <Flex flexDir="column"
+                        alignItems="center"
                         minH="10rem"
                         p="1%"
                         bg="#F2F2F2"
                         borderRadius="md"
                         fontWeight="semibold"
                         gap="2%">
-                        {responseData.answersArr.map(elem => <AnswerCard />)}
+                        {mapCards(responseData)}
                     </Flex>
                     <HStack spacing={2} alignSelf="center">
                         <Button name={'<'} onClick={clickSideButtons} > {'<'} </Button>

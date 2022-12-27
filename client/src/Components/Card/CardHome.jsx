@@ -12,18 +12,17 @@ import {Link} from 'react-router-dom'
 import React from "react";
 import { ChatIcon } from "@chakra-ui/icons";
 
+export const formatDate = (date) => {
+
+  const arrDate = date.split('-')
+
+  const arrTime = arrDate[2].split('T')
+
+  return arrTime[1].slice(0, 8) + ' ' + arrTime[0] + '-' + arrDate[1] + '-' + arrDate[0] 
+
+}
+
 const CardHome = ({ cardData }) => {
-
-  const formatDate = (date) => {
-
-    const arrDate = date.split('-')
-
-    const arrTime = arrDate[2].split('T')
-
-    return arrTime[1].slice(0, 8) + ' ' + arrTime[0] + '-' + arrDate[1] + '-' + arrDate[0] 
-
-  }
-
 
   return (
     <Card position="relative"

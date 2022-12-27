@@ -19,16 +19,20 @@ const Details = () => {
     const idPost = useParams().id
 
     const [dataPost, setDataPost] = useState(undefined);
+    const [votingData, setVotingData] = useState(0);
     const [loading, setLoading] = useState(true)
-
+    
     useEffect(() => {
-
+        
         const getPost = async () => {
 
             const res = await
                 axios.get(API_URL + `/posts/${idPost}`, { headers: {Authorization: "Bearer " + token }})
 
             setDataPost(res.data)
+            
+            Object.keys(res.data.post.voters).includes(user.email) && setVotingData(parseInt(res.data.post.voters[user.email]))
+
             setLoading(false)
             
         }
@@ -48,7 +52,7 @@ const Details = () => {
                 minH="70vh"
                 gap="1rem">
                 {
-                loading? "cargando" : <><MainDetails dataPost={dataPost}/> <Answers /></>
+                loading? "cargando" : <><MainDetails dataPost={dataPost} setDataPost={setDataPost} votingData={votingData} setVotingData={setVotingData} userScore={dataPost.post.user.score}/> <Answers dataPost={dataPost} setDataPost={setDataPost} /></>
                 }
             </Flex>
             <Footer />
