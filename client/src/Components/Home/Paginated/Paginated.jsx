@@ -24,7 +24,7 @@ const Paginated = () => {
 
     useEffect(() => {
 
-        const aFun = async () => {
+        const getPosts = async () => {
 
             const res = await
                 axios.get(API_URL + `/posts?page=${paginated.currentPage}&q=${paginated.titleFilter}&module=${paginated.moduleFilter}&tags=${paginated.tagsFilter}&sort=${paginated.order}`, 
@@ -35,7 +35,7 @@ const Paginated = () => {
             setLoadingPosts(false);
         }
 
-        aFun();
+        getPosts();
 
     }, [paginated.currentPage, paginated.moduleFilter, paginated.tagsFilter, paginated.order, paginated.titleFilter ])
 
