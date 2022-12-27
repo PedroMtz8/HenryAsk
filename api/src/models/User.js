@@ -24,6 +24,7 @@ const schema = new Schema({
         default: 'Estudiante'
     },
     score: { type: Number, default: 0 },
+    avatar: { type: String, default: 'https://firebasestorage.googleapis.com/v0/b/henry-ask-ad0f8.appspot.com/o/avatar%20default%2Favatar.jpg?alt=media&token=2297bfa3-3530-4aef-ad76-a718ea3fa93f' },
 })
 
 module.exports = model('User', schema)
