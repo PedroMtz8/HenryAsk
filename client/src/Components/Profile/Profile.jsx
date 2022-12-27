@@ -16,11 +16,14 @@ import NavBar from "../NavBar/NavBar";
 import CardProfile from "./Card Profile/CardProfile";
 import Footer from "../Footer/Footer";
 import { useEffect } from "react";
-import axios from "axios";
 import { useAuth } from "../AuthComponents/AuthContext";
 import { useSelector, useDispatch } from "react-redux";
 import { getUserQuestions } from "../../slices/userSlice";
-import { getUserData } from "../../slices/userSlice";
+import Admin from "../../assets/Rol Images/Administrador.png"
+import Graduate from "../../assets/Rol Images/Graduate.png"
+import Student from "../../assets/Rol Images/Students.png"
+import HeroOrTA from "../../assets/Rol Images/Hero,TA.png"
+
 
 let examplePost = [
     { title: "Como hacer un map", body: "No entiendo como hacer un map con el metodo map...", _id: "43971" },
@@ -41,9 +44,19 @@ const Profile = () => {
     const [answers, setanswers] = useState(examplePost)
     const [file, setFile] = useState(null)
     const [photo, setPhoto] = useState(null)
+    const [ rolImg, setRolImg ] = useState()
 
     const userData = useSelector(state => state.user.user)
     const myQuestions = useSelector(state => state.user.userQuestions)
+
+
+    const defineRolImg = (user) => {
+        if(user.rol === "Administrador") setRolImg(Admin)
+        if(user.rol === "Estudiante") setRolImg(Student)
+        if(user.rol === "Graduado") setRolImg(Graduate)
+        if(user.rol === "TA" || user.rol === "Hero") setRolImg(HeroOrTA)
+    }
+
 
     const indexOfLast = page * 6
     const indexFirst = indexOfLast - 6
@@ -70,8 +83,8 @@ const Profile = () => {
     }
 
     useEffect(() => {
-        /* dispatch(getUserData(user.accessToken)) */
         dispatch(getUserQuestions(user.accessToken, user.uid, page))
+        defineRolImg(userData)
     }, [])
 
     return(
@@ -88,7 +101,7 @@ const Profile = () => {
                                 <Box
                                     width={"100px"}
                                     h={"100px"}
-                                    backgroundImage={`url(${photo})`}
+                                    backgroundImage={userData.avatar}
                                     backgroundSize={"contain"}
                                     backgroundRepeat={"no-repeat"}
                                     backgroundPosition={"center"}
@@ -115,8 +128,8 @@ const Profile = () => {
                                     <Text  >{userData?.country}</Text>
                                 </Box>
                                 <Box display={"inline-flex"} alignItems={"center"} justifyContent={{ base: "center", md: "start", lg: "start" }} gap={2}>
-                                    <Img src="https://cdn-icons-png.flaticon.com/512/3176/3176294.png" w={"16px"} h={"16px"} />
-                                    <Text > {userData?.rol} </Text>
+                                    <Img src={rolImg} w={"24px"} h={"24px"} ml={-0.5} />
+                                    <Text ml={-1} > {userData?.rol} </Text>
                                 </Box>
                                 <Box display={"inline-flex"} alignItems={"center"} justifyContent={{ base: "center", md: "start", lg: "start" }} gap={2}>
                                     <Img src="https://cdn-icons-png.flaticon.com/512/2720/2720867.png" w={"16px"} h={"16px"} />
