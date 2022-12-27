@@ -15,7 +15,9 @@ import {
     Image,
     InputGroup,
     InputRightElement,
-    useToast
+    useToast,
+    Center,
+    Box
 } from '@chakra-ui/react'
 import { CheckCircleIcon, InfoIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { useNavigate } from 'react-router-dom'
@@ -29,6 +31,7 @@ const FormRegister = () => {
     const navigate = useNavigate()
     const toast = useToast()
     const { signup, signout, updateUsername, user } = useAuth()
+    const [emailError, setEmailError] = useState(false)
 
     const [infoUser, setInfoUser] = useState({
         userSlack: "",
@@ -116,8 +119,8 @@ const FormRegister = () => {
             await updateUsername(res.user, infoUser.userSlack)
             console.log("Logeo", res)
             toast({
-                title: "Registered Successfully",
-                description: "You will have to wait for your account to be approved",
+                title: "Registro exitoso",
+                description: "Tendrás que esperar a que tu cuenta sea aprobada para poder ingresar, se te notificará por mail",
                 status: "success",
                 duration: 6000,
                 isClosable: true,
@@ -128,13 +131,14 @@ const FormRegister = () => {
 
         }
         catch (error) {
-            if (error.message.includes("already")) return toast({
+            if (error) setEmailError(true) /* toast({
                 description: "Email already in use",
                 status: "error",
                 duration: 3000,
                 isClosable: true,
                 position: "top"
-            })
+            }) */
+            else setEmailError(false)
 
             if (error.message.includes("Password")) {
                 toast({
@@ -244,6 +248,18 @@ const FormRegister = () => {
                         >
                             Registrame
                         </Button>
+
+                        {
+                            emailError ? 
+                            <Center>
+                                    <Box border={"2px solid red"} color={"red"} w={"90%"} borderRadius={"5px"} p={"5px"} textAlign="center">
+                                        <Text>Ya existe un usuario con ese email</Text>
+                                    </Box>
+                                </Center>
+                                :
+                                null
+                        }
+
                         <HStack justifyContent="flex-start"
                             gap={"0.2rem"}
                             fontSize=".9rem">
