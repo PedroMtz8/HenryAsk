@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
     Flex,
     Text,
@@ -8,8 +9,51 @@ import {
 } from '@chakra-ui/react'
 import { TriangleUpIcon, TriangleDownIcon } from '@chakra-ui/icons'
 import Editor from '../../DetailBody/DetailBody'
+import { formatDate } from '../../Card/CardHome'
+import axios from "axios";
+import { useAuth } from "../../AuthComponents/AuthContext"
+import API_URL from "../../../config/environment"
+import { useParams } from "react-router-dom";
+import { useEffect } from 'react'
 
-const MainDetails = ({ dataPost }) => {
+const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userScore }) => {
+
+    const { user } = useAuth();
+    let token = user.accessToken;
+    const idPost = useParams().id;
+
+    const [numberOfVotesPost, setNumberOfVotes] = useState(parseInt(dataPost.post.score))
+    const [numberOfVotesUser, setNumberOfVotesUser] = useState(parseInt(dataPost.post.user.score))
+
+    useEffect(() => {
+
+        if (numberOfVotesUser !== dataPost.post.user.score){
+            
+            axios.get(API_URL + `/posts/${idPost}`, { headers: {Authorization: "Bearer " + token }})
+        .then(res => {setDataPost(res.data)})
+        
+        }
+
+    }, [numberOfVotesUser])
+
+    const votePost = async (type) => {
+
+        if (votingData !== type) {
+            const res = await
+                axios.put(API_URL + `/posts/${type}`, { post_id: idPost }, { headers: { Authorization: "Bearer " + token } })
+            setVotingData(type)
+            setNumberOfVotes(numberOfVotesPost + type + (votingData !== 0 ? type : 0))
+            setNumberOfVotesUser(numberOfVotesUser + type + (votingData !== 0 ? type : 0))
+
+        } else {
+            const res = await
+                axios.put(API_URL + `/posts/0`, { post_id: idPost }, { headers: { Authorization: "Bearer " + token } })
+            setVotingData(0)
+            setNumberOfVotes(numberOfVotesPost - type)
+            setNumberOfVotesUser(numberOfVotesUser - type)
+        }
+
+    }
 
     return (
         <>
@@ -33,10 +77,20 @@ const MainDetails = ({ dataPost }) => {
                         h="5rem"
                         borderRadius="5rem"
                     />
-                    <Stack fontSize="2rem">
-                        <TriangleUpIcon />
-                        <Text>20</Text>
-                        <TriangleDownIcon />
+                    <Stack fontSize="2rem" align="center">
+                        {user.email !== dataPost.post.user.email &&
+                            <TriangleUpIcon
+                                color={votingData === 1 ? "green" : "gray"}
+                                onClick={e => votePost(1)} />
+                        }
+                        <Text>
+                            {numberOfVotesPost}
+                        </Text>
+                        {user.email !== dataPost.post.user.email &&
+                            <TriangleDownIcon
+                                color={votingData === -1 ? "red" : "gray"}
+                                onClick={e => votePost(-1)} />
+                        }
                     </Stack>
                 </Flex>
                 <Flex flexDir="column"
@@ -47,11 +101,11 @@ const MainDetails = ({ dataPost }) => {
                     <Stack spacing={4}>
                         <Flex gap=".5rem" fontSize=".8rem">
                             <Text >
-                                {dataPost.post.user.userSlack} • {dataPost.post.createdAt}
+                                {dataPost.post.user.userSlack} • {formatDate(dataPost.post.createdAt)}
                             </Text>
                             <Image w="1.4rem" alignSelf="flex-start"
                                 src="https://i.postimg.cc/TwrFYv4p/image-30.png" alt="userImage" />
-                            {dataPost.post.score}
+                            {userScore}
                         </Flex>
                         <Heading fontSize="1.2rem" as="h2">
                             {dataPost.post.title}
@@ -59,7 +113,7 @@ const MainDetails = ({ dataPost }) => {
                         <Editor body={dataPost.post.body} />
                     </Stack>
                     <Flex justifyContent="space-between">
-                        <Text>Comentarios: (5) <TriangleDownIcon /></Text>
+                        <Text>Respuestas: {`(${dataPost.post.numberAnswers})`} <TriangleDownIcon /></Text>
                         <Flex gap="1rem" mr="2%">
                             {
                                 dataPost.post.tags.map((e, i) =>
