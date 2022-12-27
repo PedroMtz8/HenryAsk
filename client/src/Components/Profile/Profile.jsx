@@ -141,7 +141,7 @@ const Profile = () => {
                                     <SimpleGrid columns={{ base: 1, md: 2, lg: 2 }} gap={4} mt={"10px"}>
                                     {
                                             myQuestions ? myQuestions.map((q, i) => {
-                                                return <CardProfile title={q.title} description={q.body} key={i} />
+                                                return <CardProfile title={q.title} description={q.body} id={q._id} key={i} />
                                             }) : null
 
                                     }
