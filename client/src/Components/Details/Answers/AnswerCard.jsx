@@ -1,3 +1,5 @@
+import { useState,useEffect } from 'react'
+import { useParams } from 'react-router-dom';
 import {
     Grid,
     GridItem,
@@ -7,8 +9,45 @@ import {
     Text
 } from "@chakra-ui/react";
 import { TriangleUpIcon, TriangleDownIcon } from "@chakra-ui/icons";
+import axios from "axios";
+import { useAuth } from "../../AuthComponents/AuthContext"
+import API_URL from "../../../config/environment"
 
-const AnswerCard = () => {
+const AnswerCard = ({ answerCardData, setDataPost }) => {
+
+    const { user } = useAuth();
+    let token = user.accessToken
+    const idPost = useParams().id;
+    
+    const [numberOfVotesAnswerd, setNumberOfVotesAnswerd] = useState(parseInt(answerCardData.score))
+    const [numberOfVotesUser, setNumberOfVotesUser] = useState(parseInt(answerCardData.user.score))
+    const [currentVote, setCurrentVote] = useState(Object.keys(answerCardData.voters).includes(user.uid) ? parseInt(answerCardData.voters[user.uid]) : 0)
+
+    useEffect(() => {
+
+        setNumberOfVotesAnswerd(parseInt(answerCardData.score))
+        setNumberOfVotesUser(parseInt(answerCardData.user.score))
+        setCurrentVote(Object.keys(answerCardData.voters).includes(user.uid) ? parseInt(answerCardData.voters[user.uid]) : 0)
+
+    }, [answerCardData])
+
+    useEffect(() => {
+
+        if(numberOfVotesUser !== parseInt(answerCardData.user.score)) {
+            axios.get(API_URL + `/posts/${idPost}`, { headers: { Authorization: "Bearer " + token } })
+                .then(res => { setDataPost(res.data) })
+        }
+
+    }, [numberOfVotesUser])
+
+    const voteAnswer = async (type) => {
+
+        const res = await
+                axios.put(API_URL + `/answer/${type}`, { answer_id: answerCardData._id }, { headers: { Authorization: "Bearer " + token } })
+                setNumberOfVotesAnswerd(res.data.voteAnswer)
+                setNumberOfVotesUser(res.data.authorScore)
+                setCurrentVote(type)
+    }
 
     return (
         <Grid position="relative"
@@ -36,26 +75,30 @@ const AnswerCard = () => {
                     fontSize=".75rem"
                     fontWeight="bold">
                     <Text >
-                        {`userSlack • fecha`}
+                        {`${answerCardData.user.userSlack} • ${answerCardData.createdAt}`}
                     </Text>
                     <Image w="1.4rem" alignSelf="flex-start"
                         src="https://i.postimg.cc/TwrFYv4p/image-30.png" alt="userImage" />
                     <Text >
-                        392492393492
+                        {numberOfVotesUser}
                     </Text>
                 </Flex>
                 <Heading size="sm">
-                    Titulo comentario
+                    {answerCardData.title}
                 </Heading>
                 <Text>
-                    Body comentario
+                    {answerCardData.body}
                 </Text>
             </GridItem>
             <GridItem rowSpan={2} colSpan={1} align="center"
                 fontSize="2rem">
-                <TriangleUpIcon />
-                <Text>20</Text>
-                <TriangleDownIcon />
+                <TriangleUpIcon
+                            color={currentVote === 1 ? "green" : "gray"}
+                            onClick={e => currentVote === 1 ? voteAnswer(0) : voteAnswer(1)} />
+                <Text>{numberOfVotesAnswerd}</Text>
+                <TriangleDownIcon
+                            color={currentVote === -1 ? "red" : "gray"}
+                            onClick={e => currentVote === -1 ? voteAnswer(0) : voteAnswer(-1)} />
             </GridItem>
         </Grid>
     )
