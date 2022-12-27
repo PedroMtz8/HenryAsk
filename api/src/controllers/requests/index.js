@@ -1,5 +1,8 @@
 const Request = require('../../models/Request')
 const User = require('../../models/User')
+const nodemailer = require('nodemailer')
+const hbs = require('nodemailer-handlebars');
+const path = require('path')
 
 const createRegisterRequest = async (req, res) => {
     const { rol } = req.body
@@ -28,21 +31,61 @@ const createRolRequest = async (req, res) => {
 }
 
 const completeRegisterRequest = async (req, res) => {
-    const { rid, uid, approve } = req.body
+    const { rid, approve, reason } = req.body
     try {
         const request = await Request.findById(rid)
         if (!request) return res.status(404).json({ message: 'Pedido no existe o ya fue completado' })
-        request.remove()
-        await request.save()
+        const user = await User.findById(request.user)
+        let response = ''
+
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            port: 456,
+            secure: true,
+            auth: {
+                user: "henryask.soporte@gmail.com",
+                pass: process.env.AUTH_PASSWORD,
+            },
+            from: "henryask.soporte@gmail.com"
+        });
+
+        transporter.use('compile', hbs({
+            viewEngine: {
+                extName: ".handlebars",
+                partialsDir: path.resolve('./src/mails/'),
+                defaultLayout: false,
+            },
+            viewPath: path.resolve('./src/mails/'),
+            extName: ".handlebars",
+        }));
+
+        let mailOptions = {
+            from: '"Henry Ask" <henryask.support@gmail.com>',
+            to: `${user.mail}`,
+            subject: "Verificacion de cuenta",
+            text: `Verificacion de cuenta`,
+        };
 
         if (!approve) {
-            return res.json({ message: 'Peticion rechazada!' })
+            mailOptions.template = 'registerR'
+            mailOptions.context = { reason }
+            response = { message: 'Peticion rechazada!' }
         }
 
         else {
-            const updatedUser = await User.findByIdAndUpdate(uid, { rol: request.rol, status: 'Aprobado' }, { new: true })
-            res.json({ message: 'Usuario aprobado!', user: updatedUser })
+            mailOptions.template = 'registerA'
+            const updatedUser = await User.findByIdAndUpdate(request.user, { rol: request.rol, status: 'Aprobado' }, { new: true })
+            response = { message: 'Usuario aprobado!', user: updatedUser }
         }
+
+
+        transporter.sendMail(mailOptions, async function (e) {
+            if (e) return res.status(500).json({ messsage: e.message });
+            else {
+                await request.remove()
+                return res.json(response)
+            }
+        });
 
     } catch (error) {
         res.json({ message: error.message })
@@ -50,21 +93,61 @@ const completeRegisterRequest = async (req, res) => {
 }
 
 const completeRolRequest = async (req, res) => {
-    const { rid, uid, approve } = req.body
+    const { rid, approve, reason } = req.body
     try {
         const request = await Request.findById(rid)
         if (!request) return res.status(404).json({ message: 'Pedido no existe o ya fue completado' })
-        request.remove()
-        await request.save()
+        const user = await User.findById(request.user)
+        let response = ''
+
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            port: 456,
+            secure: true,
+            auth: {
+                user: "henryask.soporte@gmail.com",
+                pass: process.env.AUTH_PASSWORD,
+            },
+            from: "henryask.soporte@gmail.com"
+        });
+
+        transporter.use('compile', hbs({
+            viewEngine: {
+                extName: ".handlebars",
+                partialsDir: path.resolve('./src/mails/'),
+                defaultLayout: false,
+            },
+            viewPath: path.resolve('./src/mails/'),
+            extName: ".handlebars",
+        }));
+
+        let mailOptions = {
+            from: '"Henry Ask" <henryask.support@gmail.com>',
+            to: `${user.mail}`,
+            subject: "Cambio de rol",
+            text: `Cambio de rol`,
+        };
 
         if (!approve) {
-            return res.json({ message: 'Peticion rechazada!' })
+            mailOptions.template = 'rolR'
+            mailOptions.context = { reason }
+            response = { message: 'Peticion rechazada!' }
         }
 
         else {
-            const updatedUser = await User.findByIdAndUpdate(uid, { rol: request.rol }, { new: true })
-            res.json({ message: 'Rol cambiado!', user: updatedUser })
+            mailOptions.template = 'rolA'
+            mailOptions.context = { rol: request.rol }
+            const updatedUser = await User.findByIdAndUpdate(request.user, { rol: request.rol }, { new: true })
+            response = { message: 'Rol cambiado!', user: updatedUser }
         }
+
+        transporter.sendMail(mailOptions, async function (e) {
+            if (e) return res.status(500).json({ messsage: e.message });
+            else {
+                await request.remove()
+                return res.json(response)
+            }
+        });
 
     } catch (error) {
         res.json({ message: error.message })
