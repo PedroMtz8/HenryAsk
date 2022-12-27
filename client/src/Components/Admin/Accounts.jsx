@@ -1,5 +1,5 @@
 import { Button, Flex, Grid } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import {
   Table,
@@ -13,8 +13,31 @@ import {
 } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import SearchbarAdmin from "./SearchbarAdmin";
+import { useAuth } from "../AuthComponents/AuthContext";
+import axios from "axios";
 
 const Accounts = () => {
+  const dispatch = useDispatch();
+  const { user } = useAuth();
+  let token = user.accessToken;
+  const accounts = useSelector((state) => state.user);
+
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const getUsers = async () => {
+      const { data } = await axios.get(
+        `http://localhost:3001/auth/users?page=${accounts.currentPage}`,
+        { headers: { Authorization: "Bearer " + token } }
+      );
+      setUsers(data.foundUsers);
+      return users;
+    };
+    getUsers();
+  }, []);
+
+  console.log("estos usuarios", users);
+
   return (
     <Flex>
       <Sidebar />
@@ -28,9 +51,6 @@ const Accounts = () => {
           <Table variant="striped" colorScheme="blackAlpha" size="lg">
             <Thead backgroundColor="#ffff01" textAlign="center">
               <Tr>
-                <Th textAlign="center" isNumeric>
-                  ID
-                </Th>
                 <Th textAlign="center">Usuario</Th>
                 <Th textAlign="center">Email</Th>
                 <Th textAlign="center">Rol</Th>
@@ -40,36 +60,25 @@ const Accounts = () => {
               </Tr>
             </Thead>
             <Tbody>
-              <Tr textAlign="center">
-                <Td textAlign="center" isNumeric>
-                  1
-                </Td>
-                <Td textAlign="center">Jorge123</Td>
-                <Td textAlign="center">Jorge123@gmail.com</Td>
-                <Td textAlign="center">Estudiante</Td>
-                <Td textAlign="center">Registro</Td>
-                <Td textAlign="center">Pendiente</Td>
-                <Td>
-                  <Button mr="3px" colorScheme="green">
-                    Aceptar
-                  </Button>
-                  <Button colorScheme="red">Denegar</Button>
-                </Td>
-              </Tr>
-              <Tr textAlign="center">
-                <Td isNumeric>2</Td>
-                <Td>Amanda123</Td>
-                <Td>Amanda123@gmail.com</Td>
-                <Td>Administrador</Td>
-                <Td>Cambio de rol</Td>
-                <Td>Aceptado</Td>
-                <Td>
-                  <Button mr="3px" colorScheme="green">
-                    Aceptar
-                  </Button>
-                  <Button colorScheme="red">Denegar</Button>
-                </Td>
-              </Tr>
+              {users.map((user) => (
+                <Tr textAlign="center">
+                  <Td textAlign="center"> {user.userSlack} </Td>
+                  <Td textAlign="center"> {user.mail} </Td>
+                  <Td textAlign="center"> {user.rol} </Td>
+                  <Td textAlign="center">Registro</Td>
+                  <Td textAlign="center"> {user.status} </Td>
+                  {user.status === "Esperando" ? (
+                    <Td>
+                      <Button mr="3px" colorScheme="green">
+                        Aceptar
+                      </Button>
+                      <Button colorScheme="red">Denegar</Button>
+                    </Td>
+                  ) : (
+                    <Td textAlign="center">---</Td>
+                  )}
+                </Tr>
+              ))}
             </Tbody>
           </Table>
         </TableContainer>
