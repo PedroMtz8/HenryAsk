@@ -164,7 +164,7 @@ const voteAnswer = async (req, res) => {
 
         await votedAnswer.save()
         await author.save() //actualizo la puntuacion de autor de la respuesta
-        res.json({ message })
+        res.json({ message, authorScore: author.score, voteAnswer: votedAnswer.score })
     } catch (error) {
         res.json({ message: error.message })
     }
