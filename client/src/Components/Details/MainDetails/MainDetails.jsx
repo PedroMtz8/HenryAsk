@@ -17,7 +17,7 @@ const MainDetails = ({ dataPost }) => {
                 alignItems="flex-start"
                 w="80%"
                 minH="10rem"
-                my="3rem"
+                mt="3rem"
                 p="1%"
                 bg="#F2F2F2"
                 borderRadius="md"
