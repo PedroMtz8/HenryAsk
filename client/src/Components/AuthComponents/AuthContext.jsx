@@ -37,12 +37,6 @@ const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     let user = await signInWithEmailAndPassword(auth, email, password)
-    const token = await user.user.getIdToken() //devuelve el token de acceso, si existe uno pero vencio, lo refresca
-    const result = await axios.get(`${API_URL}/auth/status`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
   }
 
   function forgotPasswordFunction(email) {
