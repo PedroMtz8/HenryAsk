@@ -164,10 +164,13 @@ button:disabled {
         margin-bottom: 5px;
         margin-left: 5px;
         margin-right: 5px;
+        overflow: auto;
+        white-space: pre !important;
 
         code {
             color: inherit;
             padding: 0;
+            width: 100%;
             background: none;
             font-size: 0.8rem;
         }

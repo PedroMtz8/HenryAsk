@@ -99,7 +99,7 @@ export default function QuestionModal({ title }) {
         size={"full"}
       >
         <ModalOverlay />
-        <ModalContent w={"80vw"}>
+        <ModalContent w={{ sm: "100vw", md: "90vw", lg: '80vw' }}>
           <ModalHeader></ModalHeader>
           <ModalCloseButton _hover={{ background: "tomato" }} />
           <ModalBody pb={6}>
@@ -198,8 +198,11 @@ function TagsInput({ post, setPost }) {
   return (
     <Flex
       border={"1px solid black"}
-      h={"50px"}
+      minHeight={'50px'}
+      h={"auto"}
       alignItems="center"
+      wrap={'wrap'}
+      w={'100%'}
     >
       {post.tags.map((tag, index) => (
         <Flex
@@ -207,7 +210,9 @@ function TagsInput({ post, setPost }) {
           alignItems="center"
           borderRadius={"15px"} p={"10px"}
           key={index}
-          marginLeft={"10px"}>
+          margin={'5px'}
+        >
+
           <Text marginRight={"5px"} >{tag}</Text>
           <Box
             bgColor={"black"}
@@ -224,8 +229,11 @@ function TagsInput({ post, setPost }) {
       }
       <Input
         alignSelf={"center"}
-        border="none"
+        border={"none"}
+        outline={'none'}
         marginLeft={"15px"}
+        focusBorderColor={"transparent"}
+        paddingInlineStart={0}
         borderRadius={"none"} w={"200px"} h={"30px"} type="text" onKeyUp={handleKeyDown} placeholder="REACT JAVASCRIPT..." />
     </Flex >
   )
