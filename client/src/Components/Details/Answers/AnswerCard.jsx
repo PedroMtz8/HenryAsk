@@ -20,9 +20,6 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
     let token = user.accessToken
     const idPost = useParams().id;
 
-    console.log(answerCardData)
-    console.log(user)
-
     const [numberOfVotesAnswerd, setNumberOfVotesAnswerd] = useState(parseInt(answerCardData.score))
     const [numberOfVotesUser, setNumberOfVotesUser] = useState(parseInt(answerCardData.user.score))
     const [currentVote, setCurrentVote] = useState(Object.keys(answerCardData.voters).includes(user.uid) ? parseInt(answerCardData.voters[user.uid]) : 0)
@@ -103,19 +100,13 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
                 </GridItem>
                 <GridItem rowSpan={2} colSpan={1} align="center"
                     fontSize="2rem">
-                    {/* {user.email !== dataPost.post.user.email &&
-                        <TriangleUpIcon
-                            color={votingData === 1 ? "green" : "gray"}
-                            onClick={e => currentVote === 1 ? voteAnswer(0) : voteAnswer(1)} />
-
-                    } */}
                     <TriangleUpIcon
                         color={currentVote === 1 ? "green" : "gray"}
-                        onClick={e => currentVote === 1 ? voteAnswer(0) : voteAnswer(1)} />
+                        onClick={e => (user.uid !== answerCardData.user._id)? (currentVote === 1 ? voteAnswer(0) : voteAnswer(1)): null} />
                     <Text>{numberOfVotesAnswerd}</Text>
                     <TriangleDownIcon
                         color={currentVote === -1 ? "red" : "gray"}
-                        onClick={e => currentVote === -1 ? voteAnswer(0) : voteAnswer(-1)} />
+                        onClick={e => (user.uid !== answerCardData.user._id)? (currentVote === -1 ? voteAnswer(0) : voteAnswer(-1)): null} />
                 </GridItem>
             </Grid>
             <Flex position="relative"
