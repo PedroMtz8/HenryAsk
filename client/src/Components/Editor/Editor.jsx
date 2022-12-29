@@ -1,5 +1,4 @@
 import './editorStyles.scss'
-
 import { EditorContent, useEditor } from '@tiptap/react'
 import TextAlign from '@tiptap/extension-text-align'
 import StarterKit from '@tiptap/starter-kit'
