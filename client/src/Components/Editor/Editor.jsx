@@ -17,21 +17,62 @@ import image from '../../assets/image.png'
 import { RiArrowGoBackLine } from "react-icons/ri"
 import { RiArrowGoForwardFill } from "react-icons/ri"
 import { useAuth } from '../AuthComponents/AuthContext'
+import { useSelector } from 'react-redux'
+import { useEffect } from 'react'
 
 
 const MenuBar = ({ editor }) => {
     const hiddenFileInput = useRef(null);
     const { user, uploadFile } = useAuth()
+    const [ file, setFile ] = useState(null)
+    const [ preview, setPreview ] = useState(null)
+    const userData = useSelector(state => state.user.user)
 
-    const handleChange = event => {
-        const fileUploaded = event.target.files[0];
-        uploadFile(fileUploaded, user.uid).
-            then(url => {
-                editor.chain().focus().setImage({ src: url, alt: 'Imagen no encontrada :(' }).run()
-            })
+    
+    const handleChange = async e => {
+        /* const fileUploaded = e.target.files[0];
+        await settingFile(fileUploaded) */
+        if(e.target.files && e.target.files.length > 0){
+            /* let reader = new FileReader()
+            reader.readAsDataURL(e.target.files[0])
+            console.log("otro reader: ", reader)
+            reader.addEventListener("loadend", ()=>{
+                console.log("console log del reader",reader)
+                setFile(reader.result)
+            }) */
+            setFile(e.target.files[0])
+        }
+        console.log(file)
+        /* await settingFile() */
+        /* uploadFile(fileUploaded, user.uid, user.uid).
+        then(url => {
+            editor.chain().focus().setImage({ src: fileUploaded, alt: 'Imagen no encontrada :(' }).run()
+        }) */
     };
+    
+    
+    async function settingFile(){
+       await editor.chain().focus().setImage({src: preview, alt: "Imagen no encontrada :("}).run()
+    }
+        useEffect(()=>{
+            if(file){
+                // ESTO GENERA UN LECTOR DE ARCHIVOS
+                const reader = new FileReader()
+                // CUANDO EL ARCHIVO CARGA LO SETEA EN EL ESTADO
+                reader.onloadend = () => {
+                    setPreview(reader.result)
+                }
+                // ESTO HACE QUE SE PUEDA LEER
+                reader.readAsDataURL(file)
+                // POR ULTIMO HACE QUE SE SETEE LA IMAGEN EN EL INPUT DEL EDITOR
+                settingFile()
+            }else{
+                setPreview(null)
+            }
 
-    if (!editor) {
+        }, [file])
+        
+        if (!editor) {
         return null
     }
 
@@ -52,7 +93,7 @@ const MenuBar = ({ editor }) => {
                     }
                     className={editor.isActive('bold') ? 'is-active' : 'is-inactive'}
                 >
-                    <strong>N</strong>
+                    <strong>B</strong>
                     <span className='popup'>Negrita (Ctrl+B)</span>
                 </button>
                 <button
@@ -123,6 +164,16 @@ const MenuBar = ({ editor }) => {
                 >
                     {'</>'}
                     <span className='popup'>Código (Ctrl+E)</span>
+                </button>
+                <button
+                    onClick={(e) => {
+                        e.preventDefault()
+                        editor.chain().focus().toggleCodeBlock().run()
+                    }}
+                    className={editor.isActive('codeBlock') ? 'is-active-img' : 'img'}
+                >
+                    <img src={codeBlock} alt="" style={{ minWidth: '21.6px', width: '21.6px' }} />
+                    <span className='popup'>Bloque de código (Ctrl+Alt+C)</span>
                 </button>
                 <button onClick={(e) => {
                     e.preventDefault()
@@ -223,16 +274,6 @@ const MenuBar = ({ editor }) => {
                 <button
                     onClick={(e) => {
                         e.preventDefault()
-                        editor.chain().focus().toggleCodeBlock().run()
-                    }}
-                    className={editor.isActive('codeBlock') ? 'is-active-img' : 'img'}
-                >
-                    <img src={codeBlock} alt="" style={{ minWidth: '21.6px', width: '21.6px' }} />
-                    <span className='popup'>Bloque de código (Ctrl+Alt+C)</span>
-                </button>
-                <button
-                    onClick={(e) => {
-                        e.preventDefault()
                         editor.chain().focus().setTextAlign('left').run()
                     }}
                     className={editor.isActive({ textAlign: 'left' }) ? 'is-active-img' : 'img'}
@@ -312,7 +353,10 @@ const MenuBar = ({ editor }) => {
                     <img src={image} alt="" style={{ minWidth: '27px', width: '27px' }} />
                     <span className='popup'>Agregar imagen</span>
                 </button>
-                <input type="file" ref={hiddenFileInput} onChange={handleChange} style={{ display: 'none' }} accept="image/png, image/gif, image/jpeg" />
+                <input type="file" ref={hiddenFileInput} 
+                onChange={handleChange} 
+                style={{ display: 'none' }} 
+                accept="image/png, image/gif, image/jpeg" />
             </div>
         </div >
     )
@@ -342,7 +386,7 @@ export default ({ post, setPost, setBodyText }) => {
     return (
         <div>
             <MenuBar editor={editor} />
-            <EditorContent editor={editor} />
+            <EditorContent  editor={editor} />
         </div>
     )
 }

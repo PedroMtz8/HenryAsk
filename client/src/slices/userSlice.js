@@ -4,7 +4,6 @@ import API_URL from "../config/environment";
 
 const initialState = {
   user: {},
-  users: [],
   page: 1,
   userQuestions: [],
   userAnswers: [],
@@ -20,13 +19,21 @@ export const userSlice = createSlice({
     saveQuestions: (state, action) => {
       state.userQuestions = action.payload;
     },
+    saveAnswers: (state, action) => {
+      state.userAnswers = action.payload
+    },
+    updateUser: (state) => {
+      state = {...state}
+    }
   },
   extraReducers: (builder) => {},
 });
 
-export const { saveUser, saveQuestions } = userSlice.actions;
+export const { saveUser, saveQuestions, saveAnswers } = userSlice.actions;
 
 export default userSlice.reducer;
+
+
 
 // Son funciones que ejecutan las acciones, estas funciones traen la info y las setean en el estado
 
@@ -52,3 +59,21 @@ export const getUserQuestions = (token, userID, page) => async (dispatch) => {
     console.log(error);
   }
 };
+
+export const getUserAnswers = (token, userID, page) => async (dispatch) => {
+  try {
+    let answers = await axios(`${API_URL}/answer/user?page=${page}&user_id=${userID}`, { headers: { Authorization: "Bearer " + token }})
+    dispatch(saveAnswers(answers.data.foundAnswers))
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const updateUser = (token, avatar, country) => async (dispatch) => {
+  try {
+    let res = await axios.put(`${API_URL}/auth`, {avatar, country}, { headers: { Authorization: "Bearer " + token }})
+    dispatch(updateUser(res))
+  } catch (error) {
+    console.log(error)
+  }
+}
