@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 
-const SearchbarAdmin = () => {
+const SearchbarAdmin = ({ name, op1, op2 }) => {
   return (
     <div>
       <FormControl m="auto" fontSize=".9rem" mb="60px">
@@ -29,11 +29,11 @@ const SearchbarAdmin = () => {
             </InputRightElement>
           </InputGroup>
           <HStack w="32%">
-            <Text w="4rem">Petición:</Text>
+            <Text w="4rem"> {name}:</Text>
             <Select borderRadius="10rem">
               <option>----</option>
-              <option>Registro</option>
-              <option>Cambio de rol</option>
+              <option> {op1} </option>
+              <option> {op2} </option>
             </Select>
           </HStack>
           <HStack w="33%">

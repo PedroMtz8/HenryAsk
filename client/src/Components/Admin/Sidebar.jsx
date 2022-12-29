@@ -47,8 +47,8 @@ const Sidebar = () => {
         <NavItem
           navSize={navSize}
           icon={FiBriefcase}
-          title="Denuncias"
-          url="/admin/reports"
+          title="Peticiones"
+          url="/admin/requests"
         />
       </Flex>
 
