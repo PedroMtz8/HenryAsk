@@ -35,7 +35,7 @@ export default function NavBar() {
   const userData = useSelector((state) => state.user.user);
 
   const toast = useToast()
-  console.log(userData)
+ /*  console.log(userData) */
 
   const { user, signout } = useAuth();
 
