@@ -53,7 +53,6 @@ const Answers = ({ dataPost, setDataPost }) => {
 
        let arr = arrRes.answersArr.map((dataCard, i, arr) => <AnswerCard key={i}
                                 answerCardData={dataCard} setDataPost={setDataPost} finish={(i !== arr.length - 1)} />)
-        
         return arr;
     }
 

@@ -32,6 +32,7 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
         setNumberOfVotesUser(parseInt(answerCardData.user.score))
         setCurrentVote(Object.keys(answerCardData.voters).includes(user.uid) ? parseInt(answerCardData.voters[user.uid]) : 0)
         getComment()
+        
     }, [answerCardData])
 
     useEffect(() => {
@@ -166,7 +167,6 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
                     </>
                 }
             </Flex>
-
         </>
     )
 }
