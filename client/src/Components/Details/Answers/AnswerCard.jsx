@@ -4,7 +4,6 @@ import {
     Grid,
     GridItem,
     Flex,
-    Heading,
     Image,
     Text
 } from "@chakra-ui/react";
@@ -13,6 +12,7 @@ import axios from "axios";
 import { useAuth } from "../../AuthComponents/AuthContext"
 import API_URL from "../../../config/environment"
 import Comments from '../Comments/Comments';
+import DetailBody from '../../DetailBody/DetailBody';
 
 const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
 
@@ -32,7 +32,7 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
         setNumberOfVotesUser(parseInt(answerCardData.user.score))
         setCurrentVote(Object.keys(answerCardData.voters).includes(user.uid) ? parseInt(answerCardData.voters[user.uid]) : 0)
         getComment()
-        
+
     }, [answerCardData])
 
     useEffect(() => {
@@ -69,7 +69,7 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
                 (showComment)
                     ?
                     <Text>
-                         Mostrar menos {" "}
+                        Mostrar menos {" "}
                         <TriangleDownIcon
                             onClick={e => setShowComment(false)} />
                     </Text>
@@ -118,12 +118,7 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
                             {numberOfVotesUser}
                         </Text>
                     </Flex>
-                    <Heading size="sm">
-                        {answerCardData.title}
-                    </Heading>
-                    <Text>
-                        {answerCardData.body}
-                    </Text>
+                    <DetailBody body={answerCardData.body} />
                 </GridItem>
                 <GridItem rowSpan={2} colSpan={1} align="center"
                     fontSize="2rem">
@@ -157,7 +152,7 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
                     :
                     <>
                         {commentAnswers.map((elem, i, arr) => {
-                            return (i > (showComment? arr.length : "1")) ?
+                            return (i > (showComment ? arr.length : "1")) ?
                                 null
                                 :
                                 <Flex key={i} w="100%">
