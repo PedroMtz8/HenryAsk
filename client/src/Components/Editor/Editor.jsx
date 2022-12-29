@@ -64,7 +64,7 @@ const MenuBar = ({ editor }) => {
                 }
                 // ESTO HACE QUE SE PUEDA LEER
                 reader.readAsDataURL(file)
-                // POR ULTIMO HACE QUE SE SETEE LA IMAGEN EN EL INPUT DEL EDITOR
+                // POR ULTIMO HACE QUE SE SETEE LA IMAGEN EN EL INPUT DEL EDITOR.
                 settingFile()
             }else{
                 setPreview(null)
