@@ -2,7 +2,6 @@
 .buttons {
     position: relative;
     white-space: nowrap;
-    padding-top: 100px;
 }
 
 @media (max-width: '1350px') {
@@ -110,7 +109,6 @@ button:disabled {
     transition-duration: 200ms;
     border: 1px solid transparent;
     border-radius: 0.375rem;
-    margin-top: 10px;
     padding-block: 10px;
 
     p,

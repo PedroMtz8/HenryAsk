@@ -112,8 +112,8 @@ export default function QuestionModal({ title }) {
               </FormControl>
 
               <FormControl mt={4}>
-                <FormLabel fontSize={"24px"} position='absolute' top={{ base: '-10px', sm: '0px', lg: '20px' }}>Cuerpo</FormLabel>
-                <Text mb={"5px"} position='absolute' top={{ base: '30px', sm: '40px', lg: '60px' }}>El cuerpo de la pregunta contiene los detalles de tu problema y, a futuro, la resolucion de este.</Text>
+                <FormLabel fontSize={"24px"} >Cuerpo</FormLabel>
+                <Text mb={"5px"} >El cuerpo de la pregunta contiene los detalles de tu problema y, a futuro, la resolucion de este.</Text>
                 <Editor post={post} setPost={setPost} setBodyText={setBodyText} />
                 <Text mb={"5px"} color={'red'} >{error.body}</Text>
               </FormControl>
