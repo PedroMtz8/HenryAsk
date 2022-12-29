@@ -37,7 +37,6 @@ const MenuBar = ({ editor }) => {
 
     return (
         <div className='buttons'>
-
             <button
                 onClick={(e) => {
                     e.preventDefault()
