@@ -14,29 +14,21 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import SearchbarAdmin from "./SearchbarAdmin";
 import { useAuth } from "../AuthComponents/AuthContext";
-import axios from "axios";
+import PaginatedAdmin from "./PaginatedAdmin";
+import { getUsers } from "../../slices/userSlice";
 
 const Accounts = () => {
-  const dispatch = useDispatch();
   const { user } = useAuth();
   let token = user.accessToken;
+
+  const dispatch = useDispatch();
   const accounts = useSelector((state) => state.user);
 
-  const [users, setUsers] = useState([]);
+  const users = accounts.users;
 
   useEffect(() => {
-    const getUsers = async () => {
-      const { data } = await axios.get(
-        `http://localhost:3001/auth/users?page=${accounts.currentPage}`,
-        { headers: { Authorization: "Bearer " + token } }
-      );
-      setUsers(data.foundUsers);
-      return users;
-    };
-    getUsers();
-  }, []);
-
-  console.log("estos usuarios", users);
+    dispatch(getUsers({ token, page: accounts.page }));
+  }, [dispatch, accounts.page]);
 
   return (
     <Flex>
@@ -66,7 +58,7 @@ const Accounts = () => {
             </Thead>
             <Tbody>
               {users.map((user) => (
-                <Tr textAlign="center">
+                <Tr textAlign="center" key={user.mail}>
                   <Td textAlign="center"> {user.userSlack} </Td>
                   <Td textAlign="center"> {user.mail} </Td>
                   <Td textAlign="center"> {user.rol} </Td>
@@ -75,6 +67,7 @@ const Accounts = () => {
             </Tbody>
           </Table>
         </TableContainer>
+        <PaginatedAdmin />
       </div>
     </Flex>
   );

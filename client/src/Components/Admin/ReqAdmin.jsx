@@ -19,24 +19,24 @@ import Sidebar from "./Sidebar";
 import axios from "axios";
 
 const ReqAdmin = () => {
-  const dispatch = useDispatch();
   const { user } = useAuth();
   let token = user.accessToken;
   const accounts = useSelector((state) => state.user);
 
-  const [users, setUsers] = useState([]);
+  const [req, setReq] = useState([]);
 
   useEffect(() => {
-    const getUsers = async () => {
+    const getRequests = async () => {
       const { data } = await axios.get(
-        `http://localhost:3001/auth/users?page=${accounts.currentPage}`,
+        `http://localhost:3001/request?page=${accounts.page}`,
         { headers: { Authorization: "Bearer " + token } }
       );
-      setUsers(data.foundUsers);
-      return users;
+      setReq(data.requests);
+      return req;
     };
-    getUsers();
+    getRequests();
   }, []);
+
   return (
     <Flex>
       <Sidebar />
@@ -58,32 +58,28 @@ const ReqAdmin = () => {
           <Table variant="striped" colorScheme="blackAlpha" size="lg">
             <Thead backgroundColor="#ffff01" textAlign="center">
               <Tr>
+                <Th textAlign="center">ID</Th>
                 <Th textAlign="center">Usuario</Th>
                 <Th textAlign="center">Email</Th>
                 <Th textAlign="center">Rol</Th>
                 <Th textAlign="center">Petición</Th>
-                <Th textAlign="center">Estatus</Th>
                 <Th textAlign="center">Acciones</Th>
               </Tr>
             </Thead>
             <Tbody>
-              {users.map((user) => (
+              {req.map((req) => (
                 <Tr textAlign="center">
-                  <Td textAlign="center"> {user.userSlack} </Td>
-                  <Td textAlign="center"> {user.mail} </Td>
-                  <Td textAlign="center"> {user.rol} </Td>
+                  <Td textAlign="center"> {req.user._id} </Td>
+                  <Td textAlign="center"> {req.user.userSlack} </Td>
+                  <Td textAlign="center"> {req.user.mail} </Td>
+                  <Td textAlign="center"> {req.rol} </Td>
                   <Td textAlign="center">Registro</Td>
-                  <Td textAlign="center"> {user.status} </Td>
-                  {user.status === "Esperando" ? (
-                    <Td>
-                      <Button mr="3px" colorScheme="green">
-                        Aceptar
-                      </Button>
-                      <Button colorScheme="red">Denegar</Button>
-                    </Td>
-                  ) : (
-                    <Td textAlign="center">---</Td>
-                  )}
+                  <Td>
+                    <Button mr="3px" colorScheme="green">
+                      Aceptar
+                    </Button>
+                    <Button colorScheme="red">Denegar</Button>
+                  </Td>
                 </Tr>
               ))}
             </Tbody>
