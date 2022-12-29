@@ -99,7 +99,7 @@ export default function QuestionModal({ title }) {
         size={"full"}
       >
         <ModalOverlay />
-        <ModalContent w={"80vw"}>
+        <ModalContent w={{ sm: "100vw", md: "90vw", lg: '80vw' }}>
           <ModalHeader></ModalHeader>
           <ModalCloseButton _hover={{ background: "tomato" }} />
           <ModalBody pb={6}>
@@ -112,8 +112,8 @@ export default function QuestionModal({ title }) {
               </FormControl>
 
               <FormControl mt={4}>
-                <FormLabel fontSize={"24px"}>Cuerpo</FormLabel>
-                <Text mb={"5px"} >El cuerpo de la pregunta contiene los detalles de tu problema y, a futuro, la resolucion de este.</Text>
+                <FormLabel fontSize={"24px"} position='absolute' top={{ base: '-10px', sm: '0px', lg: '20px' }}>Cuerpo</FormLabel>
+                <Text mb={"5px"} position='absolute' top={{ base: '30px', sm: '40px', lg: '60px' }}>El cuerpo de la pregunta contiene los detalles de tu problema y, a futuro, la resolucion de este.</Text>
                 <Editor post={post} setPost={setPost} setBodyText={setBodyText} />
                 <Text mb={"5px"} color={'red'} >{error.body}</Text>
               </FormControl>
@@ -127,6 +127,7 @@ export default function QuestionModal({ title }) {
                 <FormLabel fontSize={"24px"}>Modulo</FormLabel>
                 <Text mb={"5px"} >Agrega a que modulo corresponde esta pregunta</Text>
                 <Select name="module" onChange={handleChange} defaultValue={'default'}>
+
                   <option value="default" disabled hidden>Selecciona el modulo</option>
                   {
                     modulos.map((m, i) => {
@@ -163,15 +164,15 @@ function TagsInput({ post, setPost }) {
 
     let same = post.tags.find(t => t === value.toUpperCase().trim())
     console.log(same)
-    if (same) return toast({
-      description: "No puedes agregar el mismo tag",
+    if (post.tags.length > 2) return toast({
+      description: "No puedes agregar más de 3 tags",
       status: "error",
       duration: 4000,
       isClosable: true,
       position: "top"
     })
-    if (post.tags.length > 2) return toast({
-      description: "No puedes agregar más de 3 tags",
+    if (same) return toast({
+      description: "No puedes agregar el mismo tag",
       status: "error",
       duration: 4000,
       isClosable: true,
@@ -198,8 +199,11 @@ function TagsInput({ post, setPost }) {
   return (
     <Flex
       border={"1px solid black"}
-      h={"50px"}
+      minHeight={'50px'}
+      h={"auto"}
       alignItems="center"
+      wrap={'wrap'}
+      w={'100%'}
     >
       {post.tags.map((tag, index) => (
         <Flex
@@ -207,7 +211,9 @@ function TagsInput({ post, setPost }) {
           alignItems="center"
           borderRadius={"15px"} p={"10px"}
           key={index}
-          marginLeft={"10px"}>
+          margin={'5px'}
+        >
+
           <Text marginRight={"5px"} >{tag}</Text>
           <Box
             bgColor={"black"}
@@ -216,16 +222,22 @@ function TagsInput({ post, setPost }) {
             w="25px" h={"25px"}
             textAlign="center"
             cursor={"pointer"}
-            onClick={() => removeTag(index)}>
-            <Text>x</Text>
+            onClick={() => removeTag(index)}
+            _hover={{ bg: "gray.100", color: 'black' }}
+            transition='ease-in 0.2s'>
+
+            <Text >x</Text>
           </Box>
         </Flex>
       ))
       }
       <Input
         alignSelf={"center"}
-        border="none"
+        border={"none"}
+        outline={'none'}
         marginLeft={"15px"}
+        focusBorderColor={"transparent"}
+        paddingInlineStart={0}
         borderRadius={"none"} w={"200px"} h={"30px"} type="text" onKeyUp={handleKeyDown} placeholder="REACT JAVASCRIPT..." />
     </Flex >
   )

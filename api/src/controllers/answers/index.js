@@ -107,7 +107,7 @@ const voteAnswer = async (req, res) => {
         const votedAnswer = await Answer.findById(answer_id)
         if (!votedAnswer) return res.status(404).json({ message: 'La respuesta no fue encontrada!' })
         const author = await User.findById(votedAnswer.user) //autor de la respuesta
-        if (author.mail === voter.mail) return res.status(404).json({ message: 'No puedes votar tu propia respuesta!' })
+        if (author.mail === voter.mail) return res.status(400).json({ message: 'No puedes votar tu propia respuesta!' })
         const previousVoteType = votedAnswer.voters[req.id] //obtengo voto previo
         let message = ''
 

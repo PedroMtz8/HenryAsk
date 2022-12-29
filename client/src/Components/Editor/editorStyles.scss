@@ -1,4 +1,15 @@
 /* Basic editor styles */
+.buttons {
+    position: relative;
+    white-space: nowrap;
+    padding-top: 100px;
+}
+
+@media (max-width: '1350px') {
+    .buttons {
+        overflow-x: scroll;
+    }
+}
 
 .buttons button {
     position: relative;
@@ -29,21 +40,21 @@ button .popup {
     text-align: center;
     border-radius: 6px;
     padding: 5px 0;
+    white-space: break-spaces;
 
     /* Position the tooltip */
     position: absolute;
-    z-index: 1;
+    z-index: 1000;
     bottom: 100%;
-    left: 50%;
+    left: 0%;
     margin-bottom: 5px;
-    margin-left: -60px;
 }
 
 button .popup::after {
     content: "";
     position: absolute;
     top: 100%;
-    left: 50%;
+    left: 15%;
     margin-left: -5px;
     border-width: 5px;
     border-style: solid;
@@ -164,10 +175,13 @@ button:disabled {
         margin-bottom: 5px;
         margin-left: 5px;
         margin-right: 5px;
+        overflow: auto;
+        white-space: pre !important;
 
         code {
             color: inherit;
             padding: 0;
+            width: 100%;
             background: none;
             font-size: 0.8rem;
         }
