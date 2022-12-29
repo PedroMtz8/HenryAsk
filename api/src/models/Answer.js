@@ -1,7 +1,6 @@
 const { Schema, model } = require('mongoose')
 
 const schema = new Schema({
-    title: { type: String, required: true },
     body: { type: String, required: true },
     score: { type: Number, default: 0 },
     voters: { type: Object, default: {} },

@@ -52,32 +52,43 @@ const editComment = async (req, res) => {
 }
 
 const getCommentsFromPost = async (req, res) => {
-    let { post_id } = req.query
-    if (!post_id) return res.status(400).json({ message: 'Id de post requerido.' })
-
+    let { post_id, page } = req.query
+    if (!post_id || !page) return res.status(400).json({ message: 'Id de post y numero de pagina requerido.' })
+    const post = Post.findById(post_id)
+    let numberOfCommentsLeft = post.numberComments - 5 * page > 0
+        ? post.numberComments - 5 * page
+        : 0
     try {
         let comments = await Comment.find({ post: post_id })
+            .skip(page * 5 - 5)
+            .limit(5)
             .sort({ createdAt: 1 })
             .populate('user', { userSlack: 1 })
             .select({ post: 0 })
 
-        res.json({ message: 'Comentarios encontrados!', comments })
+        res.json({ message: 'Comentarios encontrados!', comments, numberOfCommentsLeft })
     } catch (error) {
         res.json({ message: error.message })
     }
 }
 
 const getCommentsFromAnswer = async (req, res) => {
-    let { answer_id } = req.query
-    if (!answer_id) return res.status(400).json({ message: 'Id de respuesta requerido.' })
+    let { answer_id, page } = req.query
+    if (!answer_id || !page) return res.status(400).json({ message: 'Id de respuesta y numero de pagina requerido.' })
+    const answer = Answer.findById(answer_id)
+    let numberOfCommentsLeft = answer.numberComments - 5 * page > 0
+        ? answer.numberComments - 5 * page
+        : 0
 
     try {
         let comments = await Comment.find({ answer: answer_id })
+            .skip(page * 5 - 5)
+            .limit(5)
             .sort({ createdAt: 1 })
             .populate('user', { userSlack: 1 })
             .select({ answer: 0 })
 
-        res.json({ message: 'Comentarios encontrados!', comments })
+        res.json({ message: 'Comentarios encontrados!', comments, numberOfCommentsLeft })
     } catch (error) {
         res.json({ message: error.message })
     }

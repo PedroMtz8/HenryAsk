@@ -19,7 +19,7 @@ export const useAuth = () => {
 const AuthProvider = ({ children }) => {
   const [loadingUser, setLoadingUser] = useState(true);
   const [user, setUser] = useState(null)
-  console.log(user)
+  /* console.log(user) */
 
   const updateUsername = async (userUpdate, username) => {
     await updateProfile(userUpdate, { displayName: username })
@@ -37,12 +37,6 @@ const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     let user = await signInWithEmailAndPassword(auth, email, password)
-    const token = await user.user.getIdToken() //devuelve el token de acceso, si existe uno pero vencio, lo refresca
-    const result = await axios.get(`${API_URL}/auth/status`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
   }
 
   function forgotPasswordFunction(email) {

@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import API_URL from "../config/environment";
 
@@ -7,7 +7,28 @@ const initialState = {
   page: 1,
   userQuestions: [],
   userAnswers: [],
+  requests: [],
+  reqMaxPages: 1,
+  usersMaxPages: 0,
 };
+
+export const getUsers = createAsyncThunk(
+  "get/users",
+  async ({ token, page }) => {
+    try {
+      const { data } = await axios.get(
+        `http://localhost:3001/auth/users?page=${page}`,
+        {
+          headers: { Authorization: "Bearer " + token },
+        }
+      );
+
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
 
 export const userSlice = createSlice({
   name: "user",
@@ -19,17 +40,27 @@ export const userSlice = createSlice({
     saveQuestions: (state, action) => {
       state.userQuestions = action.payload;
     },
-    saveAnswers: (state, action) => {
-      state.userAnswers = action.payload
+    nextPage: (state) => {
+      state.page += 1;
     },
-    updateUser: (state) => {
-      state = {...state}
-    }
+    previousPage: (state) => {
+      state.page -= 1;
+    },
+    setPage: (state, action) => {
+      state.page = action.payload;
+    },
   },
-  extraReducers: (builder) => {},
+  extraReducers: (builder) => {
+    builder.addCase(getUsers.fulfilled, (state, action) => {
+      state.users = action.payload.foundUsers;
+      state.usersMaxPages = action.payload.maxPages;
+    });
+  },
 });
 
-export const { saveUser, saveQuestions, saveAnswers } = userSlice.actions;
+
+export const { saveUser, saveQuestions, nextPage, previousPage, setPage } =
+  userSlice.actions;
 
 export default userSlice.reducer;
 

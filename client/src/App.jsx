@@ -9,9 +9,9 @@ import Profile from "./Components/Profile/Profile";
 import Posts from "./Components/Posts/Posts";
 import HomeAdmin from "./Components/Admin/HomeAdmin";
 import Accounts from "./Components/Admin/Accounts";
-import Reports from "./Components/Admin/Reports";
-import Details from "./Components/Details/Details"
+import Details from "./Components/Details/Details";
 import ForgotPassword from "./Components/ForgotPassword/ForgotPassword";
+import ReqAdmin from "./Components/Admin/ReqAdmin";
 
 function App() {
   return (
@@ -26,7 +26,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/admin" element={<HomeAdmin />} />
           <Route path="/admin/accounts" element={<Accounts />} />
-          <Route path="/admin/reports" element={<Reports />} />
+          <Route path="/admin/requests" element={<ReqAdmin />} />
           <Route path="/home" element={<Home />} />
           <Route path="/details/:id" element={<Details />} />
           <Route path="/profile" element={<Profile />} />

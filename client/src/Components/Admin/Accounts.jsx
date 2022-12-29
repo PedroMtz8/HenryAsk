@@ -1,4 +1,4 @@
-import { Button, Flex, Grid } from "@chakra-ui/react";
+import { Button, Flex, Grid, Text } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import {
@@ -14,35 +14,35 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import SearchbarAdmin from "./SearchbarAdmin";
 import { useAuth } from "../AuthComponents/AuthContext";
-import axios from "axios";
+import PaginatedAdmin from "./PaginatedAdmin";
+import { getUsers } from "../../slices/userSlice";
 
 const Accounts = () => {
-  const dispatch = useDispatch();
   const { user } = useAuth();
   let token = user.accessToken;
+
+  const dispatch = useDispatch();
   const accounts = useSelector((state) => state.user);
 
-  const [users, setUsers] = useState([]);
+  const users = accounts.users;
 
   useEffect(() => {
-    const getUsers = async () => {
-      const { data } = await axios.get(
-        `http://localhost:3001/auth/users?page=${accounts.currentPage}`,
-        { headers: { Authorization: "Bearer " + token } }
-      );
-      setUsers(data.foundUsers);
-      return users;
-    };
-    getUsers();
-  }, []);
-
-  console.log("estos usuarios", users);
+    dispatch(getUsers({ token, page: accounts.page }));
+  }, [dispatch, accounts.page]);
 
   return (
     <Flex>
       <Sidebar />
       <div style={{ margin: "20px auto" }}>
-        <SearchbarAdmin />
+        <SearchbarAdmin name="Rol" op1="Estudiante" op2="Administrador" />
+        <Text
+          mb="20px"
+          align="center"
+          fontWeight="bold"
+          textTransform="uppercase"
+        >
+          Lista de cuentas
+        </Text>
         <TableContainer
           border="1px solid gray"
           borderRadius="10px"
@@ -54,34 +54,20 @@ const Accounts = () => {
                 <Th textAlign="center">Usuario</Th>
                 <Th textAlign="center">Email</Th>
                 <Th textAlign="center">Rol</Th>
-                <Th textAlign="center">Petición</Th>
-                <Th textAlign="center">Estatus</Th>
-                <Th textAlign="center">Acciones</Th>
               </Tr>
             </Thead>
             <Tbody>
               {users.map((user) => (
-                <Tr textAlign="center">
+                <Tr textAlign="center" key={user.mail}>
                   <Td textAlign="center"> {user.userSlack} </Td>
                   <Td textAlign="center"> {user.mail} </Td>
                   <Td textAlign="center"> {user.rol} </Td>
-                  <Td textAlign="center">Registro</Td>
-                  <Td textAlign="center"> {user.status} </Td>
-                  {user.status === "Esperando" ? (
-                    <Td>
-                      <Button mr="3px" colorScheme="green">
-                        Aceptar
-                      </Button>
-                      <Button colorScheme="red">Denegar</Button>
-                    </Td>
-                  ) : (
-                    <Td textAlign="center">---</Td>
-                  )}
                 </Tr>
               ))}
             </Tbody>
           </Table>
         </TableContainer>
+        <PaginatedAdmin />
       </div>
     </Flex>
   );

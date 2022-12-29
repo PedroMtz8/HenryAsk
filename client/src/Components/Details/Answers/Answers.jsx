@@ -9,14 +9,26 @@ import {
     Text,
     Select,
     Button,
-    HStack
+    HStack,
+    Heading
 } from '@chakra-ui/react'
 import AnswerCard from './AnswerCard'
+import AnswerEditor from "./AnswerEditor";
+import { useRef } from "react";
 
 const Answers = ({ dataPost, setDataPost }) => {
 
+    function id() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
     const { user } = useAuth();
     let token = user.accessToken
+    const form = useRef(null)
+    const button = useRef(null)
 
     const idPost = useParams().id
 
@@ -27,13 +39,13 @@ const Answers = ({ dataPost, setDataPost }) => {
         const getAnswers = async () => {
             const res = await
                 axios.get(API_URL + `/answer/post?page=${responseData.answersPage}&sort=${responseData.answersSort}&post_id=${idPost}`, { headers: { Authorization: "Bearer " + token } })
-
-            setResponseData({ ...responseData, answersArr: res.data.foundAnswers, maxPages: res.data.maxPages })}
+            setResponseData({ ...responseData, answersArr: res.data.foundAnswers, maxPages: res.data.maxPages })
+        }
 
         getAnswers()
 
-    }, [responseData.answersPage, responseData.answersSort, dataPost]);
 
+    }, [responseData.answersPage, responseData.answersSort, dataPost]);
 
     const clickButtonNumbers = (e) => {
 
@@ -49,11 +61,13 @@ const Answers = ({ dataPost, setDataPost }) => {
         }
     }
 
-    const mapCards = (arrRes) => {      
+    const mapCards = (arrRes) => {
 
-       let arr = arrRes.answersArr.map((dataCard, i) => <AnswerCard key={i}
-                                answerCardData={dataCard} setDataPost={setDataPost} />)
-        
+        let arr = arrRes.answersArr.map((dataCard, i, arr) =>
+            <AnswerCard key={id()}
+                answerCardData={dataCard}
+                setDataPost={setDataPost}
+                finish={(i !== arr.length - 1)} />)
         return arr;
     }
 
@@ -90,16 +104,17 @@ const Answers = ({ dataPost, setDataPost }) => {
                         </Select>
                     </Flex>
                     <Button bg="#FFFF01"
-                        p="1rem 2rem">
+                        p="1rem 2rem"
+                        onClick={() => form.current.scrollIntoView({ block: 'end', behavior: 'smooth' })}
+                        ref={button}>
                         Responder
                     </Button>
                 </Flex>
             </Flex>
-            {responseData.answersArr !== undefined && responseData.answersArr.length !== 0 ?
+            {responseData.answersArr && responseData.answersArr.length ?
                 <Flex position="relative"
                     flexDir="column"
                     w="80%"
-                    mb="1rem"
                     gap="1rem">
                     <Flex flexDir="column"
                         alignItems="center"
@@ -127,6 +142,14 @@ const Answers = ({ dataPost, setDataPost }) => {
                 </Flex>
                 :
                 "loading"}
+            <Flex position="relative"
+                justifyContent="space-between"
+                alignItems="flex-end"
+                w="80%">
+                <Heading color="white" size={'md'} fontWeight='normal'>Tu respuesta</Heading>
+            </Flex>
+            <AnswerEditor post_id={idPost} responseData={responseData} setResponseData={setResponseData} token={token} scrollFrom={form} scrollTo={button} />
+
         </>
     )
 }

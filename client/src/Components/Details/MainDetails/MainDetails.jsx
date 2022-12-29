@@ -27,11 +27,11 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
 
     useEffect(() => {
 
-        if (numberOfVotesUser !== dataPost.post.user.score){
-            
-            axios.get(API_URL + `/posts/${idPost}`, { headers: {Authorization: "Bearer " + token }})
-        .then(res => {setDataPost(res.data)})
-        
+        if (numberOfVotesUser !== dataPost.post.user.score) {
+
+            axios.get(API_URL + `/posts/${idPost}`, { headers: { Authorization: "Bearer " + token } })
+                .then(res => { setDataPost(res.data) })
+
         }
 
     }, [numberOfVotesUser])
@@ -113,7 +113,7 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
                         <Editor body={dataPost.post.body} />
                     </Stack>
                     <Flex justifyContent="space-between">
-                        <Text>Respuestas: {`(${dataPost.post.numberAnswers})`} <TriangleDownIcon /></Text>
+                        <Text>Comentarios: {`(${dataPost.post.numberComments})`} <TriangleDownIcon /></Text>
                         <Flex gap="1rem" mr="2%">
                             {
                                 dataPost.post.tags.map((e, i) =>
