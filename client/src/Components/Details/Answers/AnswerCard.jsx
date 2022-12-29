@@ -20,11 +20,14 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
     let token = user.accessToken
     const idPost = useParams().id;
 
+    console.log(token)
+
     const [numberOfVotesAnswerd, setNumberOfVotesAnswerd] = useState(parseInt(answerCardData.score))
     const [numberOfVotesUser, setNumberOfVotesUser] = useState(parseInt(answerCardData.user.score))
     const [currentVote, setCurrentVote] = useState(Object.keys(answerCardData.voters).includes(user.uid) ? parseInt(answerCardData.voters[user.uid]) : 0)
     const [commentAnswers, setCommentAnswers] = useState([])
     const [commentPage, setCommentPage] = useState(0)
+    const [remainingComments, setRemainingComments] = useState(answerCardData.numberComments)
 
     useEffect(() => {
 
@@ -58,6 +61,7 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
 
         const res = await axios.get(API_URL + `/comment/answer?answer_id=${answerCardData._id}&page=${commentPage}`, { headers: { Authorization: "Bearer " + token } })
         setCommentAnswers([...commentAnswers, ...res.data.comments])
+        setRemainingComments(res.data.numberOfCommentsLeft)
 
     }
 
@@ -124,11 +128,11 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
                 }
                 <Flex w="100%" justifyContent="space-between">
                     <Flex>
-                        {((answerCardData.numberComments - commentPage * 5) > 0) &&
+                        {(remainingComments > 0) &&
                             <Text fontSize=".8rem"
                                 color="gray.600"
                                 onClick={e => setCommentPage(commentPage + 1)}>
-                                + comentarios {` (${answerCardData.numberComments - commentPage * 5})`}
+                                Comentarios {` (${remainingComments}) `} <TriangleDownIcon/>
                             </Text>}
                     </Flex>
                     <Text color="blue.600">
