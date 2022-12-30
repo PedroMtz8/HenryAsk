@@ -20,8 +20,6 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
     let token = user.accessToken
     const idPost = useParams().id;
 
-    console.log(token)
-
     const [numberOfVotesAnswerd, setNumberOfVotesAnswerd] = useState(parseInt(answerCardData.score))
     const [numberOfVotesUser, setNumberOfVotesUser] = useState(parseInt(answerCardData.user.score))
     const [currentVote, setCurrentVote] = useState(Object.keys(answerCardData.voters).includes(user.uid) ? parseInt(answerCardData.voters[user.uid]) : 0)
