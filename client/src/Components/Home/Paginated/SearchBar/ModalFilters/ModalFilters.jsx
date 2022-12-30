@@ -133,6 +133,7 @@ function ModalFilters() {
                                         <Input value={currentTag}
                                             onChange={e => setCurrentTag(e.target.value)}
                                             onKeyDown={e => (e.key === "Enter") ? (showButtonAdd ? null : addTag()) : null}
+                                            placeholder='Tags...'
                                         />
                                         <Button disabled={showButtonAdd} onClick={addTag}>Agregar</Button>
                                     </HStack>
