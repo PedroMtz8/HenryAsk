@@ -35,7 +35,6 @@ export default function NavBar() {
   const userData = useSelector((state) => state.user.user);
 
   const toast = useToast()
- /*  console.log(userData) */
 
   const { user, signout } = useAuth();
 
@@ -86,26 +85,15 @@ export default function NavBar() {
                   >
                     <Avatar
                       size={"md"}
-                      src={"https://avatars.dicebear.com/api/male/username.svg"}
+                      src={userData.avatar}
                     />
                   </MenuButton>
                   <MenuList
                     bg={useColorModeValue("white", "gray.900")}
                     borderColor={useColorModeValue("gray.200", "gray.700")}
                   >
-                    <br />
-                    <Center>
-                      <Avatar
-                        size={"2xl"}
-                        src={
-                          "https://avatars.dicebear.com/api/male/username.svg"
-                        }
-                      />
-                    </Center>
-                    <br />
-                    <Center>
-                      <Text>{userData.userSlack}</Text>
-                    </Center>
+                    
+                      <Text fontWeight={700} ml={3}>{userData.userSlack}</Text>
                     <RouteLink to={"/home"}>
                       <MenuItem> Home </MenuItem>
                     </RouteLink>

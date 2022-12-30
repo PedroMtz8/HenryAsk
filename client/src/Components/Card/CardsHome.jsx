@@ -11,7 +11,7 @@ const CardsHome = () => {
     <Flex flexDir="column"
           alignItems="center"
           gap="1rem"
-          w="85%" >
+          w={{base: "100%", sm: "95%", md: "90%", lg: "85%"}} >
       
       {currentPosts.map((elem, i) => <CardHome key={i} cardData={elem}/>)}
       
