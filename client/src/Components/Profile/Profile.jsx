@@ -41,8 +41,9 @@ const Profile = () => {
 
 
     const defineRolImg = () => {
-        setIsLoading(false)
-        if(userData.rol === "TA" || user.rol === "Hero") setRolImg(HeroOrTA)
+        setIsLoading(true)
+        if(userData.rol === "Henry Hero") setRolImg(HeroOrTA)
+        if(userData.rol === "TA") setRolImg(HeroOrTA)
         if(userData.rol === "Administrador") setRolImg(Admin)
         if(userData.rol === "Estudiante") setRolImg(Student)
         if(userData.rol === "Graduado") setRolImg(Graduate)
@@ -64,7 +65,6 @@ const Profile = () => {
     }, [])
     
     useEffect(()=>{
-        setIsLoading(true)
         setTimeout(()=>{
             defineRolImg()
         }, 700)
