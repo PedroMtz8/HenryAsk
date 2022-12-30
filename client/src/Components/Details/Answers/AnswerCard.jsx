@@ -24,14 +24,14 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
     const [numberOfVotesUser, setNumberOfVotesUser] = useState(parseInt(answerCardData.user.score))
     const [currentVote, setCurrentVote] = useState(Object.keys(answerCardData.voters).includes(user.uid) ? parseInt(answerCardData.voters[user.uid]) : 0)
     const [commentAnswers, setCommentAnswers] = useState([])
-    const [showComment, setShowComment] = useState(false)
+    const [commentPage, setCommentPage] = useState(0)
+    const [remainingComments, setRemainingComments] = useState(answerCardData.numberComments)
 
     useEffect(() => {
 
         setNumberOfVotesAnswerd(parseInt(answerCardData.score))
         setNumberOfVotesUser(parseInt(answerCardData.user.score))
         setCurrentVote(Object.keys(answerCardData.voters).includes(user.uid) ? parseInt(answerCardData.voters[user.uid]) : 0)
-        getComment()
 
     }, [answerCardData])
 
@@ -44,6 +44,8 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
 
     }, [numberOfVotesUser])
 
+    useEffect(() => { (commentPage > 0) && getComment() }, [commentPage])
+
     const voteAnswer = async (type) => {
 
         const res = await
@@ -55,32 +57,10 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
 
     const getComment = async () => {
 
-        const res = await axios.get(API_URL + `/comment/answer?answer_id=${answerCardData._id}`, { headers: { Authorization: "Bearer " + token } })
+        const res = await axios.get(API_URL + `/comment/answer?answer_id=${answerCardData._id}&page=${commentPage}`, { headers: { Authorization: "Bearer " + token } })
+        setCommentAnswers([...commentAnswers, ...res.data.comments])
+        setRemainingComments(res.data.numberOfCommentsLeft)
 
-        setCommentAnswers(res.data.comments)
-
-    }
-
-    const showAnswerComments = () => {
-
-        if (commentAnswers.length >= 3) {
-
-            return (
-                (showComment)
-                    ?
-                    <Text>
-                        Mostrar menos {" "}
-                        <TriangleDownIcon
-                            onClick={e => setShowComment(false)} />
-                    </Text>
-                    :
-                    <Text>
-                        Mostrar más{` (${commentAnswers.length}) `}
-                        <TriangleDownIcon
-                            onClick={e => setShowComment(true)} />
-                    </Text>
-            )
-        }
     }
 
     return (
@@ -124,43 +104,39 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
                     fontSize="2rem">
                     <TriangleUpIcon
                         color={currentVote === 1 ? "green" : "gray"}
-                        onClick={e => currentVote === 1 ? voteAnswer(0) : voteAnswer(1)} />
+                        onClick={e => (user.uid !== answerCardData.user._id)? (currentVote === 1 ? voteAnswer(0) : voteAnswer(1)): null} />
                     <Text>{numberOfVotesAnswerd}</Text>
                     <TriangleDownIcon
                         color={currentVote === -1 ? "red" : "gray"}
-                        onClick={e => currentVote === -1 ? voteAnswer(0) : voteAnswer(-1)} />
+                        onClick={e => (user.uid !== answerCardData.user._id)? (currentVote === -1 ? voteAnswer(0) : voteAnswer(-1)): null} />
                 </GridItem>
             </Grid>
             <Flex position="relative"
                 flexDir="column"
                 alignItems="center"
-                pr="2rem"
                 w="93%"
                 gap=".3rem"
                 borderBottom={finish ? "solid 1px" : ""}
-                borderBottomColor="gray.400">
+                borderBottomColor="gray.800">
+                {
+                    commentAnswers.map((elem, i, arr) =>
+                        <Flex key={i} w="100%">
+                            <Comments dataComment={elem} />
+                        </Flex>)
+                }
                 <Flex w="100%" justifyContent="space-between">
                     <Flex>
-                        {showAnswerComments()}
+                        {(remainingComments > 0) &&
+                            <Text fontSize=".8rem"
+                                color="gray.600"
+                                onClick={e => setCommentPage(commentPage + 1)}>
+                                Comentarios {` (${remainingComments}) `} <TriangleDownIcon/>
+                            </Text>}
                     </Flex>
-                    <Text color="blue.700">
+                    <Text color="blue.600">
                         Comentar respuesta
                     </Text>
                 </Flex>
-                {commentAnswers.length === 0 ?
-                    <></>
-                    :
-                    <>
-                        {commentAnswers.map((elem, i, arr) => {
-                            return (i > (showComment ? arr.length : "1")) ?
-                                null
-                                :
-                                <Flex key={i} w="100%">
-                                    <Comments dataComment={elem} />
-                                </Flex>
-                        })}
-                    </>
-                }
             </Flex>
         </>
     )

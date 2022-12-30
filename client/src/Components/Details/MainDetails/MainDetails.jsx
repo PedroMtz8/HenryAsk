@@ -15,6 +15,7 @@ import { useAuth } from "../../AuthComponents/AuthContext"
 import API_URL from "../../../config/environment"
 import { useParams } from "react-router-dom";
 import { useEffect } from 'react'
+import Comments from '../Comments/Comments'
 
 const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userScore }) => {
 
@@ -24,6 +25,9 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
 
     const [numberOfVotesPost, setNumberOfVotes] = useState(parseInt(dataPost.post.score))
     const [numberOfVotesUser, setNumberOfVotesUser] = useState(parseInt(dataPost.post.user.score))
+    const [postComments, setPostComments] = useState([])
+    const [commentPage, setCommentPage] = useState(0)
+    const [remainingComments, setRemainingComments] = useState(dataPost.post.numberComments)
 
     useEffect(() => {
 
@@ -35,6 +39,18 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
         }
 
     }, [numberOfVotesUser])
+
+    useEffect(() => { (commentPage > 0) && getComment() }, [commentPage])
+
+    const getComment = async () => {
+
+        const res = await axios.get(API_URL + `/comment/post?post_id=${dataPost.post._id}&page=${commentPage}`,
+            { headers: { Authorization: "Bearer " + token } })
+
+        setPostComments(res.data.comments)
+        setRemainingComments(res.data.numberOfCommentsLeft)
+
+    }
 
     const votePost = async (type) => {
 
@@ -56,17 +72,18 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
     }
 
     return (
-        <>
+        <Flex position="relative"
+            flexDir="column"
+            bg="#F2F2F2"
+            w="80%"
+            minH="10rem"
+            mt="3rem"
+            p="1%"
+            gap="2%"
+            borderRadius="md"
+            fontWeight="semibold">
             <Flex position="relative"
-                alignItems="flex-start"
-                w="80%"
-                minH="10rem"
-                mt="3rem"
-                p="1%"
-                bg="#F2F2F2"
-                borderRadius="md"
-                fontWeight="semibold"
-                gap="2%">
+                alignItems="flex-start">
                 <Flex w="7rem"
                     flexDir="column"
                     alignItems="center"
@@ -112,8 +129,7 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
                         </Heading>
                         <Editor body={dataPost.post.body} />
                     </Stack>
-                    <Flex justifyContent="space-between">
-                        <Text>Comentarios: {`(${dataPost.post.numberComments})`} <TriangleDownIcon /></Text>
+                    <Flex justifyContent="flex-end">
                         <Flex gap="1rem" mr="2%">
                             {
                                 dataPost.post.tags.map((e, i) =>
@@ -129,13 +145,35 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
                     </Flex>
                 </Flex>
             </Flex>
-            <Flex>
-
+            <Flex position="relative"
+                px="0.5rem"
+                flexDir="column"
+                mt="1rem">
+                {postComments.map((elem, i) =>
+                    <Flex key={i}
+                        w="100%"
+                        px="1rem">
+                        <Comments dataComment={elem} />
+                    </Flex>)
+                }
+                <Flex position="relative"
+                    justifyContent="space-between"
+                    w="100%"
+                    borderTop="solid gray 1px"
+                    pt=".5rem"
+                    px="1rem">
+                    <Flex>
+                        {(remainingComments > 0) &&
+                            <Text onClick={e => setCommentPage(commentPage + 1)}>
+                                Comentarios: {`(${remainingComments})`} <TriangleDownIcon />
+                            </Text>}
+                    </Flex>
+                    <Text>Comentar respuesta</Text>
+                </Flex>
             </Flex>
-        </>
+        </Flex>
     )
 }
 
 export default MainDetails;
 
-/* <Text>{dataPost.post.body}</Text> */
