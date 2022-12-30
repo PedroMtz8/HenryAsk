@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import {
     HStack,
     Input,
@@ -12,7 +12,6 @@ import {
     PopoverBody,
     Box,
     Flex,
-    Text
 } from '@chakra-ui/react'
 import { addFilterByTags } from '../../../../../slices/paginatedSlice';
 
@@ -21,42 +20,44 @@ const FilterTags = () => {
     const dispatch = useDispatch()
     const tagsFilter = useSelector((state) => state.paginated.tagsFilter);
 
-    const initRef = useRef()
+    const setStoreTags = () => {
+        const tags = tagsFilter
+            ? tagsFilter.split('+')
+            : []
+        return tags
+    }
 
     const [currentTag, setCurrentTag] = useState("")
-    const [allTags, setAllTags] = useState([])
-    const [showButtonAdd, setShowButtonAdd] = useState(true)
-
-    const onChangeTags = (e) => {
-
-        setCurrentTag(e.target.value)
-        setShowButtonAdd(e.target.value === "" || !(allTags.length < 3))
-
-    }
+    const [allTags, setAllTags] = useState(setStoreTags())
+    const [showButtonAdd, setShowButtonAdd] = useState(false)
 
     const addTag = () => {
 
         if (allTags.some(elem => elem === currentTag)) {
-            setCurrentTag("");
-            return setShowButtonAdd(true)
+            return setCurrentTag("");
         }
 
         if (allTags.length < 3) {
-            setAllTags([...allTags, currentTag])
+            setAllTags([...allTags, currentTag.toUpperCase()])
             setCurrentTag("")
-            setShowButtonAdd(true)
         }
     }
 
     const applyFiltersByTag = () => {
-
         let stringTags = `${allTags[0] ? allTags[0] : ""}${allTags[1] ? `+${allTags[1]}` : ""}${allTags[2] ? `+${allTags[2]}` : ""}`
-
         dispatch(addFilterByTags(stringTags))
     }
 
+    useEffect(() => {
+        let disabled = false
+        if (allTags.length === 3) {
+            disabled = true
+        }
+        setShowButtonAdd(disabled)
+    }, [allTags])
+
     return (
-        <Popover initialFocusRef={initRef}>
+        <Popover>
             {({ onClose }) => (<>
                 <PopoverTrigger>
                     <Button>Tags</Button>
@@ -65,10 +66,10 @@ const FilterTags = () => {
                     <PopoverCloseButton />
                     <PopoverHeader>
                         <HStack>
-                            <Input value={currentTag} 
-                                   onChange={onChangeTags} 
-                                   onKeyDown={e => (e.key === "Enter") ? (showButtonAdd? null : addTag()) : null}
-                        />
+                            <Input value={currentTag}
+                                onChange={(e) => setCurrentTag(e.target.value)}
+                                onKeyDown={e => (e.key === "Enter") ? (showButtonAdd ? null : addTag()) : null}
+                            />
                             <Button disabled={showButtonAdd} onClick={addTag}>Agregar</Button>
                             <Button
                                 onClick={e => { applyFiltersByTag(); onClose() }}
