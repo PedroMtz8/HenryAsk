@@ -54,7 +54,7 @@ const editComment = async (req, res) => {
 const getCommentsFromPost = async (req, res) => {
     let { post_id, page } = req.query
     if (!post_id || !page) return res.status(400).json({ message: 'Id de post y numero de pagina requerido.' })
-    const post = Post.findById(post_id)
+    const post = await Post.findById(post_id)
     let numberOfCommentsLeft = post.numberComments - 5 * page > 0
         ? post.numberComments - 5 * page
         : 0
@@ -75,7 +75,7 @@ const getCommentsFromPost = async (req, res) => {
 const getCommentsFromAnswer = async (req, res) => {
     let { answer_id, page } = req.query
     if (!answer_id || !page) return res.status(400).json({ message: 'Id de respuesta y numero de pagina requerido.' })
-    const answer = Answer.findById(answer_id)
+    const answer = await Answer.findById(answer_id)
     let numberOfCommentsLeft = answer.numberComments - 5 * page > 0
         ? answer.numberComments - 5 * page
         : 0
