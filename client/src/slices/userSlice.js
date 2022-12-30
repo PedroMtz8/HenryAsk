@@ -40,6 +40,9 @@ export const userSlice = createSlice({
     saveQuestions: (state, action) => {
       state.userQuestions = action.payload;
     },
+    saveAnswers: (state, action) => {
+      state.userAnswers = action.payload;
+    },
     nextPage: (state) => {
       state.page += 1;
     },
@@ -59,7 +62,7 @@ export const userSlice = createSlice({
 });
 
 
-export const { saveUser, saveQuestions, nextPage, previousPage, setPage } =
+export const { saveUser, saveQuestions, saveAnswers, nextPage, previousPage, setPage } =
   userSlice.actions;
 
 export default userSlice.reducer;

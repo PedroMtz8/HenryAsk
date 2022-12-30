@@ -47,11 +47,20 @@ const AuthProvider = ({ children }) => {
     await signOut(auth)
   }
 
-  async function uploadFile(file, uid, name) {
-    const storageRef = ref(storage, `${uid}/${name}`)
-    await uploadBytes(storageRef, file)
+  async function uploadFile(file, uid, name, id) {
+    let url;
+    if(id){
+      const storageRef = ref (storage, `${uid}/posts/${id}`)
+      console.log(storageRef)
+      await uploadBytes(storageRef, file)
+      url = getDownloadURL(storageRef)
+    }else{
+      const storageRef = ref(storage, `${uid}/${name}`)
+      await uploadBytes(storageRef, file)
+      url = getDownloadURL(storageRef)
+    }
 
-    const url = getDownloadURL(storageRef)
+    /* const url = getDownloadURL(storageRef) */
     return url
   }
 
