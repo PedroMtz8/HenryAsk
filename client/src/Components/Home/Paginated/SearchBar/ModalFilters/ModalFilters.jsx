@@ -47,6 +47,8 @@ function ModalFilters() {
 
     const addTag = () => {
 
+        if (!currentTag) return
+
         if (search.tags.some(elem => elem === currentTag.toUpperCase())) {
             return setCurrentTag("")
         }

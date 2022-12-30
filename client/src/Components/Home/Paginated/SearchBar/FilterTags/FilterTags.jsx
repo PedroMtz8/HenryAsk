@@ -33,6 +33,8 @@ const FilterTags = () => {
 
     const addTag = () => {
 
+        if (!currentTag) return
+
         if (allTags.some(elem => elem === currentTag)) {
             return setCurrentTag("");
         }
