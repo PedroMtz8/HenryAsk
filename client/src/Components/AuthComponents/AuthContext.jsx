@@ -19,7 +19,7 @@ export const useAuth = () => {
 const AuthProvider = ({ children }) => {
   const [loadingUser, setLoadingUser] = useState(true);
   const [user, setUser] = useState(null)
-  /* console.log(user) */
+  console.log(user)
 
   const updateUsername = async (userUpdate, username) => {
     await updateProfile(userUpdate, { displayName: username })
@@ -51,7 +51,6 @@ const AuthProvider = ({ children }) => {
     let url;
     if(id){
       const storageRef = ref (storage, `${uid}/posts/${id}`)
-      console.log(storageRef)
       await uploadBytes(storageRef, file)
       url = getDownloadURL(storageRef)
     }else{
@@ -60,7 +59,6 @@ const AuthProvider = ({ children }) => {
       url = getDownloadURL(storageRef)
     }
 
-    /* const url = getDownloadURL(storageRef) */
     return url
   }
 
@@ -69,10 +67,6 @@ const AuthProvider = ({ children }) => {
     await deleteObject(storageRef);
   }
 
-  /* async function loadFIle(url, uid) {
-    const fileRef = doc(firestore, `${uid}/${uid}`);
-    await setDoc(fileRef, { link: url, time: Date.now() });
-  } */
 
   useEffect(() => {
     onAuthStateChanged(auth, (currentUser) => {

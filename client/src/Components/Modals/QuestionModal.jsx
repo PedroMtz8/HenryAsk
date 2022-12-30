@@ -44,7 +44,6 @@ export default function QuestionModal({ title }) {
     body: ''
   })
   const [ url, setUrl] = useState(null)
-  console.log(url)
 
   const initialRef = useRef(null)
   const finalRef = useRef(null)
