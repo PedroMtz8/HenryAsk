@@ -6,7 +6,8 @@ import {
   Flex,
   Heading,
   Image,
-  Text
+  Text,
+  Box
 } from "@chakra-ui/react";
 import {Link} from 'react-router-dom'
 import React from "react";
@@ -35,7 +36,7 @@ const CardHome = ({ cardData }) => {
       bg="#F2F2F2"
       p=".8rem"
       w="100%"
-      h={["14rem", "13rem", "12rem", "11rem", "10rem"]}
+      h={"180px"}
       overflow="hidden"
       variant="outline"
       boxShadow="dark-lg"
@@ -46,30 +47,41 @@ const CardHome = ({ cardData }) => {
         gap="1rem"
       >
         <GridItem rowSpan={2} colSpan={1} align={"center"} >
+          <Box  
+            w="48px"
+            h="48px">
+
           <Image
             objectFit="cover"
             mt=".8rem"
-            w="3rem"
-            h="3rem"
+            w="48px"
+            h="48px"
             borderRadius="3rem"
-            src="https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60"
+            src={cardData.user?.avatar}
             alt="Caffe Latte"
-          />
+            />
+            </Box>
           <Image w="2.1rem" mt=".5rem"
             src="https://i.postimg.cc/rw0MgSxN/medalla-6.png" alt="userImage" />
         </GridItem >
         <GridItem rowSpan={1} colSpan={7} direction="column">
           <Flex alignItems={"center"} gap=".4rem" fontSize=".75rem" fontWeight="bold">
+            <Flex flexDirection={{base: "column", sm: "row", md: "row", lg: "row"}}>
+
             <Text >
-              {`${cardData.user?.userSlack} • ${dif}`}
+              {`${cardData.user?.userSlack}`}
             </Text>
+            <Text>
+              {`• ${dif}`}
+            </Text>
+            </Flex>
             <Image w="1.4rem" alignSelf="flex-start"
               src="https://i.postimg.cc/TwrFYv4p/image-30.png" alt="userImage" />
             <Text >
               {cardData.user?.score}
             </Text>
           </Flex>
-          <Heading size="sm">
+          <Heading size="sm" h={{base:"20px", sm: "60px", md: "max-content", lg: "max-content"}} overflow="hidden">
             <Link to={`/details/${cardData._id}`}>
               {cardData.title.slice(0, 180)}
               {cardData.title.length > 180? "..." : ""}
@@ -78,26 +90,35 @@ const CardHome = ({ cardData }) => {
         </GridItem>
 
         <GridItem rowSpan={1} colSpan={7} display={"flex"} justifyContent="space-between"
-          fontSize=".8rem">
+          fontSize=".8rem" position={"relative"}  >
+            <Flex flexDirection={{base: "column", sm: "row", md: "row", lg: "row"}}
+              /* position={"relative"} */
+            >
           <Flex justifyContent="center"
             alignItems="center"
+            position={"absolute"}
+            left={0}
+            bottom={{base: 10, sm: 0, md: 0, lg: 0}}
             gap=".5rem">
             {cardData.tags.map((elem, i) =>
-              <Button key={i}
-                p=".5rem .5rem"
+              <Box key={i} fontSize={14}
+              p=".5rem .5rem"
                 variant="solid"
                 bgColor="#ffff01">
                 {elem}
-              </Button>)
+              </Box>)
             }
           </Flex>
           <Flex justifyContent="center"
             alignItems="center"
+            position={"absolute"}
+            right={0}
+            bottom={-1}
             gap=".5rem">
             <Button variant="outline">
               <ChatIcon marginRight={"3px"} /> Comentarios
             </Button>
-            <Button variant="ghost"
+            {/* <Button variant="ghost"
               color="white"
               _hover={{
                 color: "black",
@@ -105,8 +126,9 @@ const CardHome = ({ cardData }) => {
               }}
               bg="#272930">
               Responder
-            </Button>
+            </Button> */}
           </Flex>
+                </Flex>
         </GridItem>
       </Grid>
     </Card>

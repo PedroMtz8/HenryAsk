@@ -23,6 +23,11 @@
     font-weight: 500;
 }
 
+.ProseMirror {
+    min-height: 200px;
+    height: auto;
+}
+
 .ProseMirror p.is-editor-empty:first-child::before {
     color: #718096;
     content: attr(data-placeholder);
