@@ -64,7 +64,7 @@ const Paginated = () => {
       justifyContent="flex-start"
       alignItems="center"
       minH="90vh"
-      p="1rem"
+      p={{base: '0.5rem', sm: '1rem'}}
       gap="1rem"
     >
       <SearchBar />

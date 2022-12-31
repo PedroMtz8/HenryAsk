@@ -9,12 +9,18 @@ import {
   Text,
   Box
 } from "@chakra-ui/react";
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import React from "react";
 import { ChatIcon } from "@chakra-ui/icons";
 import moment from "moment"
 import { localeData } from 'moment_spanish_locale';
 import 'moment/locale/es';
+import Admin from "../../assets/Rol Images/Administrador.png"
+import Graduate from "../../assets/Rol Images/Graduate.png"
+import Student from "../../assets/Rol Images/Students.png"
+import HeroOrTA from "../../assets/Rol Images/Hero,TA.png"
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 
 export const formatDate = (date) => {
 
@@ -22,84 +28,137 @@ export const formatDate = (date) => {
 
   const arrTime = arrDate[2].split('T')
 
-  return arrTime[1].slice(0, 8) + ' ' + arrTime[0] + '-' + arrDate[1] + '-' + arrDate[0] 
+  return arrTime[1].slice(0, 8) + ' ' + arrTime[0] + '-' + arrDate[1] + '-' + arrDate[0]
 
 }
 
 const CardHome = ({ cardData }) => {
-
-    moment.updateLocale('es', localeData)
-    let dif = moment(cardData.createdAt).startOf('minutes').fromNow()
-
+  moment.updateLocale('es', localeData)
+  let dif = moment(cardData.createdAt).startOf('minutes').fromNow()
+  const [ rolImg, setRolImg ] = useState()
+  useEffect(() => {
+    if(cardData.user.rol === "Henry Hero") setRolImg(HeroOrTA)
+    if(cardData.user.rol === "TA") setRolImg(HeroOrTA)
+    if(cardData.user.rol === "Administrador") setRolImg(Admin)
+    if(cardData.user.rol === "Estudiante") setRolImg(Student)
+    if(cardData.user.rol === "Graduado") setRolImg(Graduate)
+  }, [])
+  
   return (
     <Card position="relative"
       bg="#F2F2F2"
       p=".8rem"
       w="100%"
-      h={"180px"}
+      
       overflow="hidden"
       variant="outline"
       boxShadow="dark-lg"
     >
-      <Grid templateRows='repeat(2, 1fr)'
-        templateColumns='repeat(8, 1fr)'
+      <Grid templateRows={{base:'min-content min-content min-content'}}
+        templateColumns='min-content repeat(2, 1fr)'
         boxSize="100%"
-        gap="1rem"
+        columnGap={'1rem'}
+        gap={'5px'}
       >
-        <GridItem rowSpan={2} colSpan={1} align={"center"} >
-          <Box  
+        <GridItem gridArea={'1 / 1 / 2 / 2'} justifySelf='center'>
+          <Box
             w="48px"
             h="48px">
 
-          <Image
-            objectFit="cover"
-            mt=".8rem"
-            w="48px"
-            h="48px"
-            borderRadius="3rem"
-            src={cardData.user?.avatar}
-            alt="Caffe Latte"
+            <Image
+              objectFit="cover"
+              w="48px"
+              h="48px"
+              borderRadius="3rem"
+              src={cardData.user?.avatar}
+              alt="Caffe Latte"
             />
-            </Box>
-          <Image w="2.1rem" mt=".5rem"
-            src="https://i.postimg.cc/rw0MgSxN/medalla-6.png" alt="userImage" />
+          </Box>
         </GridItem >
-        <GridItem rowSpan={1} colSpan={7} direction="column">
-          <Flex alignItems={"center"} gap=".4rem" fontSize=".75rem" fontWeight="bold">
-            <Flex flexDirection={{base: "column", sm: "row", md: "row", lg: "row"}}>
-
-            <Text >
+        <GridItem gridArea={'2 / 1 / 3 / 2'} justifySelf='center'>
+          <Image w="2.2rem"
+            src={rolImg} alt="userImage" />
+        </GridItem >
+        <GridItem gridArea={'1 / 2 / 2 / 4'} justifySelf='flex-start'>
+            {/* {cardData.user?.userSlack.length < 20
+            ? <Flex display='flex' alignItems={"center"} justifyContent='center' gap=".4rem" fontSize=".75rem" fontWeight="bold">
+            <Text>
               {`${cardData.user?.userSlack}`}
             </Text>
             <Text>
               {`• ${dif}`}
             </Text>
-            </Flex>
+
             <Image w="1.4rem" alignSelf="flex-start"
               src="https://i.postimg.cc/TwrFYv4p/image-30.png" alt="userImage" />
             <Text >
               {cardData.user?.score}
             </Text>
           </Flex>
-          <Heading size="sm" h={{base:"20px", sm: "60px", md: "max-content", lg: "max-content"}} overflow="hidden">
+          : <Flex display='flex' flexDirection='column' alignItems='flex-start' gap=".4rem" fontSize=".75rem" fontWeight="bold">
+              <Text>
+              {`${cardData.user?.userSlack}`}
+            </Text>
+              <Flex display='flex' gap=".4rem">
+              <Text>
+                {`${dif} •`}
+              </Text>
+              <Image w="1.4rem" alignSelf="flex-start"
+              src="https://i.postimg.cc/TwrFYv4p/image-30.png" alt="userImage" />
+              <Text >
+              {cardData.user?.score}
+              </Text>
+              </Flex>
+          </Flex>
+              } */}
+          <Flex display='flex' flexDirection='column' alignItems='flex-start' gap=".4rem" fontSize=".75rem" fontWeight="bold">
+              <Text>
+              {`${cardData.user?.userSlack}`}
+            </Text>
+              <Flex display='flex' gap=".4rem">
+              <Text>
+                {`${dif} •`}
+              </Text>
+              <Image w="1.4rem" alignSelf="flex-start"
+              src="https://i.postimg.cc/TwrFYv4p/image-30.png" alt="userImage" />
+              <Text >
+              {cardData.user?.score}
+              </Text>
+              </Flex>
+          </Flex>
+        </GridItem >
+        <GridItem gridArea={'2 / 2 / 3 / 4'} justifySelf='flex-start' display={'flex'} flexWrap='wrap' >
+        <Text 
+        style={{'WebkitBoxOrient': 'vertical', 'WebkitLineClamp': 4}}
+        fontSize={'17px'}
+        fontWeight={700} 
+        wordBreak='break-word' 
+        display={'-webkit-box'} 
+        margin='0 auto'
+        lineHeight={1.4}
+        overflow='hidden'
+        textOverflow={'ellipsis'}
+        >
             <Link to={`/details/${cardData._id}`}>
-              {cardData.title.slice(0, 180)}
-              {cardData.title.length > 180? "..." : ""}
+              {cardData.title}
             </Link>
-          </Heading>
+          </Text>
         </GridItem>
-
-        <GridItem rowSpan={1} colSpan={7} display={"flex"} justifyContent="space-between"
-          fontSize=".8rem" position={"relative"}  >
-            <Flex flexDirection={{base: "column", sm: "row", md: "row", lg: "row"}}
-              /* position={"relative"} */
+       
+         <GridItem gridArea={'3 / 1 / 4 / 2'}>
+            <Flex display='flex' gap={'5px'} justifyContent='center' alignItems='center' mt={'5px'}>
+              <Text>{cardData.numberAnswers}</Text>
+              <ChatIcon marginRight={"3px"} /> 
+            </Flex>
+          </GridItem>
+          <GridItem gridArea={'3 / 2 / 4 / 4'}>
+            <Flex 
+          justifyContent="flex-start"
+            alignItems="flex-start"
+            columnGap={'15px'}
+            rowGap={'5px'}
+            flexWrap={'wrap'}
             >
-          <Flex justifyContent="center"
-            alignItems="center"
-            position={"absolute"}
-            left={0}
-            bottom={{base: 10, sm: 0, md: 0, lg: 0}}
-            gap=".5rem">
             {cardData.tags.map((elem, i) =>
               <Box key={i} fontSize={14}
               p=".5rem .5rem"
@@ -109,30 +168,10 @@ const CardHome = ({ cardData }) => {
               </Box>)
             }
           </Flex>
-          <Flex justifyContent="center"
-            alignItems="center"
-            position={"absolute"}
-            right={0}
-            bottom={-1}
-            gap=".5rem">
-            <Button variant="outline">
-              <ChatIcon marginRight={"3px"} /> Comentarios
-            </Button>
-            {/* <Button variant="ghost"
-              color="white"
-              _hover={{
-                color: "black",
-                bg: "#FFFF01"
-              }}
-              bg="#272930">
-              Responder
-            </Button> */}
-          </Flex>
-                </Flex>
-        </GridItem>
+          </GridItem>
       </Grid>
     </Card>
-  );
+);
 };
 
-export default CardHome;
+export default CardHome; 
