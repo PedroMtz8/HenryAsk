@@ -103,10 +103,13 @@ export const getUserAnswers = (token, userID, page) => async (dispatch) => {
   }
 }
 
-export const updateUser = (token, avatar, country) => async (dispatch) => {
+export const updateUser = (token, avatar, country, userSlack) => async () =>  {
   try {
-    let res = await axios.put(`${API_URL}/auth`, {avatar, country}, { headers: { Authorization: "Bearer " + token }})
-    dispatch(updateUser(res))
+      if(!userSlack){
+         await axios.put(`${API_URL}/auth`, {avatar, country}, { headers: { Authorization: "Bearer " + token }})
+      }
+      await axios.put(`${API_URL}/auth`, {userSlack, country}, { headers: { Authorization: "Bearer " + token }})
+
   } catch (error) {
     console.log(error)
   }
