@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { savePosts } from "../../../slices/paginatedSlice";
-import { Flex, Button, Stack, Skeleton, Box } from "@chakra-ui/react";
+import { savePosts, changePage } from "../../../slices/paginatedSlice";
+import { Flex, Stack, Skeleton } from "@chakra-ui/react";
 import CardsHome from "../../Card/CardsHome";
 import PaginatedButtons from "./PaginatedButtons/PaginatedButtons.jsx";
 import SearchBar from "./SearchBar/SearchBar";
@@ -23,7 +23,27 @@ const Paginated = () => {
     const getPosts = async () => {
       const res = await axios.get(
         API_URL +
-          `/posts?page=${paginated.currentPage}&q=${paginated.titleFilter}&module=${paginated.moduleFilter}&tags=${paginated.tagsFilter}&sort=${paginated.order}`,
+        `/posts?page=1&q=${paginated.titleFilter}&module=${paginated.moduleFilter}&tags=${paginated.tagsFilter}&sort=${paginated.order}`,
+        { headers: { Authorization: "Bearer " + token } }
+      );
+
+      dispatch(savePosts(res.data));
+      dispatch(changePage('1'));
+      setLoadingPosts(false);
+    };
+
+    getPosts();
+  }, [
+    paginated.moduleFilter,
+    paginated.tagsFilter,
+    paginated.titleFilter,
+  ]);
+
+  useEffect(() => {
+    const getPosts = async () => {
+      const res = await axios.get(
+        API_URL +
+        `/posts?page=${paginated.currentPage}&q=${paginated.titleFilter}&module=${paginated.moduleFilter}&tags=${paginated.tagsFilter}&sort=${paginated.order}`,
         { headers: { Authorization: "Bearer " + token } }
       );
 
@@ -32,13 +52,9 @@ const Paginated = () => {
     };
 
     getPosts();
-  }, [
-    paginated.currentPage,
-    paginated.moduleFilter,
-    paginated.tagsFilter,
-    paginated.order,
-    paginated.titleFilter,
-  ]);
+  }, [paginated.currentPage, paginated.order,])
+
+
 
   return (
     <Flex
@@ -48,11 +64,11 @@ const Paginated = () => {
       justifyContent="flex-start"
       alignItems="center"
       minH="90vh"
-      p="1rem"
+      p={{base: '0.5rem', sm: '1rem'}}
       gap="1rem"
     >
       <SearchBar />
-      {loadingPosts ? 
+      {loadingPosts ?
         <Stack w={"85%"} gap={3} /* bgColor="blue" position={"absolute"} zIndex={4} */>
           <Skeleton height="180px" />
           <Skeleton height="180px" />
@@ -65,12 +81,12 @@ const Paginated = () => {
           <Skeleton height="180px" />
           <Skeleton height="180px" />
         </Stack>
-       : (
-        <>
-          <CardsHome />
-          <PaginatedButtons />
-        </>
-      )}
+        : (
+          <>
+            <CardsHome />
+            <PaginatedButtons />
+          </>
+        )}
     </Flex>
   );
 };

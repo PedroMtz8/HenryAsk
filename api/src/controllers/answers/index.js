@@ -83,6 +83,7 @@ const getAnswersFromUser = async (req, res) => {
         .skip(page * 5 - 5)
         .limit(5)
         .select({ user: 0, voters: 0 })
+        .populate('post', {title: 1})
 
     //Ejecuto dos busquedas al mismo tiempo
     Promise.all([

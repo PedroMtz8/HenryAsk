@@ -1,4 +1,4 @@
-import { Box, Flex } from '@chakra-ui/react'
+import { Box } from '@chakra-ui/react'
 import Footer from './Footer/Footer'
 import NavBar from '../NavBar/NavBar'
 import Paginated from './Paginated/Paginated'
@@ -8,8 +8,8 @@ const Home = () => {
     return (
         <Box >
             <NavBar />
-            <Paginated/>
-            <Footer />
+            <Paginated />
+            {/* <Footer /> */}
         </Box>
     )
 }

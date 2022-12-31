@@ -43,7 +43,7 @@ export default function QuestionModal({ title }) {
     title: '',
     body: ''
   })
-  const [ url, setUrl] = useState(null)
+  const [url, setUrl] = useState(null)
 
   const initialRef = useRef(null)
   const finalRef = useRef(null)
@@ -96,20 +96,20 @@ export default function QuestionModal({ title }) {
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
         isOpen={isOpen}
-        onClose={() =>{
+        onClose={() => {
           url ?
-              deleteFile(url) : null
-              setUrl(null)
+            deleteFile(url) : null
+          setUrl(null)
           onClose()
         }}
-        size={{base: "xs", sm: "lg", md: "full", lg:"full"}}
+        size={"full"}
       >
         <ModalOverlay />
         <ModalContent w={{ sm: "100vw", md: "90vw", lg: '80vw' }}>
           <ModalHeader></ModalHeader>
           <ModalCloseButton onClick={() => {
             url ?
-            deleteFile(url) : null
+              deleteFile(url) : null
             setUrl(null)
           }} _hover={{ background: "tomato" }} />
           <ModalBody pb={6}>
@@ -124,7 +124,7 @@ export default function QuestionModal({ title }) {
               <FormControl mt={4}>
                 <FormLabel fontSize={"24px"} >Cuerpo</FormLabel>
                 <Text mb={"5px"} >El cuerpo de la pregunta contiene los detalles de tu problema y, a futuro, la resolucion de este.</Text>
-                <Editor post={post} setPost={setPost} setBodyText={setBodyText} setUrl={setUrl}/>
+                <Editor post={post} setPost={setPost} setBodyText={setBodyText} setUrl={setUrl} />
                 <Text mb={"5px"} color={'red'} >{error.body}</Text>
               </FormControl>
               <FormControl mt={4}>
@@ -155,10 +155,10 @@ export default function QuestionModal({ title }) {
             </Button>
             <Button _hover={{ background: "tomato" }} onClick={() => {
               url ?
-              deleteFile(url) : null
+                deleteFile(url) : null
               setUrl(null)
               onClose()
-              }}>Cancelar</Button>
+            }}>Cancelar</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
