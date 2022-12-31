@@ -102,7 +102,7 @@ export default function QuestionModal({ title }) {
               setUrl(null)
           onClose()
         }}
-        size={{base: "xs",md: "full", lg:"full"}}
+        size={{base: "xs", sm: "lg", md: "full", lg:"full"}}
       >
         <ModalOverlay />
         <ModalContent w={{ sm: "100vw", md: "90vw", lg: '80vw' }}>

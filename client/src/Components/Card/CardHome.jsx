@@ -82,7 +82,7 @@ const CardHome = ({ cardData }) => {
             </Text>
           </Flex>
           <Heading size="sm" h={{base:"20px", sm: "60px", md: "max-content", lg: "max-content"}} overflow="hidden">
-            <Link to={`/details/${cardData._id}`}>
+            <Link to={`/home/post/${cardData._id}`}>
               {cardData.title.slice(0, 180)}
               {cardData.title.length > 180? "..." : ""}
             </Link>
