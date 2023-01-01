@@ -25,6 +25,7 @@ const Accounts = () => {
   const accounts = useSelector((state) => state.user);
 
   const users = accounts.users;
+  const maxPag = useSelector((state) => state.user.usersMaxPages);
 
   useEffect(() => {
     dispatch(getUsers({ token, page: accounts.page }));
@@ -34,7 +35,14 @@ const Accounts = () => {
     <Flex>
       <Sidebar />
       <div style={{ margin: "20px auto" }}>
-        <SearchbarAdmin name="Rol" op1="Estudiante" op2="Administrador" />
+        <SearchbarAdmin
+          name="Rol"
+          op1="Estudiante"
+          op2="Administrador"
+          op3="Henry Hero"
+          op4="Graduado"
+          op5="TA"
+        />
         <Text
           mb="20px"
           align="center"
@@ -67,7 +75,7 @@ const Accounts = () => {
             </Tbody>
           </Table>
         </TableContainer>
-        <PaginatedAdmin />
+        <PaginatedAdmin maxPages={maxPag} />
       </div>
     </Flex>
   );
