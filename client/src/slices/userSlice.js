@@ -5,6 +5,7 @@ import API_URL from "../config/environment";
 
 const initialState = {
   user: {},
+  users: [],
   page: 1,
   userQuestions: [],
   userAnswers: [],
@@ -131,15 +132,16 @@ export const userSlice = createSlice({
   },
 });
 
-export const { saveUser, saveQuestions, saveAnswers, nextPage, previousPage, setPage } =
-  userSlice.actions;
-
-export const { saveUser, saveQuestions, saveAnswers, nextPage, previousPage, setPage } =
-  userSlice.actions;
+export const {
+  saveUser,
+  saveQuestions,
+  saveAnswers,
+  nextPage,
+  previousPage,
+  setPage,
+} = userSlice.actions;
 
 export default userSlice.reducer;
-
-
 
 // Son funciones que ejecutan las acciones, estas funciones traen la info y las setean en el estado
 
@@ -168,21 +170,31 @@ export const getUserQuestions = (token, userID, page) => async (dispatch) => {
 
 export const getUserAnswers = (token, userID, page) => async (dispatch) => {
   try {
-    let answers = await axios(`${API_URL}/answer/user?page=${page}&user_id=${userID}`, { headers: { Authorization: "Bearer " + token }})
-    dispatch(saveAnswers(answers.data.foundAnswers))
+    let answers = await axios(
+      `${API_URL}/answer/user?page=${page}&user_id=${userID}`,
+      { headers: { Authorization: "Bearer " + token } }
+    );
+    dispatch(saveAnswers(answers.data.foundAnswers));
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};
 
-export const updateUser = (token, avatar, country, userSlack) => async () =>  {
+export const updateUser = (token, avatar, country, userSlack) => async () => {
   try {
-      if(!userSlack){
-         await axios.put(`${API_URL}/auth`, {avatar, country}, { headers: { Authorization: "Bearer " + token }})
-      }
-      await axios.put(`${API_URL}/auth`, {userSlack, country}, { headers: { Authorization: "Bearer " + token }})
-
+    if (!userSlack) {
+      await axios.put(
+        `${API_URL}/auth`,
+        { avatar, country },
+        { headers: { Authorization: "Bearer " + token } }
+      );
+    }
+    await axios.put(
+      `${API_URL}/auth`,
+      { userSlack, country },
+      { headers: { Authorization: "Bearer " + token } }
+    );
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};

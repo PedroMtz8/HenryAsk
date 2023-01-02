@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { filterByRol, getByMail } from "../../slices/userSlice";
+import { getByMail } from "../../slices/userSlice";
 import { useAuth } from "../AuthComponents/AuthContext";
 
 const SearchbarAdmin = ({ name, op1, op2, op3, op4, op5, isAccounts }) => {
@@ -35,8 +35,6 @@ const SearchbarAdmin = ({ name, op1, op2, op3, op4, op5, isAccounts }) => {
 
   const handleChangeFilter = (e) => {
     e.preventDefault();
-
-    dispatch(filterByRol(e.target.value));
   };
 
   return (
