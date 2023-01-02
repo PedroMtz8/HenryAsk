@@ -28,7 +28,7 @@ function App() {
           <Route path="/admin/accounts" element={<Accounts />} />
           <Route path="/admin/requests" element={<ReqAdmin />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/details/:id" element={<Details />} />
+          <Route path="/home/post/:id" element={<Details />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
       </Routes>

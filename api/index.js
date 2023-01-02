@@ -8,7 +8,8 @@ const { verifyToken } = require('./src/controllers/middlewares')
 const server = express()
 server.use(cors())
 server.use(morgan('dev'))
-server.use(express.json());
+server.use(express.json({limit: '50mb'}));
+server.use(express.urlencoded({limit: '50mb'}));
 
 // Rutas
 server.use('/auth', require('./src/routes/auth'))
