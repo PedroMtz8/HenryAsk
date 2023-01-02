@@ -15,6 +15,18 @@ const initialState = {
   maxPages: 0,
 };
 
+export const getUser = createAsyncThunk("get/user", async (token) => {
+  try {
+    const { data } = await axios.get(`http://localhost:3001/auth`, {
+      headers: { Authorization: "Bearer " + token },
+    });
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 export const getUsers = createAsyncThunk(
   "get/users",
   async ({ token, page }) => {
@@ -128,6 +140,9 @@ export const userSlice = createSlice({
       .addCase(getByMail.fulfilled, (state, action) => {
         state.users = action.payload.foundUsers;
         state.usersMaxPages = action.payload.maxPages;
+      })
+      .addCase(getUser.fulfilled, (state, action) => {
+        state.user = action.payload.user;
       });
   },
 });
