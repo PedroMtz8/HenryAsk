@@ -26,7 +26,7 @@ const PaginatedAdmin = ({ maxPages }) => {
 
   for (let i = 1; i <= maxPages; i++) {
     components.push(
-      <div style={{ display: "inline-block", padding: "7px" }}>
+      <div key={i} style={{ display: "inline-block", padding: "7px" }}>
         <Button
           style={
             currentPage === i

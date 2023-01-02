@@ -33,8 +33,6 @@ const SearchbarAdmin = ({ name, op1, op2, op3, op4, op5, isAccounts }) => {
     dispatch(getByMail({ mail: search.toLowerCase(), page, token }));
   };
 
-  dispatch(filterByRol());
-
   const handleChangeFilter = (e) => {
     e.preventDefault();
 
