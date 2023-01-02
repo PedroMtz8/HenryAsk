@@ -12,6 +12,7 @@ const initialState = {
   reqMaxPages: 0,
   usersMaxPages: 0,
   maxPages: 0,
+  users: [],
 };
 
 export const getUsers = createAsyncThunk(
@@ -33,10 +34,10 @@ export const getUsers = createAsyncThunk(
 
 export const getRequest = createAsyncThunk(
   "get/request",
-  async ({ token, page }) => {
+  async ({ token, page, type }) => {
     try {
       const { data } = await axios.get(
-        `http://localhost:3001/request?page=${page}`,
+        `http://localhost:3001/request?page=${page}&type=${type}`,
         {
           headers: { Authorization: "Bearer " + token },
         }
@@ -131,11 +132,15 @@ export const userSlice = createSlice({
   },
 });
 
-export const { saveUser, saveQuestions, saveAnswers, nextPage, previousPage, setPage } =
-  userSlice.actions;
-
-export const { saveUser, saveQuestions, saveAnswers, nextPage, previousPage, setPage } =
-  userSlice.actions;
+export const {
+  saveUser,
+  saveQuestions,
+  nextPage,
+  previousPage,
+  setPage,
+  filterByRol,
+  saveAnswers,
+} = userSlice.actions;
 
 export default userSlice.reducer;
 
