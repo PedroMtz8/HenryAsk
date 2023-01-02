@@ -130,6 +130,7 @@ function ModalFilters() {
                                         <option value={"M2"}>M2</option>
                                         <option value={"M3"}>M3</option>
                                         <option value={"M4"}>M4</option>
+                                        <option value="Graduado">Graduado</option>
                                     </Select>
                                     <HStack mt={8}>
                                         <Input value={currentTag}

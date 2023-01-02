@@ -26,6 +26,11 @@ function checkFields(fields) {
             case 'page':
                 if (value <= 0) return 'Pagina no puede ser menor o igual a 0'
                 break;
+            case 'rol':
+                if(!value) return;
+                const roles = ['Administrador', 'Estudiante', 'Graduado', 'TA', 'Henry Hero']
+                if(!roles.includes(value)) return 'Rol invalido.'
+                break;
         }
     }
     return ''
@@ -96,16 +101,19 @@ const getUserById = async (req, res) => {
 }
 
 const getUsers = async (req, res) => {
-    const { page, mail } = req.query
+    const { page, mail, rol } = req.query
     if (!page) return res.status(400).json({ message: 'Numero de pagina requerido.' })
-    const message = checkFields({ page })
+    const message = checkFields({ page, rol })
     if (message) return res.status(400).json({ message })
 
     function buildQuery() {
         if (mail) {
             var query = User.find({ mail: new RegExp(mail.trim()) })
+        }
+        else if(rol){
+            query = User.find({rol})
         } else {
-            query = User.find().sort({ mail: 1 })
+            query = User.find()
         }
         return query
     }
@@ -115,6 +123,7 @@ const getUsers = async (req, res) => {
         skip(page * 10 - 10).
         limit(10).
         select({ _id: 0, mail: 1, userSlack: 1, status: 1, rol: 1 })
+        .sort({ mail: 1 })
 
     //busqueda para obtener numero maximo de pagina
     const searchAllUsers = buildQuery().select({ _id: 1 })
