@@ -3,10 +3,12 @@ import React, { useState } from "react";
 import { FiBriefcase, FiHome, FiMenu, FiUser } from "react-icons/fi";
 import { Navigate, useNavigate } from "react-router-dom";
 import NavItem from "./NavItem";
+import { useSelector } from "react-redux";
 
 const Sidebar = () => {
   const [navSize, setNavSize] = useState("large");
   const navigate = useNavigate();
+  const userData = useSelector((state) => state.user.user);
 
   const handleMenuSize = () => {
     if (navSize === "small") {
@@ -67,7 +69,7 @@ const Sidebar = () => {
         display={navSize === "small" ? "none" : "flex"}
       >
         <Heading as="h3" size="sm">
-          Nombre del usuario
+          {userData?.userSlack}
         </Heading>
         <Text color="gray">Admin</Text>
       </Flex>
