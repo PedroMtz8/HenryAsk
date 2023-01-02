@@ -24,7 +24,7 @@ import API_URL from "../../config/environment"
 import { useAuth } from "../AuthComponents/AuthContext"
 import Editor from '../Editor/Editor'
 import { useEffect } from "react"
-let modulos = ["Modulo 1", "Modulo 2", "Modulo 3", "Modulo 4", "Egresado"]
+let modulos = ["M1", "M2", "M3", "M4", "Graduado"]
 
 
 

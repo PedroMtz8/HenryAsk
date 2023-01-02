@@ -45,12 +45,13 @@ function SelectFilters() {
                 <HStack w="32%">
                     <Select borderRadius="10rem"
                         value={paginated.moduleFilter}
-                        onChange={() => dispatch(changeModuleFilter(e.target.value))}>
+                        onChange={(e) => dispatch(changeModuleFilter(e.target.value))}>
                         <option value="">Modulos</option>
                         <option value={"M1"}>M1</option>
                         <option value={"M2"}>M2</option>
                         <option value={"M3"}>M3</option>
                         <option value={"M4"}>M4</option>
+                        <option value="Graduado">Graduado</option>
                     </Select>
                     <FilterTags />
                 </HStack>
