@@ -37,12 +37,6 @@ const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     let user = await signInWithEmailAndPassword(auth, email, password)
-    const token = await user.user.getIdToken() //devuelve el token de acceso, si existe uno pero vencio, lo refresca
-    const result = await axios.get(`${API_URL}/auth/status`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
   }
 
   function forgotPasswordFunction(email) {
@@ -53,11 +47,18 @@ const AuthProvider = ({ children }) => {
     await signOut(auth)
   }
 
-  async function uploadFile(file, uid) {
-    const storageRef = ref(storage, `${uid}/${file.name}`)
-    await uploadBytes(storageRef, file)
+  async function uploadFile(file, uid, name, id) {
+    let url;
+    if(id){
+      const storageRef = ref (storage, `${uid}/posts/${id}`)
+      await uploadBytes(storageRef, file)
+      url = getDownloadURL(storageRef)
+    }else{
+      const storageRef = ref(storage, `${uid}/${name}`)
+      await uploadBytes(storageRef, file)
+      url = getDownloadURL(storageRef)
+    }
 
-    const url = getDownloadURL(storageRef)
     return url
   }
 
@@ -66,10 +67,6 @@ const AuthProvider = ({ children }) => {
     await deleteObject(storageRef);
   }
 
-  /* async function loadFIle(url, uid) {
-    const fileRef = doc(firestore, `${uid}/${uid}`);
-    await setDoc(fileRef, { link: url, time: Date.now() });
-  } */
 
   useEffect(() => {
     onAuthStateChanged(auth, (currentUser) => {

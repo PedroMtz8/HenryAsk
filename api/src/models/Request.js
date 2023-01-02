@@ -12,7 +12,7 @@ const schema = new Schema({
     rol: {
         type: String,
         validate: {
-            validator: r => r === 'Estudiante' || r === 'Egresado' || r === 'Administrador' || r === 'TA' || r === 'Henry Hero',
+            validator: r => r === 'Estudiante' || r === 'Graduado' || r === 'Administrador' || r === 'TA' || r === 'Henry Hero',
             message: props => `${props.value} no es un tipo de peticion valido!`
         },
     },

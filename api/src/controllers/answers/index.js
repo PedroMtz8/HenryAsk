@@ -3,12 +3,11 @@ const Post = require('../../models/Post')
 const User = require('../../models/User')
 
 const createAnswer = async (req, res) => {
-    const { title, body, post_id } = req.body
-    if (!title || !body) return res.status(400).json({ message: 'Titulo y descripcion requeridos.' })
+    const { body, post_id } = req.body
+    if (!body) return res.status(400).json({ message: 'Descripcion requerida.' })
 
     try {
         const newAnswer = await Answer.create({
-            title,
             body,
             user: req.id,
             post: post_id
@@ -22,8 +21,8 @@ const createAnswer = async (req, res) => {
 }
 
 const editAnswer = async (req, res) => {
-    const { answer_id, title, body } = req.body
-    if (!answer_id || !title || !body) return res.status(400).json({ message: 'Id de respuesta, titulo y descripcion requeridos.' })
+    const { answer_id, body } = req.body
+    if (!answer_id || !body) return res.status(400).json({ message: 'Id de respuesta y descripcion requeridos.' })
 
     try {
         const answer = await Answer.findById(answer_id)
@@ -31,7 +30,6 @@ const editAnswer = async (req, res) => {
         if (!answer) return res.status(404).json({ message: 'La respuesta no fue encontrado!' })
         if (answer.user !== req.id) return res.status(401).json({ message: 'Usted no es el autor de esta respuesta!' })
 
-        answer.title = title
         answer.body = body
         await answer.save()
 
@@ -85,6 +83,7 @@ const getAnswersFromUser = async (req, res) => {
         .skip(page * 5 - 5)
         .limit(5)
         .select({ user: 0, voters: 0 })
+        .populate('post', {title: 1})
 
     //Ejecuto dos busquedas al mismo tiempo
     Promise.all([
@@ -107,7 +106,7 @@ const voteAnswer = async (req, res) => {
         const votedAnswer = await Answer.findById(answer_id)
         if (!votedAnswer) return res.status(404).json({ message: 'La respuesta no fue encontrada!' })
         const author = await User.findById(votedAnswer.user) //autor de la respuesta
-        if (author.mail === voter.mail) return res.status(404).json({ message: 'No puedes votar tu propia respuesta!' })
+        if (author.mail === voter.mail) return res.status(400).json({ message: 'No puedes votar tu propia respuesta!' })
         const previousVoteType = votedAnswer.voters[req.id] //obtengo voto previo
         let message = ''
 
@@ -164,7 +163,7 @@ const voteAnswer = async (req, res) => {
 
         await votedAnswer.save()
         await author.save() //actualizo la puntuacion de autor de la respuesta
-        res.json({ message })
+        res.json({ message, authorScore: author.score, voteAnswer: votedAnswer.score })
     } catch (error) {
         res.json({ message: error.message })
     }

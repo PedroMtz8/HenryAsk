@@ -18,12 +18,13 @@ const schema = new Schema({
     rol: {
         type: String,
         validate: {
-            validator: r => r === 'Estudiante' || r === 'Egresado' || r === 'Administrador' || r === 'TA' || r === 'Henry Hero',
+            validator: r => r === 'Estudiante' || r === 'Graduado' || r === 'Administrador' || r === 'TA' || r === 'Henry Hero',
             message: props => `${props.value} no es un rol valido!`
         },
         default: 'Estudiante'
     },
     score: { type: Number, default: 0 },
+    avatar: { type: String, default: 'https://firebasestorage.googleapis.com/v0/b/henry-ask-ad0f8.appspot.com/o/avatar%20default%2Favatar.png?alt=media&token=c1536bf4-cd36-4d73-bc5e-132fdb1c910a' },
 })
 
 module.exports = model('User', schema)

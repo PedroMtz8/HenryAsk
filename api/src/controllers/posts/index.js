@@ -112,7 +112,7 @@ const getPosts = async (req, res) => {
         .select({ numberComments: 0, voters: 0 })
         .skip(page * 10 - 10)
         .limit(10)
-        .populate('user', { userSlack: 1, score: 1, rol: 1 })
+        .populate('user', { userSlack: 1, score: 1, rol: 1, avatar: 1 })
 
     //busqueda para obtener numero maximo de pagina
     const searchAllPosts = buildQuery().select({ _id: 1 })
