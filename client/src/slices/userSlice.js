@@ -110,8 +110,6 @@ export const userSlice = createSlice({
           filtered = allUsers;
           break;
       }
-
-      console.log(filtered); // me da: Array(n) [ Proxy, Proxy, Proxy, Proxy, Proxy, Proxy, Proxy ]
     },
   },
   extraReducers: (builder) => {

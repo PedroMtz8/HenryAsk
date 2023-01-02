@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { filterByRol, getByMail } from "../../slices/userSlice";
 import { useAuth } from "../AuthComponents/AuthContext";
 
-const SearchbarAdmin = ({ name, op1, op2, op3, op4, op5 }) => {
+const SearchbarAdmin = ({ name, op1, op2, op3, op4, op5, isAccounts }) => {
   const dispatch = useDispatch();
 
   const [search, setSearch] = useState("");
@@ -51,7 +51,7 @@ const SearchbarAdmin = ({ name, op1, op2, op3, op4, op5 }) => {
           spacing="3.5%"
           borderRadius="1.5rem"
         >
-          <InputGroup w="32%">
+          <InputGroup w="50%">
             <Input
               placeholder="Mail..."
               borderRadius="10rem"
@@ -62,22 +62,19 @@ const SearchbarAdmin = ({ name, op1, op2, op3, op4, op5 }) => {
               <SearchIcon fontSize="1.1rem" />
             </InputRightElement>
           </InputGroup>
-          <HStack w="32%">
+          <HStack w="50%">
             <Text w="4rem"> {name}:</Text>
             <Select onChange={handleChangeFilter} borderRadius="10rem">
               <option>----</option>
               <option value={op1}> {op1} </option>
               <option value={op2}> {op2} </option>
-              <option value={op3}> {op3} </option>
-              <option value={op4}> {op4} </option>
-              <option value={op5}> {op5} </option>
-            </Select>
-          </HStack>
-          <HStack w="33%">
-            <Text w="4rem">Estado:</Text>
-            <Select borderRadius="10rem">
-              <option>---</option>
-              <option>Pendiente</option>
+              {isAccounts && (
+                <>
+                  <option value={op3}> {op3} </option>
+                  <option value={op4}> {op4} </option>
+                  <option value={op5}> {op5} </option>
+                </>
+              )}
             </Select>
           </HStack>
         </HStack>

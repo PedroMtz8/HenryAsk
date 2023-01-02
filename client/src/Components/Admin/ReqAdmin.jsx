@@ -47,40 +47,48 @@ const ReqAdmin = () => {
         >
           Peticiones
         </Text>
-        <TableContainer
-          border="1px solid gray"
-          borderRadius="10px"
-          boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.5)"
-        >
-          <Table variant="striped" colorScheme="blackAlpha" size="lg">
-            <Thead backgroundColor="#ffff01" textAlign="center">
-              <Tr>
-                <Th textAlign="center">Usuario</Th>
-                <Th textAlign="center">Email</Th>
-                <Th textAlign="center">Rol</Th>
-                <Th textAlign="center">Petición</Th>
-                <Th textAlign="center">Acciones</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {req.map((req) => (
-                <Tr textAlign="center" key={req.user._id}>
-                  <Td textAlign="center"> {req.user.userSlack} </Td>
-                  <Td textAlign="center"> {req.user.mail} </Td>
-                  <Td textAlign="center"> {req.rol} </Td>
-                  <Td textAlign="center">Registro</Td>
-                  <Td>
-                    <Button mr="3px" colorScheme="green">
-                      Aceptar
-                    </Button>
-                    <Button colorScheme="red">Denegar</Button>
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
-        <PaginatedAdmin maxPages={maxPag} />
+        {req.length > 0 ? (
+          <>
+            <TableContainer
+              border="1px solid gray"
+              borderRadius="10px"
+              boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.5)"
+            >
+              <Table variant="striped" colorScheme="blackAlpha" size="lg">
+                <Thead backgroundColor="#ffff01" textAlign="center">
+                  <Tr>
+                    <Th textAlign="center">Usuario</Th>
+                    <Th textAlign="center">Email</Th>
+                    <Th textAlign="center">Rol</Th>
+                    <Th textAlign="center">Petición</Th>
+                    <Th textAlign="center">Acciones</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {req.map((req) => (
+                    <Tr textAlign="center" key={req.user._id}>
+                      <Td textAlign="center"> {req.user.userSlack} </Td>
+                      <Td textAlign="center"> {req.user.mail} </Td>
+                      <Td textAlign="center"> {req.rol} </Td>
+                      <Td textAlign="center">Registro</Td>
+                      <Td>
+                        <Button mr="3px" colorScheme="green">
+                          Aceptar
+                        </Button>
+                        <Button colorScheme="red">Denegar</Button>
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+            <PaginatedAdmin maxPages={maxPag} />
+          </>
+        ) : (
+          <Text mb="20px" align="center" textTransform="uppercase">
+            No hay peticiones actualmente.
+          </Text>
+        )}
       </div>
     </Flex>
   );
