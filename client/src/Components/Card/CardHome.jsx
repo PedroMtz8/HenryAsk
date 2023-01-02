@@ -139,7 +139,7 @@ const CardHome = ({ cardData }) => {
         overflow='hidden'
         textOverflow={'ellipsis'}
         >
-            <Link to={`/details/${cardData._id}`}>
+            <Link to={`/home/post/${cardData._id}`}>
               {cardData.title}
             </Link>
           </Text>
