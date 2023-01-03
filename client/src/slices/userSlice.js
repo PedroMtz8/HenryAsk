@@ -1,7 +1,7 @@
-import { filter } from "@chakra-ui/react";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import API_URL from "../config/environment";
+
 
 const initialState = {
   user: {},
@@ -173,7 +173,7 @@ export const getUserQuestions = (token, userID, page) => async (dispatch) => {
       `${API_URL}/posts/user?page=${page}&user_id=${userID}`,
       { headers: { Authorization: "Bearer " + token } }
     );
-    dispatch(saveQuestions(questions.data.foundPosts));
+    dispatch(saveQuestions(questions.data));
   } catch (error) {
     console.log(error);
   }
@@ -185,26 +185,7 @@ export const getUserAnswers = (token, userID, page) => async (dispatch) => {
       `${API_URL}/answer/user?page=${page}&user_id=${userID}`,
       { headers: { Authorization: "Bearer " + token } }
     );
-    dispatch(saveAnswers(answers.data.foundAnswers));
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const updateUser = (token, avatar, country, userSlack) => async () => {
-  try {
-    if (!userSlack) {
-      await axios.put(
-        `${API_URL}/auth`,
-        { avatar, country },
-        { headers: { Authorization: "Bearer " + token } }
-      );
-    }
-    await axios.put(
-      `${API_URL}/auth`,
-      { userSlack, country },
-      { headers: { Authorization: "Bearer " + token } }
-    );
+    dispatch(saveAnswers(answers.data))
   } catch (error) {
     console.log(error);
   }

@@ -122,7 +122,7 @@ const CardHome = ({ cardData }) => {
               <Image w="1.4rem" alignSelf="flex-start"
               src="https://i.postimg.cc/TwrFYv4p/image-30.png" alt="userImage" />
               <Text >
-              {cardData.user?.score}
+              {cardData.score}
               </Text>
               </Flex>
           </Flex>

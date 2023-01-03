@@ -12,7 +12,7 @@ const CardsHome = () => {
   const currentPosts = useSelector((state) => state.paginated.currentPosts)
 
   return (
-    <Flex justifyContent={'center'}>
+    <Flex justifyContent={'center'} width='100%'>
      {widthScreen > 1120
     ? <SimpleGrid columns={2} spacing={5} w={{ base: '90%', lg: '70%' }}>
         {currentPosts.map((elem, i) => <CardHome key={i} cardData={elem} />)}

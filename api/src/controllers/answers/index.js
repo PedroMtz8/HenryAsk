@@ -80,8 +80,8 @@ const getAnswersFromUser = async (req, res) => {
         : searchPaginatedAnswers.sort({ createdAt: -1 }) //ordena por fecha de creacion de mas nuevo a mas viejo
 
     searchPaginatedAnswers = searchPaginatedAnswers
-        .skip(page * 5 - 5)
-        .limit(5)
+        .skip(page * 6 - 6)
+        .limit(6)
         .select({ user: 0, voters: 0 })
         .populate('post', {title: 1})
 
@@ -90,7 +90,7 @@ const getAnswersFromUser = async (req, res) => {
         searchPaginatedAnswers,
         searchAllAnswers.select({ _id: 1 })
     ]).then(([paginatedDocs, allDocs]) => {
-        const maxPages = Math.ceil(allDocs.length / 5)
+        const maxPages = Math.ceil(allDocs.length / 6)
         res.json({ message: 'Respuestas encontradas!', foundAnswers: paginatedDocs, maxPages })
     }).catch(error => {
         res.json({ message: error.message })

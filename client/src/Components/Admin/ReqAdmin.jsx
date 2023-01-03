@@ -113,7 +113,7 @@ const ReqAdmin = () => {
                       <Td textAlign="center"> {req.user.userSlack} </Td>
                       <Td textAlign="center"> {req.user.mail} </Td>
                       <Td textAlign="center"> {req.rol} </Td>
-                      <Td textAlign="center">Registro</Td>
+                      <Td textAlign="center">{req.type}</Td>
                       <Td>
                         <Button mr="3px" colorScheme="green" onClick={() => complete(req, true)}>
                           Aceptar
