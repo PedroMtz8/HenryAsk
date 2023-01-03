@@ -17,6 +17,7 @@ import { useAuth } from "../AuthComponents/AuthContext";
 import PaginatedAdmin from "./PaginatedAdmin";
 import { getUserByRol, getUsers } from "../../slices/userSlice";
 
+
 const Accounts = () => {
   const dispatch = useDispatch();
 
@@ -28,8 +29,8 @@ const Accounts = () => {
   const maxPag = useSelector((state) => state.user.usersMaxPages);
 
   useEffect(() => {
-    dispatch(getUsers({ token, page: accounts.page }));
-  }, [dispatch, accounts.page]);
+    dispatch(setPage(1))
+  }, [])
 
   const handleChangeFilter = (e) => {
     e.preventDefault();
@@ -42,6 +43,7 @@ const Accounts = () => {
       );
     }
   };
+
 
   return (
     <Flex>
