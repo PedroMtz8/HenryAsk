@@ -5,7 +5,8 @@ import {
     GridItem,
     Flex,
     Image,
-    Text
+    Text,
+    useDisclosure
 } from "@chakra-ui/react";
 import { TriangleUpIcon, TriangleDownIcon } from "@chakra-ui/icons";
 import axios from "axios";
@@ -13,6 +14,7 @@ import { useAuth } from "../../AuthComponents/AuthContext"
 import API_URL from "../../../config/environment"
 import Comments from '../Comments/Comments';
 import DetailBody from '../../DetailBody/DetailBody';
+import CreateComment from '../Comments/CreateComment'
 
 const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
 
@@ -26,6 +28,8 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
     const [commentAnswers, setCommentAnswers] = useState([])
     const [commentPage, setCommentPage] = useState(0)
     const [remainingComments, setRemainingComments] = useState(answerCardData.numberComments)
+    const [showComments, setShowComments] = useState(false)
+    const { isOpen, onOpen, onClose } = useDisclosure()
 
     useEffect(() => {
 
@@ -104,11 +108,11 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
                     fontSize="2rem">
                     <TriangleUpIcon
                         color={currentVote === 1 ? "green" : "gray"}
-                        onClick={e => (user.uid !== answerCardData.user._id)? (currentVote === 1 ? voteAnswer(0) : voteAnswer(1)): null} />
+                        onClick={e => (user.uid !== answerCardData.user._id) ? (currentVote === 1 ? voteAnswer(0) : voteAnswer(1)) : null} />
                     <Text>{numberOfVotesAnswerd}</Text>
                     <TriangleDownIcon
                         color={currentVote === -1 ? "red" : "gray"}
-                        onClick={e => (user.uid !== answerCardData.user._id)? (currentVote === -1 ? voteAnswer(0) : voteAnswer(-1)): null} />
+                        onClick={e => (user.uid !== answerCardData.user._id) ? (currentVote === -1 ? voteAnswer(0) : voteAnswer(-1)) : null} />
                 </GridItem>
             </Grid>
             <Flex position="relative"
@@ -118,25 +122,47 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
                 gap=".3rem"
                 borderBottom={finish ? "solid 1px" : ""}
                 borderBottomColor="gray.800">
+                <Flex w="100%" justifyContent="space-between">
+                    <Flex fontSize=".8rem"
+                        color="gray.600">
+                        {(!showComments) ?
+                            <Text cursor="pointer"
+                                onClick={e => { commentPage === 0 && setCommentPage(1); setShowComments(true) }}>
+                                Comentarios {` (${answerCardData.numberComments}) `} <TriangleDownIcon />
+                            </Text>
+                            :
+                            <Text cursor="pointer"
+                                onClick={e => { setShowComments(false) }}>
+                                Comentarios {` (${answerCardData.numberComments}) `} <TriangleUpIcon />
+                            </Text>}
+                    </Flex>
+                    <>
+                        <Text color="blue.600"
+                            cursor="pointer"
+                            onClick={onOpen}>
+                            Comentar respuesta
+                        </Text>
+                        <CreateComment isOpen={isOpen} onClose={onClose} type={"answer"} id={answerCardData._id} />
+                    </>
+                </Flex>
                 {
-                    commentAnswers.map((elem, i, arr) =>
+                   (showComments) && commentAnswers.map((elem, i, arr) =>
                         <Flex key={i} w="100%">
                             <Comments dataComment={elem} />
                         </Flex>)
                 }
-                <Flex w="100%" justifyContent="space-between">
-                    <Flex>
-                        {(remainingComments > 0) &&
-                            <Text fontSize=".8rem"
-                                color="gray.600"
-                                onClick={e => setCommentPage(commentPage + 1)}>
-                                Comentarios {` (${remainingComments}) `} <TriangleDownIcon/>
-                            </Text>}
+                {
+                    (showComments && remainingComments > 0 && commentAnswers.length > 0) &&
+                    <Flex color="blue.500"
+                        fontSize=".8rem"
+                        w="100%"
+                        pb=".5rem">
+                        <Text cursor="pointer"
+                            onClick={e => setCommentPage(commentPage + 1)}>
+                            Ver más
+                        </Text>
                     </Flex>
-                    <Text color="blue.600">
-                        Comentar respuesta
-                    </Text>
-                </Flex>
+                }
             </Flex>
         </>
     )
