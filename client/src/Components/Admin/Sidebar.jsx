@@ -13,7 +13,6 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { getUserData } from "../../slices/userSlice";
 import { useAuth } from "../AuthComponents/AuthContext";
 import NavItem from "./NavItem";
-import { useSelector } from "react-redux";
 
 const Sidebar = () => {
   const [navSize, setNavSize] = useState("large");
@@ -90,9 +89,6 @@ const Sidebar = () => {
         <Avatar size="sm" src={currentUser.avatar} m="auto" />
         <Heading as="h3" size="sm" m="auto">
           {currentUser?.userSlack}
-        <Heading as="h3" size="sm">
-          {currentUser?.userSlack}
-          
         </Heading>
         <Text m="auto" color="gray">
           {" "}
