@@ -28,6 +28,7 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
     const [commentAnswers, setCommentAnswers] = useState([])
     const [commentPage, setCommentPage] = useState(0)
     const [remainingComments, setRemainingComments] = useState(answerCardData.numberComments)
+    const [showComments, setShowComments] = useState(false)
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     useEffect(() => {
@@ -124,14 +125,14 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
                 <Flex w="100%" justifyContent="space-between">
                     <Flex fontSize=".8rem"
                         color="gray.600">
-                        {(answerCardData.numberComments === remainingComments) ?
+                        {(!showComments) ?
                             <Text cursor="pointer"
-                                onClick={e => setCommentPage(commentPage + 1)}>
+                                onClick={e => { commentPage === 0 && setCommentPage(1); setShowComments(true) }}>
                                 Comentarios {` (${answerCardData.numberComments}) `} <TriangleDownIcon />
                             </Text>
                             :
                             <Text cursor="pointer"
-                                onClick={e => { setCommentPage(0); setCommentAnswers([]); setRemainingComments(answerCardData.numberComments) }}>
+                                onClick={e => { setShowComments(false) }}>
                                 Comentarios {` (${answerCardData.numberComments}) `} <TriangleUpIcon />
                             </Text>}
                     </Flex>
@@ -145,19 +146,19 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
                     </>
                 </Flex>
                 {
-                    commentAnswers.map((elem, i, arr) =>
+                   (showComments) && commentAnswers.map((elem, i, arr) =>
                         <Flex key={i} w="100%">
                             <Comments dataComment={elem} />
                         </Flex>)
                 }
                 {
-                    (remainingComments !== answerCardData.numberComments && remainingComments > 0) &&
-                    <Flex color={"blue.500"}
-                        fontSize={".8rem"}
-                         w={"100%"}
-                         pb={".5rem"}>
+                    (showComments && remainingComments > 0 && commentAnswers.length > 0) &&
+                    <Flex color="blue.500"
+                        fontSize=".8rem"
+                        w="100%"
+                        pb=".5rem">
                         <Text cursor="pointer"
-                         onClick={e => setCommentPage(commentPage + 1)}>
+                            onClick={e => setCommentPage(commentPage + 1)}>
                             Ver más
                         </Text>
                     </Flex>

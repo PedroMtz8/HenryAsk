@@ -40,9 +40,9 @@ const Comments = ({ dataComment }) => {
                         </Text>
                         <Text display="inline"
                             cursor="pointer"
-                            p=".0rem .25rem"
-                            bg="yellow"
-                            color="black"
+                            p=".1rem .25rem"
+                            bg="yellow.100"
+                            color="gray"
                             onClick={onOpen}>
                             Modificar
                         </Text>

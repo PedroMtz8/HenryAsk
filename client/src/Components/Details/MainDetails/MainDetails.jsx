@@ -30,6 +30,7 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
     const [postComments, setPostComments] = useState([])
     const [commentPage, setCommentPage] = useState(0)
     const [remainingComments, setRemainingComments] = useState(dataPost.post.numberComments)
+    const [showComments, setShowComments] = useState(false)
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     useEffect(() => {
@@ -43,7 +44,9 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
 
     }, [numberOfVotesUser])
 
-    useEffect(() => { (commentPage > 0) && getComment() }, [commentPage])
+    useEffect(() => { 
+        (commentPage > 0) && getComment() 
+    }, [commentPage])
 
     const getComment = async () => {
 
@@ -157,14 +160,14 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
                 pt=".5rem"
                 px="1rem">
                 <Flex>
-                    {(remainingComments === dataPost.post.numberComments) ?
+                    {(!showComments) ?
                         <Text cursor="pointer"
-                            onClick={e => setCommentPage(commentPage + 1)}>
-                            Comentarios: {`(${remainingComments})`} <TriangleDownIcon />
+                            onClick={e => {commentPage === 0 && setCommentPage(1); setShowComments(true)}}>
+                            Comentarios: {`(${dataPost.post.numberComments})`} <TriangleDownIcon />
                         </Text>
                         :
                         <Text cursor="pointer"
-                            onClick={e => { setCommentPage(0); setPostComments([]); setRemainingComments(dataPost.post.numberComments) }}>
+                            onClick={e => { setShowComments(false) }}>
                             Comentarios: {`(${dataPost.post.numberComments})`} <TriangleUpIcon />
                         </Text>}
                 </Flex>
@@ -183,7 +186,7 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
                 px="0.5rem"
                 flexDir="column"
                 mt="1rem">
-                {postComments.map((elem, i) =>
+                {(showComments) && postComments.map((elem, i) =>
                     <Flex key={i}
                         w="100%"
                         px="1rem">
@@ -191,7 +194,7 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
                     </Flex>)
                 }
                 {
-                    (remainingComments !== dataPost.post.numberComments && remainingComments > 0) &&
+                    (showComments && remainingComments > 0 && setPostComments.length > 0 ) &&
                     <Flex color="blue.500"
                          px="1rem"
                           pb="1rem">
