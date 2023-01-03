@@ -2,9 +2,39 @@ const Answer = require('../../models/Answer')
 const Comment = require('../../models/Comment')
 const Post = require('../../models/Post')
 
+function checkFields(fields) {
+    for (const field in fields) {
+        const value = fields[field]
+        switch (field) {
+            case 'body':
+                if(!value) return 'Cuerpo requerido'
+                if(value.length < 15) return 'Cuerpo debe tener al menos 15 caracteres'
+                if(value.length > 600) return 'Cuerpo debe ser menor o igual a 600 caracteres'
+                break;
+            case 'answer_id':
+                if(!value ) return 'Id de respuesta requerido'
+                break;
+            case 'post_id':
+                if(!value) return 'Id de post requerido'
+                break;
+            case 'comment_id':
+                if(!value) return 'Id de comentario requerido'
+                break;
+            case 'page':
+                if(!value) return 'Numero de pagina requerido'
+                if(value <= 0) return 'Numero de pagina debe ser mayor a 0'
+                break;
+            default:
+                break;
+        }
+    }
+    return ''
+}
+
 const createComment = async (req, res) => {
     const { body, post_id, answer_id } = req.body
-    if (!body) return res.status(400).json({ message: 'Descripcion requerida.' })
+    const message = checkFields({ body})
+    if (message) return res.status(400).json({ message })
     if (!post_id && !answer_id) return res.status(400).json({ message: 'Id de post o respuesta requerido.' })
 
     try {
@@ -34,7 +64,8 @@ const createComment = async (req, res) => {
 
 const editComment = async (req, res) => {
     const { comment_id, body } = req.body
-    if (!comment_id || !body) return res.status(400).json({ message: 'Id de comentario y descripcion requeridos.' })
+    const message = checkFields({ body, comment_id})
+    if (message) return res.status(400).json({ message })
 
     try {
         const comment = await Comment.findById(comment_id)
@@ -53,7 +84,9 @@ const editComment = async (req, res) => {
 
 const getCommentsFromPost = async (req, res) => {
     let { post_id, page } = req.query
-    if (!post_id || !page) return res.status(400).json({ message: 'Id de post y numero de pagina requerido.' })
+    const message = checkFields({ post_id, page})
+    if (message) return res.status(400).json({ message })
+
     const post = await Post.findById(post_id)
     let numberOfCommentsLeft = post.numberComments - 5 * page > 0
         ? post.numberComments - 5 * page
@@ -74,7 +107,9 @@ const getCommentsFromPost = async (req, res) => {
 
 const getCommentsFromAnswer = async (req, res) => {
     let { answer_id, page } = req.query
-    if (!answer_id || !page) return res.status(400).json({ message: 'Id de respuesta y numero de pagina requerido.' })
+    const message = checkFields({ page, answer_id})
+    if (message) return res.status(400).json({ message })
+
     const answer = await Answer.findById(answer_id)
     let numberOfCommentsLeft = answer.numberComments - 5 * page > 0
         ? answer.numberComments - 5 * page

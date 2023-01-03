@@ -21,7 +21,6 @@ export const getUser = createAsyncThunk("get/user", async (token) => {
     const { data } = await axios.get(`http://localhost:3001/auth`, {
       headers: { Authorization: "Bearer " + token },
     });
-    console.log(data);
     return data;
   } catch (error) {
     console.log(error);
@@ -89,7 +88,6 @@ export const getUserByRol = createAsyncThunk(
           headers: { Authorization: "Bearer " + token },
         }
       );
-      console.log(data);
       return data;
     } catch (error) {}
   }
