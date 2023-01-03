@@ -15,7 +15,7 @@ import { useSelector, useDispatch } from "react-redux";
 import SearchbarAdmin from "./SearchbarAdmin";
 import { useAuth } from "../AuthComponents/AuthContext";
 import PaginatedAdmin from "./PaginatedAdmin";
-import { getUserByRol, getUsers } from "../../slices/userSlice";
+import { getUserByRol, getUsers, setPage } from "../../slices/userSlice";
 
 
 const Accounts = () => {
@@ -26,23 +26,37 @@ const Accounts = () => {
 
   const accounts = useSelector((state) => state.user);
   const users = accounts.users;
+  const [filter, setFilter] = useState('all')
   const maxPag = useSelector((state) => state.user.usersMaxPages);
 
   useEffect(() => {
     dispatch(setPage(1))
   }, [])
 
+  const getAccounts = () => {
+    if(filter === 'all'){
+      dispatch(getUsers({ token, page: accounts.page }));
+    } else{
+      dispatch(getUserByRol({ page: accounts.page, rol: filter, token }))
+    }
+  }
+
+  useEffect(() => {
+    getAccounts()
+}, [dispatch, accounts.page]);
+
   const handleChangeFilter = (e) => {
     e.preventDefault();
-
-    if (e.target.value === "all") {
-      dispatch(getUsers({ token, page: accounts.page }));
-    } else {
-      dispatch(
-        getUserByRol({ page: accounts.page, rol: e.target.value, token })
-      );
-    }
+    setFilter(e.target.value)
   };
+
+  useEffect(() => {
+    if(accounts.page === 1){
+      getAccounts()
+    } else{
+      setPage(1)
+    }
+  }, [filter])
 
 
   return (
