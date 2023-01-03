@@ -25,6 +25,7 @@ const Accounts = () => {
   const accounts = useSelector((state) => state.user);
 
   const users = accounts.users;
+  const maxPag = useSelector((state) => state.user.usersMaxPages);
 
   useEffect(() => {
     dispatch(getUsers({ token, page: accounts.page }));
@@ -34,7 +35,15 @@ const Accounts = () => {
     <Flex>
       <Sidebar />
       <div style={{ margin: "20px auto" }}>
-        <SearchbarAdmin name="Rol" op1="Estudiante" op2="Administrador" />
+        <SearchbarAdmin
+          name="Rol"
+          op1="Estudiante"
+          op2="Administrador"
+          op3="Henry Hero"
+          op4="Graduado"
+          op5="TA"
+          isAccounts={true}
+        />
         <Text
           mb="20px"
           align="center"
@@ -43,31 +52,39 @@ const Accounts = () => {
         >
           Lista de cuentas
         </Text>
-        <TableContainer
-          border="1px solid gray"
-          borderRadius="10px"
-          boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.5)"
-        >
-          <Table variant="striped" colorScheme="blackAlpha" size="lg">
-            <Thead backgroundColor="#ffff01" textAlign="center">
-              <Tr>
-                <Th textAlign="center">Usuario</Th>
-                <Th textAlign="center">Email</Th>
-                <Th textAlign="center">Rol</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {users.map((user) => (
-                <Tr textAlign="center" key={user.mail}>
-                  <Td textAlign="center"> {user.userSlack} </Td>
-                  <Td textAlign="center"> {user.mail} </Td>
-                  <Td textAlign="center"> {user.rol} </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
-        <PaginatedAdmin />
+        {users.length > 0 ? (
+          <>
+            <TableContainer
+              border="1px solid gray"
+              borderRadius="10px"
+              boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.5)"
+            >
+              <Table variant="striped" colorScheme="blackAlpha" size="lg">
+                <Thead backgroundColor="#ffff01" textAlign="center">
+                  <Tr>
+                    <Th textAlign="center">Usuario</Th>
+                    <Th textAlign="center">Email</Th>
+                    <Th textAlign="center">Rol</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {users.map((user) => (
+                    <Tr textAlign="center" key={user.mail}>
+                      <Td textAlign="center"> {user.userSlack} </Td>
+                      <Td textAlign="center"> {user.mail} </Td>
+                      <Td textAlign="center"> {user.rol} </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+            <PaginatedAdmin maxPages={maxPag} />
+          </>
+        ) : (
+          <Text mb="20px" align="center" textTransform="uppercase">
+            No hay usuarios actualmente.
+          </Text>
+        )}
       </div>
     </Flex>
   );

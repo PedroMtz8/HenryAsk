@@ -3,9 +3,8 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { nextPage, previousPage, setPage } from "../../slices/userSlice";
 
-const PaginatedAdmin = () => {
+const PaginatedAdmin = ({ maxPages }) => {
   const dispatch = useDispatch();
-  const maxPages = useSelector((state) => state.user.usersMaxPages);
 
   const currentPage = useSelector((state) => state.user.page);
 
@@ -27,7 +26,7 @@ const PaginatedAdmin = () => {
 
   for (let i = 1; i <= maxPages; i++) {
     components.push(
-      <div style={{ display: "inline-block", padding: "7px" }}>
+      <div key={i} style={{ display: "inline-block", padding: "7px" }}>
         <Button
           style={
             currentPage === i
@@ -53,7 +52,7 @@ const PaginatedAdmin = () => {
         size="sm"
         variant="outline"
       >
-        Previous
+        {"<"}
       </Button>
       {components}
       <Button
@@ -63,7 +62,7 @@ const PaginatedAdmin = () => {
         onClick={() => changePage("next")}
         variant="outline"
       >
-        Next
+        {">"}
       </Button>
     </div>
   );
