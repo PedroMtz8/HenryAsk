@@ -60,7 +60,10 @@ export default function NavBar() {
   return (
     <>
       <Box bg={useColorModeValue("black", "black")} px={4}>
-        <Flex h={"96px"} alignItems={"center"} justifyContent={"space-around"}>
+        <Flex h={"96px"} 
+        alignItems="center" 
+        justifyContent="space-between"
+        px={{base: "0rem", md: "1rem"}}>
           <RouteLink to={"/home"}>
             <Flex
               alignItems={"center"}
