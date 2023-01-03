@@ -41,7 +41,8 @@ export default function QuestionModal({ title }) {
   const [bodyText, setBodyText] = useState('')
   const [error, setError] = useState({
     title: '',
-    body: ''
+    body: '',
+    tags: ''
   })
   const [url, setUrl] = useState(null)
 
@@ -88,7 +89,7 @@ export default function QuestionModal({ title }) {
   }
 
   useEffect(() => {
-    let disabled = false, errorTitle = '', errorBody = ''
+    let disabled = false, errorTitle = '', errorBody = '', errorTags = '', errorModule = ''
     if (post.title.length < 15) {
       disabled = true
       errorTitle = 'Titulo debe tener al menos 15 caracteres'
@@ -109,8 +110,18 @@ export default function QuestionModal({ title }) {
       errorBody = 'Limite de 30000 caracteres excedido'
     }
 
+    if(post.tags.length === 0){
+      disabled = true
+      errorTags = 'Debe haber al menos un tag'
+    }
+
+    if(!post.module){
+      disabled = true
+      errorModule = 'Debes seleccionar un modulo'
+    }
+
     setDisabled(disabled)
-    setError({ title: errorTitle, body: errorBody })
+    setError({ title: errorTitle, body: errorBody, tags: errorTags, module: errorModule })
   }, [post])
 
   return (
@@ -156,7 +167,9 @@ export default function QuestionModal({ title }) {
                 <FormLabel fontSize={"24px"}>Tags</FormLabel>
                 <Text mb={"5px"} >Añade hasta 3 tags para describir sobre que tecnologias es tu problema</Text>
                 <Text fontSize={"14px"}>*Pulsa espacio para agregar cada tag</Text>
-                <TagsInput post={post} setPost={setPost} />
+                <TagsInput post={post} setPost={setPost} error={error.tags} />
+                <Text mb={"5px"} color={'red'}>{error.tags}</Text>
+
               </FormControl>
               <FormControl mt={4}>
                 <FormLabel fontSize={"24px"}>Modulo</FormLabel>
@@ -170,6 +183,7 @@ export default function QuestionModal({ title }) {
                     })
                   }
                 </Select>
+                <Text mb={"5px"} color={'red'} >{error.module}</Text>
               </FormControl>
             </form>
           </ModalBody>
@@ -193,7 +207,7 @@ export default function QuestionModal({ title }) {
 
 
 
-function TagsInput({ post, setPost }) {
+function TagsInput({ post, setPost, error}) {
   const toast = useToast()
 
   function handleKeyDown(e) {
@@ -203,7 +217,7 @@ function TagsInput({ post, setPost }) {
     if (!value.trim()) return
 
     let same = post.tags.find(t => t === value.toUpperCase().trim())
-    console.log(same)
+
     if (post.tags.length > 2) return toast({
       description: "No puedes agregar más de 3 tags",
       status: "error",
