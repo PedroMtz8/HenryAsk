@@ -23,25 +23,37 @@ import { CheckCircleIcon, InfoIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/ico
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useAuth } from "../../AuthComponents/AuthContext"
+import axios from 'axios'
+import API_URL from '../../../config/environment'
 
 const paises = ['Argentina', 'Brasil', 'Bolivia', 'Chile', 'Colombia', 'Costa Rica', 'Ecuador', 'El Salvador', 'España', 'Estados Unidos', 'Guatemala', 'Guinea Ecuatorial', 'Honduras', 'México', 'Nicaragua', 'Panamá', 'Paraguay', 'Perú', 'Puerto Rico', 'República Dominicana', 'Uruguay', 'Venezuela', 'OTROS']
+const roles = ['Estudiante', 'Graduado', 'TA', 'Henry Hero']
 
 const FormRegister = () => {
 
     const navigate = useNavigate()
     const toast = useToast()
     const { signup, signout, updateUsername, user } = useAuth()
-    const [emailError, setEmailError] = useState(false)
+    const [submitErrors, setSubmitErrors] = useState({
+        emailError: false,
+        unexpectedError: false,
+        registerError: false
+    })
 
     const [infoUser, setInfoUser] = useState({
         userSlack: "",
         country: "",
         email: "",
-        password: ""
+        password: "",
+        rol: ""
     });
 
     const [errorInfoUser, setErrorInfoUser] = useState({
-        userSlack: "black",
+        userSlack: {
+            complete: 'black',
+            length: "gray",
+            empty: "gray"
+        },
         country: "black",
         email: "black",
         password: {
@@ -50,7 +62,8 @@ const FormRegister = () => {
             digit: "gray",
             specialCharacter: "gray",
             eightCharacters: "gray"
-        }
+        },
+        rol: "black"
     })
 
     const [showSubmitButton, setShowSubmitButton] = useState(true)
@@ -58,7 +71,7 @@ const FormRegister = () => {
 
     useEffect(() => {
         setShowSubmitButton(!(
-            (errorInfoUser.userSlack === "green")
+            (errorInfoUser.userSlack.complete === "green")
             &&
             (errorInfoUser.country === "green")
             &&
@@ -102,6 +115,24 @@ const FormRegister = () => {
                 }
             })
         }
+        else if(e.target.name === 'userSlack'){
+            const current = e.target.value
+            let length =  current.length <= 30
+            let empty = current !== ''
+
+            const complete = length && empty
+                ? "green"
+                : "red"
+
+            setErrorInfoUser({
+                ...errorInfoUser, [e.target.name]: {
+                    complete,
+                    length,
+                    empty
+                }
+            })
+        }
+
         else {
             setErrorInfoUser({
                 ...errorInfoUser, [e.target.name]: (e.target.value === "") ? "red" : "green"
@@ -115,9 +146,14 @@ const FormRegister = () => {
     const submitHandler = async (e) => {
         e.preventDefault()
         try {
-            let res = await signup(infoUser.email, infoUser.password, infoUser.userSlack, infoUser.country)
+            let res = await signup(infoUser.email, infoUser.password, infoUser.userSlack, infoUser.country) //registro al usario en firebase y en base de datos
             await updateUsername(res.user, infoUser.userSlack)
-            console.log("Logeo", res)
+
+            await axios.post(`${API_URL}/request/registro`, {rol: infoUser.rol}, 
+            {headers: 
+                {Authorization: `Bearer ${res.user.accessToken}`}
+            }) //creo el pedido para que el usuario sea aprobado por los administradores
+
             toast({
                 title: "Registro exitoso",
                 description: "Tendrás que esperar a que tu cuenta sea aprobada para poder ingresar, se te notificará por mail",
@@ -131,24 +167,19 @@ const FormRegister = () => {
 
         }
         catch (error) {
-            if (error) setEmailError(true) /* toast({
-                description: "Email already in use",
-                status: "error",
-                duration: 3000,
-                isClosable: true,
-                position: "top"
-            }) */
-            else setEmailError(false)
 
-            if (error.message.includes("Password")) {
-                toast({
-                    description: "You should add at least 8 characters",
-                    status: "error",
-                    duration: 3000,
-                    isClosable: true,
-                    position: "top"
-                })
+            if (error.code === 'auth/email-already-in-use'){
+                setSubmitErrors({emailError: true, unexpectedError: false, registerError: false})
             }
+
+            else if(error.response?.status === 409){
+                setSubmitErrors({emailError: false, unexpectedError: false, registerError: true})
+            } 
+
+            else{
+                setSubmitErrors({emailError: false, unexpectedError: true, registerError: false})
+            }
+
         }
     }
 
@@ -176,17 +207,15 @@ const FormRegister = () => {
                              >
                             <Input name='userSlack'
                                 placeholder='Usuario de Slack con tu cohorte'
-                                borderColor={errorInfoUser.userSlack}
+                                borderColor={errorInfoUser.userSlack.complete}
                                 focusBorderColor='black'
-                                _hover={{ borderColor: errorInfoUser.userSlack }}
+                                _hover={{ borderColor: errorInfoUser.userSlack.complete }}
                                 value={infoUser.userSlack}
                                 onChange={onChangeInput}
-                                onBlur={(e) => setErrorInfoUser({
-                                    ...errorInfoUser, [e.target.name]: (e.target.value === "") ? "red" : "green"
-                                })}
                             />
                             <Flex justifyContent={"flex-end"}>
-                            {(errorInfoUser.userSlack === "red") && <Text color="red"  >* Campo obligatorio</Text>}
+                            {(!errorInfoUser.userSlack.empty) && <Text color="red">* Campo obligatorio</Text>}
+                            {(!errorInfoUser.userSlack['length']) && <Text color="red">* Usuario debe ser menor o igual a 30 caracteres</Text>}
                             </Flex>
                         </FormControl>
                     
@@ -204,6 +233,22 @@ const FormRegister = () => {
                         </Select>
                         <Flex justifyContent="flex-end">
                             {(errorInfoUser.country === "red") && <Text color="red">* Selecciona un país</Text>}
+                        </Flex>
+                    </FormControl>
+                    <FormControl id="rol"
+                        fontSize={".8rem"}>
+                        <Select name="rol"
+                            placeholder='Selecciona tu rol'
+                            borderColor={errorInfoUser.rol}
+                            focusBorderColor='black'
+                            _hover={{ borderColor: errorInfoUser.rol }}
+                            value={infoUser.rol}
+                            onChange={onChangeInput}
+                        >
+                            {roles.map((elem, i) => <option key={i} value={elem}>{elem}</option>)}
+                        </Select>
+                        <Flex justifyContent="flex-end">
+                            {(errorInfoUser.rol === "red") && <Text color="red">* Selecciona un rol</Text>}
                         </Flex>
                     </FormControl>
                     <FormControl id="email"
@@ -250,7 +295,7 @@ const FormRegister = () => {
                         </Button>
 
                         {
-                            emailError ? 
+                            submitErrors.emailError ? 
                             <Center>
                                     <Box border={"2px solid red"} color={"red"} w={"90%"} borderRadius={"5px"} p={"5px"} textAlign="center">
                                         <Text>Ya existe un usuario con ese email</Text>
@@ -258,6 +303,28 @@ const FormRegister = () => {
                                 </Center>
                                 :
                                 null
+                        }
+
+                        {
+                             submitErrors.unexpectedError ? 
+                             <Center>
+                                     <Box border={"2px solid red"} color={"red"} w={"90%"} borderRadius={"5px"} p={"5px"} textAlign="center">
+                                         <Text>Ocurrio un error inesperado, intentelo de nuevo</Text>
+                                     </Box>
+                                 </Center>
+                                 :
+                                 null
+                        }
+
+                        {
+                             submitErrors.requestError ? 
+                             <Center>
+                                     <Box border={"2px solid red"} color={"red"} w={"90%"} borderRadius={"5px"} p={"5px"} textAlign="center">
+                                         <Text>Ya has sido registro, espera a ser aprobado!</Text>
+                                     </Box>
+                                 </Center>
+                                 :
+                                 null
                         }
 
                         <HStack justifyContent="flex-start"

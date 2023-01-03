@@ -196,7 +196,6 @@ const Profile = () => {
   }
   
   useEffect(() => {
-    dispatch(getUserQuestions(user.accessToken, user.uid, 1));
     dispatch(getUserAnswers(user.accessToken, user.uid, 1))
   }, []) 
 
