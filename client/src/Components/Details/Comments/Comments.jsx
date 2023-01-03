@@ -20,17 +20,24 @@ const Comments = ({ dataComment }) => {
             w="100%">
             <Box fontSize=".8rem"
                 fontWeight="normal"
-                textAlign="justify">
+                textAlign="inherit"
+                gap={"1rem"}>
+                <Text display="inline-block">
+                    {`${dataComment.body}`}
+                </Text>
                 <Text display="inline">
-                    {dataComment.body} {" - "}
+                    {" - "}
                 </Text>
-                <Text display="inline"
+                <Text display="inline-block"
                     color="blue.500">
-                    {dataComment.user.userSlack} {" - "}
+                    {`${dataComment.user.userSlack}`}
                 </Text>
-                <Text display="inline"
+                <Text display="inline">
+                    {" - "}
+                </Text>
+                <Text display="inline-block"
                     color="gray.500">
-                    {dataComment.createdAt}
+                    {`${dataComment.createdAt}`}
                 </Text>
                 {(dataComment.user._id === user.uid) &&
                     <>

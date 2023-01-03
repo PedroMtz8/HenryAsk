@@ -40,7 +40,7 @@ const CreateComment = ({ isOpen, onClose, type, id }) => {
         try {
 
             const res = await axios.post(API_URL + `/comment`, { body: comment, [`${type}_id`]: id }, { headers: { Authorization: "Bearer " + token } })
-            
+
             toast({
                 title: `Comentario agregado`,
                 status: "success",
@@ -49,8 +49,8 @@ const CreateComment = ({ isOpen, onClose, type, id }) => {
             })
 
             onClose()
-            
-            setTimeout(() => {navigate(0)}, 2500) 
+
+            setTimeout(() => { navigate(0) }, 2500)
 
         } catch (error) {
 
@@ -69,7 +69,9 @@ const CreateComment = ({ isOpen, onClose, type, id }) => {
     }
 
     return (
-        <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
+        <Modal blockScrollOnMount={false}
+            isOpen={isOpen}
+            onClose={onClose}>
             <ModalOverlay />
             <ModalContent>
                 <ModalHeader>Comentar {type === "post" ? "pregunta" : "respuesta"}</ModalHeader>
@@ -77,8 +79,9 @@ const CreateComment = ({ isOpen, onClose, type, id }) => {
                 <ModalBody>
                     <Input value={comment}
                         onKeyDown={e => (e.key === "Enter") ? (enableSubmitButton ? null : sendComment()) : null}
-                        onChange={e => setComment(e.target.value)} />
-                    {enableSubmitButton ? <Text color="red">El comentario debe tener al menos 15 caracteres</Text> : ""}
+                        onChange={e => { (e.target.value.length > 600) ? null : setComment(e.target.value) }} />
+                    {enableSubmitButton ? <Text color="red" py={".2rem"}>El comentario debe tener al menos 15 caracteres</Text> : ""}
+                    {comment.length === 600 ? <Text py={".2rem"} color="orange.500">Límite de caracteres alcanzado {"(600)"}</Text> : ""}
                 </ModalBody>
                 <ModalFooter>
                     <Button colorScheme='blue'
