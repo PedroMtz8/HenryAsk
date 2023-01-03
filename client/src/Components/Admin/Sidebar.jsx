@@ -25,7 +25,6 @@ const Sidebar = () => {
   let token = user.accessToken;
 
   const requests = useSelector((state) => state.user.requests);
-  console.log(requests.length);
 
   const currentUser = useSelector((state) => state.user.user);
 
@@ -95,7 +94,6 @@ const Sidebar = () => {
           display={navSize === "small" ? "none" : "flex"}
           mt="5px"
         >
-
           {currentUser?.userSlack}
         </Heading>
         <Text

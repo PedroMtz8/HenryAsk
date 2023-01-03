@@ -17,7 +17,6 @@ import { useAuth } from "../AuthComponents/AuthContext";
 import PaginatedAdmin from "./PaginatedAdmin";
 import { getUserByRol, getUsers, setPage } from "../../slices/userSlice";
 
-
 const Accounts = () => {
   const dispatch = useDispatch();
 
@@ -26,7 +25,7 @@ const Accounts = () => {
 
   const accounts = useSelector((state) => state.user);
   const users = accounts.users;
-  const [filter, setFilter] = useState('all')
+  const [filter, setFilter] = useState("all");
   const maxPag = useSelector((state) => state.user.usersMaxPages);
 
   const [loading, setLoading] = useState(true);
@@ -36,34 +35,31 @@ const Accounts = () => {
     setLoading(false);
   }, [dispatch, accounts.page]);
 
-
   const getAccounts = () => {
-    if(filter === 'all'){
+    if (filter === "all") {
       dispatch(getUsers({ token, page: accounts.page }));
-    } else{
-      dispatch(getUserByRol({ page: accounts.page, rol: filter, token }))
+    } else {
+      dispatch(getUserByRol({ page: accounts.page, rol: filter, token }));
     }
-  }
+  };
 
   useEffect(() => {
-    getAccounts()
-}, [dispatch, accounts.page]);
+    getAccounts();
+  }, [dispatch, accounts.page]);
 
   const handleChangeFilter = (e) => {
     e.preventDefault();
-    setFilter(e.target.value)
+    setFilter(e.target.value);
   };
 
   useEffect(() => {
-    if(accounts.page === 1){
-      getAccounts()
-    } else{
-      setPage(1)
+    if (accounts.page === 1) {
+      getAccounts();
+    } else {
+      setPage(1);
     }
     setLoading(false);
-  };
-
-
+  });
 
   return (
     <Flex>
