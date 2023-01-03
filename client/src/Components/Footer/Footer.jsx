@@ -1,4 +1,4 @@
-import { Flex, Image, Text } from "@chakra-ui/react"
+import { Flex, Image, Text, Box } from "@chakra-ui/react"
 
 const Footer = () => {
 
@@ -16,11 +16,16 @@ const Footer = () => {
                 alt='logoHenry'
                 w="5rem" />
             <Text>
-                Hecho con 💛. Henry © 2022 | Todos los derechos reservados.
+                Hecho con 💛 Henry Hackathon © 2022 | Todos los derechos reservados.
             </Text>
-            <Text>
-                ¿Consultas y dudas? Escríbenos a admisiones@soyhenry.com
-            </Text>
+            <Box>
+                <Text display="inline">
+                    ¿Consultas y dudas? Escríbenos a {' '}
+                </Text>
+                <Text display="inline" color={"#FFFF01"} fontWeight="semibold">
+                    henryask.soporte@gmail.com
+                </Text>
+            </Box>
         </Flex>
     )
 }
