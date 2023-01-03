@@ -1,16 +1,33 @@
-import { Divider, Flex, Heading, IconButton, Text } from "@chakra-ui/react";
-import React, { useState } from "react";
+import {
+  Avatar,
+  Divider,
+  Flex,
+  Heading,
+  IconButton,
+  Text,
+} from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
 import { FiBriefcase, FiHome, FiMenu, FiUser } from "react-icons/fi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
+import { getUserData } from "../../slices/userSlice";
+import { useAuth } from "../AuthComponents/AuthContext";
 import NavItem from "./NavItem";
 import { useSelector } from "react-redux";
 
 const Sidebar = () => {
   const [navSize, setNavSize] = useState("large");
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+
+  const { user, signout } = useAuth();
+
   const currentUser = useSelector((state) => state.user.user);
-  console.log(currentUser);
+
+  useEffect(() => {
+    dispatch(getUserData(user.accessToken));
+  }, [dispatch]);
 
   const handleMenuSize = () => {
     if (navSize === "small") {
@@ -70,10 +87,17 @@ const Sidebar = () => {
         p={4}
         display={navSize === "small" ? "none" : "flex"}
       >
+        <Avatar size="sm" src={currentUser.avatar} m="auto" />
+        <Heading as="h3" size="sm" m="auto">
+          {currentUser?.userSlack}
         <Heading as="h3" size="sm">
           {currentUser?.userSlack}
+          
         </Heading>
-        <Text color="gray"> {currentUser.rol} </Text>
+        <Text m="auto" color="gray">
+          {" "}
+          {currentUser.rol}{" "}
+        </Text>
       </Flex>
     </Flex>
   );

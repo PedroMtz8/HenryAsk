@@ -11,10 +11,19 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getByMail } from "../../slices/userSlice";
+import { getByMail, getUserByRol, getUsers } from "../../slices/userSlice";
 import { useAuth } from "../AuthComponents/AuthContext";
 
-const SearchbarAdmin = ({ name, op1, op2, op3, op4, op5, isAccounts }) => {
+const SearchbarAdmin = ({
+  name,
+  op1,
+  op2,
+  op3,
+  op4,
+  op5,
+  isAccounts,
+  handleChangeFilter,
+}) => {
   const dispatch = useDispatch();
 
   const [search, setSearch] = useState("");
@@ -31,10 +40,6 @@ const SearchbarAdmin = ({ name, op1, op2, op3, op4, op5, isAccounts }) => {
     e.preventDefault();
 
     dispatch(getByMail({ mail: search.toLowerCase(), page, token }));
-  };
-
-  const handleChangeFilter = (e) => {
-    e.preventDefault();
   };
 
   return (
@@ -61,7 +66,7 @@ const SearchbarAdmin = ({ name, op1, op2, op3, op4, op5, isAccounts }) => {
           <HStack w="50%">
             <Text w="4rem"> {name}:</Text>
             <Select onChange={handleChangeFilter} borderRadius="10rem">
-              <option>----</option>
+              <option value={"all"}>----</option>
               <option value={op1}> {op1} </option>
               <option value={op2}> {op2} </option>
               {isAccounts && (

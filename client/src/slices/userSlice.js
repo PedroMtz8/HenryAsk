@@ -13,8 +13,8 @@ const initialState = {
   reqMaxPages: 0,
   usersMaxPages: 0,
   maxPages: 0,
-  users: [],
-};
+  filteredUsers: [],
+}
 
 export const getUser = createAsyncThunk("get/user", async (token) => {
   try {
@@ -79,6 +79,22 @@ export const getByMail = createAsyncThunk(
   }
 );
 
+export const getUserByRol = createAsyncThunk(
+  "get/rol",
+  async ({ page, rol, token }) => {
+    try {
+      const { data } = await axios.get(
+        `http://localhost:3001/auth/users?page=${page}&rol=${rol}`,
+        {
+          headers: { Authorization: "Bearer " + token },
+        }
+      );
+      console.log(data);
+      return data;
+    } catch (error) {}
+  }
+);
+
 export const userSlice = createSlice({
   name: "user",
   initialState,
@@ -101,32 +117,6 @@ export const userSlice = createSlice({
     setPage: (state, action) => {
       state.page = action.payload;
     },
-    filterByRol: (state, action) => {
-      let filtered = [];
-      let allUsers = state.users;
-
-      switch (action.payload) {
-        case "Estudiante":
-          filtered = allUsers.filter((user) => user.rol === "Estudiante");
-          break;
-
-        case "Graduado":
-          filtered = allUsers.filter((user) => user.rol === "Graduado");
-          break;
-
-        case "TA":
-          filtered = allUsers.filter((user) => user.rol === "TA");
-          break;
-
-        case "Henry Hero":
-          filtered = allUsers.filter((user) => user.rol === "Henry Hero");
-          break;
-
-        default:
-          filtered = allUsers;
-          break;
-      }
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -144,6 +134,10 @@ export const userSlice = createSlice({
       })
       .addCase(getUser.fulfilled, (state, action) => {
         state.user = action.payload.user;
+      })
+      .addCase(getUserByRol.fulfilled, (state, action) => {
+        state.users = action.payload.foundUsers;
+        state.usersMaxPages = action.payload.maxPages;
       });
   },
 });

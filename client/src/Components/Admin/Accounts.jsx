@@ -15,15 +15,16 @@ import { useSelector, useDispatch } from "react-redux";
 import SearchbarAdmin from "./SearchbarAdmin";
 import { useAuth } from "../AuthComponents/AuthContext";
 import PaginatedAdmin from "./PaginatedAdmin";
-import { getUsers, setPage } from "../../slices/userSlice";
+import { getUserByRol, getUsers } from "../../slices/userSlice";
+
 
 const Accounts = () => {
+  const dispatch = useDispatch();
+
   const { user } = useAuth();
   let token = user.accessToken;
 
-  const dispatch = useDispatch();
   const accounts = useSelector((state) => state.user);
-
   const users = accounts.users;
   const maxPag = useSelector((state) => state.user.usersMaxPages);
 
@@ -31,10 +32,19 @@ const Accounts = () => {
     dispatch(setPage(1))
   }, [])
 
-  useEffect(() => {
+  const handleChangeFilter = (e) => {
+    e.preventDefault();
+
+    if (e.target.value === "all") {
       dispatch(getUsers({ token, page: accounts.page }));
-  }, [dispatch, accounts.page]);
-  
+    } else {
+      dispatch(
+        getUserByRol({ page: accounts.page, rol: e.target.value, token })
+      );
+    }
+  };
+
+
   return (
     <Flex>
       <Sidebar />
@@ -47,6 +57,7 @@ const Accounts = () => {
           op4="Graduado"
           op5="TA"
           isAccounts={true}
+          handleChangeFilter={handleChangeFilter}
         />
         <Text
           mb="20px"
