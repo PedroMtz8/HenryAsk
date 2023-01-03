@@ -75,8 +75,9 @@ const CreateComment = ({ isOpen, onClose, id }) => {
                 <ModalBody>
                     <Input value={comment}
                         onKeyDown={e => (e.key === "Enter") ? (enableSubmitButton ? null : sendComment()) : null}
-                        onChange={e => setComment(e.target.value)} />
-                    {enableSubmitButton ? <Text color="red">El comentario debe tener al menos 15 caracteres</Text> : ""}
+                        onChange={e => {(e.target.value.length > 30) ? null : setComment(e.target.value)}} />
+                    {enableSubmitButton ? <Text color="red" py={".2rem"}>El comentario debe tener al menos 15 caracteres</Text> : ""}
+                    {comment.length === 30 ? <Text py=".2rem" color="orange.500">Límite de caracteres alcanzado {"(600)"}</Text> : ""}
                 </ModalBody>
                 <ModalFooter>
                     <Button colorScheme='blue'
