@@ -129,26 +129,30 @@ const FormLogin = () => {
     }
 
     return (
-        <VStack spacing={6}>
-            <VStack spacing={4}
+        <VStack >
+            <VStack spacing={{ base: 3, lg: 4 }}
                 align="left"
                 alignSelf="flex-start">
                 <Image src='https://assets.soyhenry.com/henry-landing/assets/Henry/logo.png'
                     alt='logoHenry'
                     w="9rem" />
-                <Heading fontSize='3xl'>
+                <Heading fontSize={{ base: '1.2rem', lg: '1.5rem' }}>
                     ¡<Text display={"inline"} boxShadow='0px 7px 0px 0px #ffff01'>Hola</Text> de nuevo! 👋
                 </Heading>
-                <Text fontSize='1rem'
+                <Text fontSize={{ base: '0.9rem', lg: '1rem' }}
                     color='gray.600'>
                     Ingresa a Henry ASK y resuelve todas tus dudas
                 </Text>
             </VStack>
             <form onSubmit={submitHandler}>
-                <Stack spacing={3} w="23rem" >
+                <Stack spacing={3}
+                    w={{ base: '19rem', sm: '23rem' }}
+                    fontSize={{ base: '.75rem', lg: '.8rem' }} >
                     <FormControl id="email"
+                        w={{ base: '19rem', sm: '23rem' }}
                         fontSize=".8rem">
-                        <Input name='email'
+                        <Input fontSize={{ base: '.8rem', lg: '1rem' }}
+                            name='email'
                             placeholder='Email'
                             type="email"
                             borderColor={errorInfoUser.email}
@@ -163,9 +167,11 @@ const FormLogin = () => {
                         </Flex>
                     </FormControl>
                     <FormControl id="password"
+                        w={{ base: '19rem', sm: '23rem' }}
                         fontSize=".8rem">
                         <InputGroup size='md'>
-                            <Input name='password'
+                            <Input fontSize={{ base: '.8rem', lg: '1rem' }}
+                                name='password'
                                 placeholder='Contraseña'
                                 type={show ? 'text' : 'password'}
                                 borderColor={errorInfoUser.password.complete}
@@ -189,9 +195,9 @@ const FormLogin = () => {
                             justify={'space-between'}>
                             <Checkbox>Recordarme</Checkbox>
                             <RouteLink to="/forgotpassword">
-                            <Link as={"u"} fontWeight="semibold" textDecoration={"underline"}>
-                                Olvidé mi contraseña
-                            </Link>
+                                <Link as={"u"} fontWeight="semibold" textDecoration={"underline"}>
+                                    Olvidé mi contraseña
+                                </Link>
                             </RouteLink>
                         </Stack>
                         <Button type='submit'
@@ -232,7 +238,7 @@ const FormLogin = () => {
                             gap={"0.2rem"}
                             fontSize=".9rem">
                             <Text>
-                            ¿Aún no tienes una cuenta?
+                                ¿Aún no tienes una cuenta?
                             </Text>
                             <Link as={"u"} fontWeight="semibold" textDecoration={"underline"}
                                 onClick={() => navigate("/signup")}>

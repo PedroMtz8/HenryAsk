@@ -3,7 +3,6 @@ import {
     Flex,
     Text,
     Image,
-    Heading,
     Box,
     Stack,
     useDisclosure
@@ -44,8 +43,8 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
 
     }, [numberOfVotesUser])
 
-    useEffect(() => { 
-        (commentPage > 0) && getComment() 
+    useEffect(() => {
+        (commentPage > 0) && getComment()
     }, [commentPage])
 
     const getComment = async () => {
@@ -81,27 +80,26 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
         <Flex position="relative"
             flexDir="column"
             bg="#F2F2F2"
-            w="80%"
+            w="92%"
             minH="10rem"
             mt="3rem"
-            pt="1%"
-            px="1%"
-            gap="2%"
             borderRadius="md"
             fontWeight="semibold">
             <Flex position="relative"
-                alignItems="flex-start">
-                <Flex w="7rem"
+                alignItems="flex-start"
+                w="100%">
+                <Flex w={{ base: '20%', sm: '16%', md: '13%' }}
                     flexDir="column"
                     alignItems="center"
+                    pt={{ base: '1.5rem', sm: '1.1rem', md: '.9rem' }}
                     gap="1rem">
                     <Image src="https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60"
                         alt="Caffe Latte"
-                        w="5rem"
-                        h="5rem"
-                        borderRadius="5rem"
+                        w={{ base: '2rem', sm: '3rem', md: '5rem' }}
+                        h={{ base: '2rem', sm: '3rem', md: '5rem' }}
+                        borderRadius={{ base: '2rem', sm: '3rem', md: '5rem' }}
                     />
-                    <Stack fontSize="2rem" align="center">
+                    <Stack fontSize={{ base: '1.2rem', sm: '1.5rem', md: '2rem' }} align="center">
                         {user.email !== dataPost.post.user.email &&
                             <TriangleUpIcon
                                 color={votingData === 1 ? "green" : "gray"}
@@ -119,30 +117,54 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
                 </Flex>
                 <Flex flexDir="column"
                     justifyContent="space-between"
-                    w="full"
+                    w={{ base: '80%', sm: '84%', md: '87%' }}
                     minH="14rem"
+                    pr="1rem"
                     gap="2rem">
                     <Stack spacing={4}>
-                        <Flex gap=".5rem" fontSize=".8rem">
-                            <Text >
-                                {dataPost.post.user.userSlack} • {formatDate(dataPost.post.createdAt)}
-                            </Text>
-                            <Image w="1.4rem" alignSelf="flex-start"
+                        <Flex gap=".5rem"
+                            fontSize={{ base: '.7rem', sm: '.8rem' }}
+                            ml="10px"
+                            mt="1rem">
+                            <Flex gap={{ base: '.1rem', sm: '.3rem' }}
+                                flexDir={{ base: 'column', sm: 'row' }}>
+                                <Text display={{ base: 'block', sm: 'inline' }}>
+                                    {dataPost.post.user.userSlack}
+                                </Text>
+                                <Text display={{ base: 'none', sm: 'inline' }} >
+                                    •
+                                </Text>
+                                <Text display={{ base: 'block', sm: 'inline' }}>
+                                    {formatDate(dataPost.post.createdAt)}
+                                </Text>
+                            </Flex>
+                            <Image w="1.4rem"
+                                alignSelf={{ base: 'center', sm: 'flex-start' }}
                                 src="https://i.postimg.cc/TwrFYv4p/image-30.png" alt="userImage" />
-                            {userScore}
+                            <Text alignSelf={{ base: 'center', sm: 'flex-start' }}>
+                                {userScore}
+                            </Text>
                         </Flex>
-                        <Heading fontSize="1.2rem" as="h2">
-                            {dataPost.post.title}
-                        </Heading>
+                        <Flex pl="10px">
+                            <Text maxH={"10rem"}
+                                fontSize={{ base: '1rem', sm: '1.2rem' }}
+                                as="h2">
+                                {dataPost.post.title}
+                            </Text>
+                        </Flex>
                         <Editor body={dataPost.post.body} />
                     </Stack>
                     <Flex justifyContent="flex-end">
-                        <Flex gap="1rem" mr="2%">
+                        <Flex gap={{ base: '0.5rem', sm: '1rem' }}
+                            mr={{ base: '0.2rem', sm: '0rem' }}>
                             {
                                 dataPost.post.tags.map((e, i) =>
                                     <Box key={i}
+                                        textAlign="center"
                                         bg="#FFFF01"
-                                        p=".4rem .7rem"
+                                        fontSize={{ base: ".7rem", sm: ".8rem", md: "1rem" }}
+                                        borderRadius={".5rem"}
+                                        p={{ base: ".2rem .5rem", sm: ".4rem .7rem" }}
                                     >
                                         {e}
                                     </Box>
@@ -153,39 +175,46 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
                 </Flex>
             </Flex>
             <Flex position="relative"
-                justifyContent="space-between"
+                justifyContent={"center"}
                 w="100%"
-                borderTop="solid gray 1px"
-                mt={".5rem"}
-                pt=".5rem"
-                px="1rem">
-                <Flex>
-                    {(!showComments) ?
-                        <Text cursor="pointer"
-                            onClick={e => {commentPage === 0 && setCommentPage(1); setShowComments(true)}}>
-                            Comentarios: {`(${dataPost.post.numberComments})`} <TriangleDownIcon />
-                        </Text>
-                        :
-                        <Text cursor="pointer"
-                            onClick={e => { setShowComments(false) }}>
-                            Comentarios: {`(${dataPost.post.numberComments})`} <TriangleUpIcon />
-                        </Text>}
+                mt=".5rem">
+                <Flex justifyContent="space-between"
+                    borderTop="solid gray 1px"
+                    w={{ base: '94%', md: '98%' }}
+                    px="1rem"
+                    pt={{ base: '.3rem', sm: '.5rem' }}
+                    fontSize={{ base: '.7rem', sm: '1rem' }}>
+                    <Flex >
+                        {(dataPost.post.numberComments !== 0) ? ((!showComments) ?
+                            <Text cursor="pointer"
+                                onClick={e => { commentPage === 0 && setCommentPage(1); setShowComments(true) }}>
+                                Comentarios: {`(${dataPost.post.numberComments})`} <TriangleDownIcon />
+                            </Text>
+                            :
+                            <Text cursor="pointer"
+                                onClick={e => { setShowComments(false) }}>
+                                Comentarios: {`(${dataPost.post.numberComments})`} <TriangleUpIcon />
+                            </Text>)
+                            :
+                            null}
+                    </Flex>
+                    <Flex>
+                        <Text color="blue.600"
+                            cursor="pointer"
+                            onClick={onOpen}>Comentar respuesta</Text>
+                        <CreateComment isOpen={isOpen}
+                            onClose={onClose}
+                            type={"post"}
+                            id={idPost}
+                        />
+                    </Flex>
                 </Flex>
-                <>
-                    <Text color="blue.600"
-                        cursor="pointer"
-                        onClick={onOpen}>Comentar respuesta</Text>
-                    <CreateComment isOpen={isOpen}
-                        onClose={onClose}
-                        type={"post"}
-                        id={idPost}
-                    />
-                </>
             </Flex>
             <Flex position="relative"
                 px="0.5rem"
                 flexDir="column"
-                mt="1rem">
+                mt={{ base: '.3rem', sm: '1rem' }}
+                lineHeight="1.2rem">
                 {(showComments) && postComments.map((elem, i) =>
                     <Flex key={i}
                         w="100%"
@@ -194,13 +223,13 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
                     </Flex>)
                 }
                 {
-                    (showComments && remainingComments > 0 && setPostComments.length > 0 ) &&
+                    (showComments && remainingComments > 0) &&
                     <Flex color="blue.500"
-                         px="1rem"
-                          pb="1rem">
-                        <Text 
-                        cursor="pointer"
-                         onClick={e => setCommentPage(commentPage + 1)}>
+                        px="1rem"
+                        pb="1rem">
+                        <Text
+                            cursor="pointer"
+                            onClick={e => setCommentPage(commentPage + 1)}>
                             Ver más
                         </Text>
                     </Flex>

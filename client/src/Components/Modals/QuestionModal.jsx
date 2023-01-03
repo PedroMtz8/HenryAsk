@@ -115,7 +115,12 @@ export default function QuestionModal({ title }) {
 
   return (
     <>
-      <Button marginTop={"5px"} fontSize={{ base: "14px", sm: "initial", md: "inital", lg: "initial" }} backgroundColor={"#FFFF01"} key={'x1'} m={4} onClick={onOpen}>{title}</Button>
+      <Button marginTop={"5px"} 
+      fontSize={{ base: "10px", sm: "initial", md: "inital", lg: "initial" }}
+      backgroundColor={"#FFFF01"} 
+      key={'x1'} 
+      m={4} 
+      onClick={onOpen}>{title}</Button>
 
       <Modal
         initialFocusRef={initialRef}

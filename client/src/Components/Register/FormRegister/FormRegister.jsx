@@ -80,7 +80,7 @@ const FormRegister = () => {
 
             const current = e.target.value
 
-            const complete =  (/[A-Z]/.test(current)
+            const complete = (/[A-Z]/.test(current)
                 &&
                 /[0-9]/.test(current)
                 &&
@@ -153,46 +153,48 @@ const FormRegister = () => {
     }
 
     return (
-        <VStack spacing={6}>
-            <VStack spacing={4}
+        <VStack >
+            <VStack spacing={{ base: 3, lg: 4 }}
                 align="left"
                 alignSelf="flex-start">
                 <Image src='https://assets.soyhenry.com/henry-landing/assets/Henry/logo.png'
                     alt='logoHenry'
                     w="9rem" />
-                <Heading fontSize='3xl'>
+                <Heading fontSize={{ base: '1rem', lg: '1.3rem' }}>
                     Resuelve tus <Text display={"inline"} boxShadow='0px 7px 0px 0px #ffff01'>dudas</Text> 🚀
                 </Heading>
-                <Text fontSize='1rem'
+                <Text fontSize={{ base: '0.9rem', lg: '1rem' }}
                     color='gray.600'>
                     Regístrate para ingresar a nuestra plataforma
                 </Text>
             </VStack>
             <form onSubmit={submitHandler}>
-                <Stack spacing={3} w="23rem" >
-                    
-                        <FormControl id="userSlack"
-                            fontSize={".8rem"}
-                             >
-                            <Input name='userSlack'
-                                placeholder='Usuario de Slack con tu cohorte'
-                                borderColor={errorInfoUser.userSlack}
-                                focusBorderColor='black'
-                                _hover={{ borderColor: errorInfoUser.userSlack }}
-                                value={infoUser.userSlack}
-                                onChange={onChangeInput}
-                                onBlur={(e) => setErrorInfoUser({
-                                    ...errorInfoUser, [e.target.name]: (e.target.value === "") ? "red" : "green"
-                                })}
-                            />
-                            <Flex justifyContent={"flex-end"}>
+                <Stack spacing={{ base: 2, lg: 3 }}
+                    w={{ base: '19rem', sm: '23rem' }}
+                    fontSize={{ base: '.75rem', lg: '.8rem' }} >
+                    <FormControl id="userSlack"
+                        w={{ base: '19rem', sm: '23rem' }}>
+                        <Input fontSize={{ base: '.8rem', lg: '1rem' }}
+                            name='userSlack'
+                            placeholder='Usuario de Slack con tu cohorte'
+                            borderColor={errorInfoUser.userSlack}
+                            focusBorderColor='black'
+                            _hover={{ borderColor: errorInfoUser.userSlack }}
+                            value={infoUser.userSlack}
+                            onChange={onChangeInput}
+                            onBlur={(e) => setErrorInfoUser({
+                                ...errorInfoUser, [e.target.name]: (e.target.value === "") ? "red" : "green"
+                            })}
+                        />
+                        <Flex justifyContent={"flex-end"}>
                             {(errorInfoUser.userSlack === "red") && <Text color="red"  >* Campo obligatorio</Text>}
-                            </Flex>
-                        </FormControl>
-                    
+                        </Flex>
+                    </FormControl>
                     <FormControl id="country"
-                        fontSize={".8rem"}>
-                        <Select name="country"
+                        w={{ base: '19rem', sm: '23rem' }}>
+                        <Select fontSize={{ base: '.8rem', lg: '1rem' }}
+                            color="gray"
+                            name="country"
                             placeholder='Selecciona tu país de residencia'
                             borderColor={errorInfoUser.country}
                             focusBorderColor='black'
@@ -207,8 +209,9 @@ const FormRegister = () => {
                         </Flex>
                     </FormControl>
                     <FormControl id="email"
-                        fontSize={".8rem"}>
-                        <Input name='email'
+                        w={{ base: '19rem', sm: '23rem' }}>
+                        <Input fontSize={{ base: '.8rem', lg: '1rem' }}
+                            name='email'
                             placeholder='Email'
                             type="email"
                             borderColor={errorInfoUser.email}
@@ -221,9 +224,11 @@ const FormRegister = () => {
                             {(errorInfoUser.email === "red") && <Text color="red">* Email no válido</Text>}
                         </Flex>
                     </FormControl>
-                    <FormControl id="password">
+                    <FormControl id="password"
+                        w={{ base: '19rem', sm: '23rem' }}>
                         <InputGroup size='md'>
-                            <Input name='password'
+                            <Input fontSize={{ base: '.8rem', lg: '1rem' }}
+                                name='password'
                                 placeholder='Contraseña'
                                 type={show ? 'text' : 'password'}
                                 borderColor={errorInfoUser.password.complete}
@@ -240,18 +245,22 @@ const FormRegister = () => {
 
                     {showPasswordErrorText(errorInfoUser.password)}
 
-                    <Stack spacing={4}>
-                        <Button bg='#ffff01'
+                    <Stack spacing={{ base: 3, lg: 4 }}
+                        w={{ base: '19rem', sm: '23rem' }} >
+                        <Button alignSelf={"center"}
+                            bg='#ffff01'
                             type='submit'
                             color='black'
+                            fontSize={{ base: '.8rem', lg: '1rem' }}
                             disabled={showSubmitButton}
+                            w={{ base: '100%', lg: '23rem' }}
                         >
                             Registrame
                         </Button>
 
                         {
-                            emailError ? 
-                            <Center>
+                            emailError ?
+                                <Center>
                                     <Box border={"2px solid red"} color={"red"} w={"90%"} borderRadius={"5px"} p={"5px"} textAlign="center">
                                         <Text>Ya existe un usuario con ese email</Text>
                                     </Box>
@@ -260,9 +269,9 @@ const FormRegister = () => {
                                 null
                         }
 
-                        <HStack justifyContent="flex-start"
+                        <HStack justifyContent={{ base: 'center', lg: 'flex-start' }}
                             gap={"0.2rem"}
-                            fontSize=".9rem">
+                            fontSize={{ base: '.8rem', lg: '1rem' }}>
                             <Text>
                                 ¿Ya tienes una cuenta?
                             </Text>
@@ -286,32 +295,38 @@ export default FormRegister;
 const showPasswordErrorText = (colorError) => {
 
     return (
-        <SimpleGrid columns={2}
-            spacing={3}>
-            <Flex alignItems="center"
-                gap={".4rem"}
-                color={colorError.eightCharacters}>
-                {colorError.eightCharacters === "green" ? <CheckCircleIcon /> : <InfoIcon />}
-                Más de 8 caracteres
-            </Flex>
-            <Flex alignItems="center"
-                gap={".4rem"}
-                color={colorError.capitalLetter}>
-                {colorError.capitalLetter === "green" ? <CheckCircleIcon /> : <InfoIcon />}
-                Una mayúscula
-            </Flex>
-            <Flex alignItems="center"
-                gap={".4rem"}
-                color={colorError.specialCharacter}>
-                {colorError.specialCharacter === "green" ? <CheckCircleIcon /> : <InfoIcon />}
-                Un caracter especial
-            </Flex>
-            <Flex alignItems="center"
-                gap={".4rem"}
-                color={colorError.digit}>
-                {colorError.digit === "green" ? <CheckCircleIcon /> : <InfoIcon />}
-                Al menos un número
-            </Flex>
-        </SimpleGrid>
+        <Flex justifyContent="center"
+              alignItems="center"
+              w={{ base: '19rem', sm: '23rem' }}>
+            <SimpleGrid
+                columns={2}
+                spacing={3}
+                fontSize={{ base: '.8rem', lg: '.9rem' }}>
+                <Flex alignItems="center"
+                    gap={".4rem"}
+                    color={colorError.eightCharacters}>
+                    {colorError.eightCharacters === "green" ? <CheckCircleIcon /> : <InfoIcon />}
+                    Más de 8 caracteres
+                </Flex>
+                <Flex alignItems="center"
+                    gap={".4rem"}
+                    color={colorError.capitalLetter}>
+                    {colorError.capitalLetter === "green" ? <CheckCircleIcon /> : <InfoIcon />}
+                    Una mayúscula
+                </Flex>
+                <Flex alignItems="center"
+                    gap={".4rem"}
+                    color={colorError.specialCharacter}>
+                    {colorError.specialCharacter === "green" ? <CheckCircleIcon /> : <InfoIcon />}
+                    Un caracter especial
+                </Flex>
+                <Flex alignItems="center"
+                    gap={".4rem"}
+                    color={colorError.digit}>
+                    {colorError.digit === "green" ? <CheckCircleIcon /> : <InfoIcon />}
+                    Al menos un número
+                </Flex>
+            </SimpleGrid>
+        </Flex>
     )
 }
