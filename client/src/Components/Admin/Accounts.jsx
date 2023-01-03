@@ -29,9 +29,13 @@ const Accounts = () => {
   const [filter, setFilter] = useState('all')
   const maxPag = useSelector((state) => state.user.usersMaxPages);
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    dispatch(setPage(1))
-  }, [])
+    dispatch(getUsers({ token, page: accounts.page }));
+    setLoading(false);
+  }, [dispatch, accounts.page]);
+
 
   const getAccounts = () => {
     if(filter === 'all'){
@@ -56,7 +60,9 @@ const Accounts = () => {
     } else{
       setPage(1)
     }
-  }, [filter])
+    setLoading(false);
+  };
+
 
 
   return (
