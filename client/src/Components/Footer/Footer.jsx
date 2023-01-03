@@ -11,7 +11,8 @@ const Footer = () => {
             fontWeight="light"
             justifyContent={"space-evenly"}
             flexDirection={{ base: "column", md: "column", lg: "initial" }}
-            alignItems="center">
+            alignItems="center"
+            textAlign="center">
             <Image src='https://assets.soyhenry.com/henry-landing/assets/Henry/logo-white.png'
                 alt='logoHenry'
                 w="5rem" />
