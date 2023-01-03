@@ -8,51 +8,28 @@ import {
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
-  useToast
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { updateUser } from "../../../slices/userSlice";
-import { useAuth } from "../../AuthComponents/AuthContext";
+import { useSelector } from "react-redux";
 import getCroppedImg from "./getCroppedImg";
 import Cropper from "react-easy-crop";
+import { useEffect } from "react";
 
-const CropperImage = ({ photoURL, setOpenCrop, setPhotoURL, setProfilePic }) => {
+const CropperImage = ({ photoURL, setOpenCrop, setPhotoURL, croppedAreaPixels, setCroppedAreaPixels, setSubmitImage}) => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
-  const [file, setFile] = useState(null);
-  const dispatch = useDispatch();
-  const { user, uploadFile } = useAuth();
   const userData = useSelector((state) => state.user.user);
-  const toast = useToast()
 
 
   const cropComplete = (croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels);
   };
 
-  async function handleSubmit(fileImg) {
-    let res = await uploadFile(fileImg, user.uid, userData.userSlack);
-    dispatch(updateUser(user.accessToken, res, userData.country));
-    toast({
-      description: "Imagen actualizada correctamente",
-      duration: 3000,
-      position: "top",
-      status: "success",
-      isClosable: true
-    })
-    setTimeout(() => {
-      window.location.reload(false);
-    }, 3000)
-  }
-
   const cropImage = async () => {
     try {
       //La url es para el preview de la imagen y el file es el archivo
-      const { url, file2 } = await getCroppedImg(photoURL, croppedAreaPixels);
+      const { url } = await getCroppedImg(photoURL, croppedAreaPixels);
       await setPhotoURL(url);
-      setFile(file2);
       setZoom(1);
     } catch (error) {
       console.log(error);
@@ -60,8 +37,13 @@ const CropperImage = ({ photoURL, setOpenCrop, setPhotoURL, setProfilePic }) => 
   };
 
   const submitPhoto = async () => {
-    await handleSubmit(file);
+    setOpenCrop(false)
+    setSubmitImage(true)
   };
+
+  useEffect(() => {
+    setSubmitImage(false)
+  }, [])
 
   return (
     <>
@@ -112,7 +94,10 @@ const CropperImage = ({ photoURL, setOpenCrop, setPhotoURL, setProfilePic }) => 
           </Box>
 
           <Flex mt={"10px"} justifyContent={"center"} gap={5}>
-            <Button bgColor={"tomato"} onClick={() => setOpenCrop(false)}>
+            <Button bgColor={"tomato"} onClick={() => {
+              setPhotoURL(userData?.avatar)
+              setOpenCrop(false)
+              }}>
               Cancel
             </Button>
             <Button bgColor={"#FFFF01"} onClick={cropImage}>
