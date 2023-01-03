@@ -15,7 +15,7 @@ import { useSelector, useDispatch } from "react-redux";
 import SearchbarAdmin from "./SearchbarAdmin";
 import { useAuth } from "../AuthComponents/AuthContext";
 import PaginatedAdmin from "./PaginatedAdmin";
-import { getUsers } from "../../slices/userSlice";
+import { getUsers, setPage } from "../../slices/userSlice";
 
 const Accounts = () => {
   const { user } = useAuth();
@@ -28,9 +28,13 @@ const Accounts = () => {
   const maxPag = useSelector((state) => state.user.usersMaxPages);
 
   useEffect(() => {
-    dispatch(getUsers({ token, page: accounts.page }));
-  }, [dispatch, accounts.page]);
+    dispatch(setPage(1))
+  }, [])
 
+  useEffect(() => {
+      dispatch(getUsers({ token, page: accounts.page }));
+  }, [dispatch, accounts.page]);
+  
   return (
     <Flex>
       <Sidebar />
