@@ -120,6 +120,7 @@ const Profile = () => {
         status: "success",
         isClosable: true
       })
+      onClose()
     } catch (error) {
       if(error.response?.status === 409){
         toast({
