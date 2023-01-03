@@ -61,7 +61,7 @@ const Accounts = () => {
       setPage(1)
     }
     setLoading(false);
-  };
+  })
 
 
 
