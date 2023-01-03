@@ -13,7 +13,8 @@ import {
     ModalFooter,
     Button,
     Input,
-    Text
+    Text,
+    useToast
 } from '@chakra-ui/react'
 
 const CreateComment = ({ isOpen, onClose, id }) => {
@@ -22,6 +23,7 @@ const CreateComment = ({ isOpen, onClose, id }) => {
     let token = user.accessToken;
     const idParam = useParams().id
     const navigate = useNavigate()
+    const toast = useToast()
 
     const [comment, setComment] = useState("")
     const [enableSubmitButton, setEnableSubmitButton] = useState(true)
@@ -38,14 +40,27 @@ const CreateComment = ({ isOpen, onClose, id }) => {
 
             const res = await axios.put(API_URL + `/comment`, { body: comment, comment_id: id }, { headers: { Authorization: "Bearer " + token } })
             
-            console.log(res.data)
+            toast({
+                title: `Comentario modificado correctamente.`,
+                status: "success",
+                duration: 2000,
+                isClosable: true,
+            })
+
             onClose()
             
-            setTimeout(() => {navigate(0)}, 500) 
+            setTimeout(() => {navigate(0)}, 2500) 
 
         } catch (error) {
 
-            console.log(error)
+            toast({
+                title: `El comentario no pudo ser modificado, intentelo de nuevo.`,
+                status: "error",
+                duration: 2000,
+                isClosable: true,
+            })
+            onClose()
+            setComment("")
 
         }
 
