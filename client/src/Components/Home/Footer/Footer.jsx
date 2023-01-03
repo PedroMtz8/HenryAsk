@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
     Flex,
     Image,
@@ -6,12 +7,44 @@ import {
     HStack,
     Input,
     Button,
-    Box
+    Box,
+    useToast
 } from '@chakra-ui/react'
 import { EmailIcon } from '@chakra-ui/icons'
 import { Link } from 'react-router-dom'
 
 const Footer = () => {
+
+    const toast = useToast()
+    const [emailSubscription, setEmailSubscription] = useState("")
+
+    const toSubscribe = () => {
+
+        if ((/^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/.test(emailSubscription))) {
+
+            toast({
+                description: "subscripción exitosa.",
+                status: "success",
+                duration: 4000,
+                isClosable: true
+            })
+
+            setEmailSubscription("")
+
+        } else {
+
+            toast({
+                description: "Error: proporcionar un email válido.",
+                status: "error",
+                duration: 4000,
+                isClosable: true
+            })
+
+            setEmailSubscription("")
+        }
+
+    }
+
     return (
         <Flex bg="#000000"
             h="55vh"
@@ -25,61 +58,93 @@ const Footer = () => {
                     <Image src='https://assets.soyhenry.com/henry-landing/assets/Henry/logo-white.png'
                         alt='logoHenry'
                         w="200px" />
-                    <Text>The school that invests in you</Text>
+                    <Text>Invertimos en tu educación</Text>
                 </Stack>
                 <Stack spacing={2}>
                     <Stack spacing={-1}
                         fontWeight="bold">
                         <Text >
-                            Queries to
+                            Consultas a
                         </Text>
                         <Text color="#ffff01">
-                            talent@soyhenry.com
+                            henryask.soporte@gmail.com
                         </Text>
                     </Stack>
                     <Stack
                         fontWeight="bold">
                         <Text >
-                            Subscribe to our newsletter
+                            Suscríbete a nuestro newsletter
                         </Text>
                         <HStack>
                             <Input placeholder='Email'
                                 bg="#ffffff"
-                                borderRadius="5px" />
-                            <Button bg="#ffff01">
+                                color={"black"}
+                                borderRadius="5px"
+                                value={emailSubscription}
+                                onChange={e => setEmailSubscription(e.target.value)} />
+                            <Button bg="#ffff01"
+                                onClick={toSubscribe}>
                                 <EmailIcon color="#000000" />
                             </Button>
                         </HStack>
                     </Stack>
                 </Stack>
                 <HStack>
-                    <Button bg="#ffff01"
+                    <Flex bg="#ffff01"
                         w="40px"
                         h="40px"
-                        borderRadius="40px">
-                    </Button>
-                    <Button bg="#ffff01"
+                        justifyContent="center"
+                        alignItems="center"
+                        borderRadius="40px"
+                        cursor="pointer"
+                        onClick={e => window.open('https://www.linkedin.com', '_blank')}>
+                            <Image boxSize="14px" src='https://static-00.iconduck.com/assets.00/linkedin-icon-512x512-dhkaf9ri.png' alt='logoLinkedin'/>
+                    </Flex> 
+                    <Flex bg="#ffff01"
                         w="40px"
                         h="40px"
-                        borderRadius="40px">
-                    </Button>
-                    <Button bg="#ffff01"
+                        justifyContent="center"
+                        alignItems="center"
+                        borderRadius="40px"
+                        cursor="pointer"
+                        onClick={e => window.open('https://github.com/PedroMtz8/ASLFNASL', '_blank')}>
+                            <Image boxSize="14px" src='https://cdn-icons-png.flaticon.com/512/25/25231.png' alt='logoGitHub'/>
+                    </Flex>
+                    <Flex bg="#ffff01"
                         w="40px"
                         h="40px"
-                        borderRadius="40px">
-                    </Button>
-                    <Button bg="#ffff01"
+                        justifyContent="center"
+                        alignItems="center"
+                        borderRadius="40px"
+                        cursor="pointer"
+                        onClick={e => window.open('https://vimeo.com/', '_blank')}>
+                            <Image boxSize="14px" src='https://cdn-icons-png.flaticon.com/512/63/63191.png' alt='logoVimeo'/>
+                    </Flex>
+                    <Flex bg="#ffff01"
                         w="40px"
                         h="40px"
-                        borderRadius="40px">
-                    </Button>
+                        justifyContent="center"
+                        alignItems="center"
+                        borderRadius="40px"
+                        cursor="pointer"
+                        onClick={e => window.open('https://www.youtube.com', '_blank')}>
+                            <Image boxSize="14px" src='https://freeiconshop.com/wp-content/uploads/edd/youtube-solid.png' alt='logoYoutube'/>
+                    </Flex>
                 </HStack>
                 <HStack>
-                    <Text>Privacy Policy</Text>
+                    <Text>
+                        <a href='https://www.soyhenry.com/privacy'>
+                            Privacy Policy
+                        </a>
+                    </Text>
                     <Box bg="#ffffff"
                         w=".1rem"
                         h="1rem" />
-                    <Text>Terms & Conditions </Text>
+                    <Text>
+                        <a href='https://www.soyhenry.com/terms'>
+                            Terms & Conditions
+                        </a>
+                    </Text>
                 </HStack>
             </Stack>
             <Stack align="center"
@@ -90,46 +155,73 @@ const Footer = () => {
                     fontSize={"1.2rem"}>
                     <Stack >
                         <Text color={"#ffff01"}>
-                            Study at Henry
+                            Estudia en Henry
                         </Text>
                         <Stack >
-                            <Text>
-                                Full Stack <br />
-                                Admissions<br />
-                                Reviews<br />
-                                FAQs
-                            </Text>
+                            <Box>
+                                <a href="https://www.soyhenry.com/webfullstack" target="_blank">
+                                    Full Stack
+                                </a>
+                                <br />
+                                <a href="https://www.soyhenry.com/admissions" target="_blank">
+                                    Admisiones
+                                </a>
+                                <br />
+                                <a href="https://www.soyhenry.com/henry-opiniones" target="_blank">
+                                    Opiniones
+                                </a>
+                                <br />
+                                <a href="https://ayuda.soyhenry.com/es/" target="_blank">
+                                    Preguntas frecuentes
+                                </a>
+                            </Box>
                         </Stack>
                     </Stack>
                     <Stack>
                         <Text color={"#ffff01"}>
-                            About Henry
+                            Sobre Henry
                         </Text>
                         <Stack >
-                            <Text>
-                                About us <br />
-                                Press<br />
-                                Blog<br />
-                                Wall of love<br />
-                                Work with us
-                            </Text>
+                            <Box>
+                                <a href="https://www.soyhenry.com/about-us" target="_blank">
+                                    Nosotros
+                                </a>
+                                <br />
+                                <a href="https://www.soyhenry.com/prensa" target="_blank">
+                                    Prensa
+                                </a>
+                                <br />
+                                <a href="https://blog.soyhenry.com/" target="_blank">
+                                    Blog
+                                </a>
+                                <br />
+                                <a href="https://www.soyhenry.com/muro-del-amor" target="_blank">
+                                    Muro del amor
+                                </a>
+                                <br />
+                                <a href="https://www.linkedin.com/school/henryok/" target="_blank">
+                                    Trabaja en Henry
+                                </a>
+                            </Box>
                         </Stack>
                     </Stack>
                     <Stack>
                         <Text color={"#ffff01"}>
-                            Companies
+                            Empresas
                         </Text>
                         <Stack >
-                            <Text>
-                                Hire our talent
-                            </Text>
+                            <Box>
+                                <a href="https://www.soyhenry.com/hiring" target="_blank">
+                                    Hire our talent
+                                </a>
+                            </Box>
                         </Stack>
                     </Stack>
                 </HStack>
                 <HStack>
                     <Text>
-                        Made with 💛 by Henry alumni.<br />
-                        Henry © 2022 | All rights reserved
+                        Hecho con 💛 por alumnos de Henry.<br />
+                        Henry Hackathon © 2022 | Todos los derechos reservados.
                     </Text>
                 </HStack>
             </Stack>

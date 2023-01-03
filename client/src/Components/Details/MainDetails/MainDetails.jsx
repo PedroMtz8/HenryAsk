@@ -5,7 +5,8 @@ import {
     Image,
     Heading,
     Box,
-    Stack
+    Stack,
+    useDisclosure
 } from '@chakra-ui/react'
 import { TriangleUpIcon, TriangleDownIcon } from '@chakra-ui/icons'
 import Editor from '../../DetailBody/DetailBody'
@@ -16,6 +17,7 @@ import API_URL from "../../../config/environment"
 import { useParams } from "react-router-dom";
 import { useEffect } from 'react'
 import Comments from '../Comments/Comments'
+import CreateComment from '../Comments/CreateComment'
 
 const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userScore }) => {
 
@@ -28,6 +30,8 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
     const [postComments, setPostComments] = useState([])
     const [commentPage, setCommentPage] = useState(0)
     const [remainingComments, setRemainingComments] = useState(dataPost.post.numberComments)
+    const [showComments, setShowComments] = useState(false)
+    const { isOpen, onOpen, onClose } = useDisclosure()
 
     useEffect(() => {
 
@@ -40,14 +44,16 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
 
     }, [numberOfVotesUser])
 
-    useEffect(() => { (commentPage > 0) && getComment() }, [commentPage])
+    useEffect(() => { 
+        (commentPage > 0) && getComment() 
+    }, [commentPage])
 
     const getComment = async () => {
 
         const res = await axios.get(API_URL + `/comment/post?post_id=${dataPost.post._id}&page=${commentPage}`,
             { headers: { Authorization: "Bearer " + token } })
 
-        setPostComments(res.data.comments)
+        setPostComments([...postComments, ...res.data.comments])
         setRemainingComments(res.data.numberOfCommentsLeft)
 
     }
@@ -78,7 +84,8 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
             w="80%"
             minH="10rem"
             mt="3rem"
-            p="1%"
+            pt="1%"
+            px="1%"
             gap="2%"
             borderRadius="md"
             fontWeight="semibold">
@@ -146,30 +153,58 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
                 </Flex>
             </Flex>
             <Flex position="relative"
+                justifyContent="space-between"
+                w="100%"
+                borderTop="solid gray 1px"
+                mt={".5rem"}
+                pt=".5rem"
+                px="1rem">
+                <Flex>
+                    {(!showComments) ?
+                        <Text cursor="pointer"
+                            onClick={e => {commentPage === 0 && setCommentPage(1); setShowComments(true)}}>
+                            Comentarios: {`(${dataPost.post.numberComments})`} <TriangleDownIcon />
+                        </Text>
+                        :
+                        <Text cursor="pointer"
+                            onClick={e => { setShowComments(false) }}>
+                            Comentarios: {`(${dataPost.post.numberComments})`} <TriangleUpIcon />
+                        </Text>}
+                </Flex>
+                <>
+                    <Text color="blue.600"
+                        cursor="pointer"
+                        onClick={onOpen}>Comentar respuesta</Text>
+                    <CreateComment isOpen={isOpen}
+                        onClose={onClose}
+                        type={"post"}
+                        id={idPost}
+                    />
+                </>
+            </Flex>
+            <Flex position="relative"
                 px="0.5rem"
                 flexDir="column"
                 mt="1rem">
-                {postComments.map((elem, i) =>
+                {(showComments) && postComments.map((elem, i) =>
                     <Flex key={i}
                         w="100%"
                         px="1rem">
                         <Comments dataComment={elem} />
                     </Flex>)
                 }
-                <Flex position="relative"
-                    justifyContent="space-between"
-                    w="100%"
-                    borderTop="solid gray 1px"
-                    pt=".5rem"
-                    px="1rem">
-                    <Flex>
-                        {(remainingComments > 0) &&
-                            <Text onClick={e => setCommentPage(commentPage + 1)}>
-                                Comentarios: {`(${remainingComments})`} <TriangleDownIcon />
-                            </Text>}
+                {
+                    (showComments && remainingComments > 0 && setPostComments.length > 0 ) &&
+                    <Flex color="blue.500"
+                         px="1rem"
+                          pb="1rem">
+                        <Text 
+                        cursor="pointer"
+                         onClick={e => setCommentPage(commentPage + 1)}>
+                            Ver más
+                        </Text>
                     </Flex>
-                    <Text>Comentar respuesta</Text>
-                </Flex>
+                }
             </Flex>
         </Flex>
     )

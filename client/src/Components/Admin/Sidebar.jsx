@@ -95,6 +95,7 @@ const Sidebar = () => {
           display={navSize === "small" ? "none" : "flex"}
           mt="5px"
         >
+
           {currentUser?.userSlack}
         </Heading>
         <Text

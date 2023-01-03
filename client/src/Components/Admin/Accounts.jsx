@@ -17,6 +17,7 @@ import { useAuth } from "../AuthComponents/AuthContext";
 import PaginatedAdmin from "./PaginatedAdmin";
 import { getUserByRol, getUsers } from "../../slices/userSlice";
 
+
 const Accounts = () => {
   const dispatch = useDispatch();
 
@@ -34,6 +35,7 @@ const Accounts = () => {
     setLoading(false);
   }, [dispatch, accounts.page]);
 
+
   const handleChangeFilter = (e) => {
     e.preventDefault();
 
@@ -46,6 +48,7 @@ const Accounts = () => {
     }
     setLoading(false);
   };
+
 
   return (
     <Flex>
