@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Button,
   Divider,
   Flex,
   Heading,
@@ -20,7 +21,11 @@ const Sidebar = () => {
 
   const dispatch = useDispatch();
 
-  const { user, signout } = useAuth();
+  const { user } = useAuth();
+  let token = user.accessToken;
+
+  const requests = useSelector((state) => state.user.requests);
+  console.log(requests.length);
 
   const currentUser = useSelector((state) => state.user.user);
 
@@ -67,7 +72,7 @@ const Sidebar = () => {
         <NavItem
           navSize={navSize}
           icon={FiBriefcase}
-          title="Peticiones"
+          title={`Peticiones (${requests.length})`}
           url="/admin/requests"
         />
       </Flex>
@@ -81,19 +86,35 @@ const Sidebar = () => {
       ></Flex>
 
       <Divider display={navSize === "small" ? "none" : "flex"} />
-      <Flex
-        flexDir="column"
-        p={4}
-        display={navSize === "small" ? "none" : "flex"}
-      >
+      <Flex flexDir="column" p={4}>
         <Avatar size="sm" src={currentUser.avatar} m="auto" />
-        <Heading as="h3" size="sm" m="auto">
-          {currentUser.userSlack}
+        <Heading
+          as="h3"
+          size="sm"
+          m="auto"
+          display={navSize === "small" ? "none" : "flex"}
+          mt="5px"
+        >
+          {currentUser?.userSlack}
         </Heading>
-        <Text m="auto" color="gray">
+        <Text
+          m="auto"
+          color="gray"
+          display={navSize === "small" ? "none" : "flex"}
+        >
           {" "}
           {currentUser.rol}{" "}
         </Text>
+        <Button
+          mt="15px"
+          size="sm"
+          variant="outline"
+          colorScheme="red"
+          onClick={() => navigate("/home")}
+          display={navSize === "small" ? "none" : "flex"}
+        >
+          Volver al Home
+        </Button>
       </Flex>
     </Flex>
   );

@@ -27,8 +27,11 @@ const Accounts = () => {
   const users = accounts.users;
   const maxPag = useSelector((state) => state.user.usersMaxPages);
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     dispatch(getUsers({ token, page: accounts.page }));
+    setLoading(false);
   }, [dispatch, accounts.page]);
 
   const handleChangeFilter = (e) => {
@@ -41,6 +44,7 @@ const Accounts = () => {
         getUserByRol({ page: accounts.page, rol: e.target.value, token })
       );
     }
+    setLoading(false);
   };
 
   return (
