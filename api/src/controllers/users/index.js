@@ -7,29 +7,40 @@ function checkFields(fields) {
     for (const field in fields) {
         const value = fields[field]
         switch (field) {
+            case 'uid':
+                if(!value) return 'Id de usuario requerido'
+                break;
             case 'mail':
+                if(!value) return 'Mail requerido'
                 if (!/^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/.test(value)) {
                     return 'Email no válido'
                 }
                 break;
             case 'password':
+                if(!value) return 'Contraseña requerida'
                 if (!/[A-Z]/.test(value)) return 'Contraseña debe contener una mayuscula'
                 else if (!/[0-9]/.test(value)) return 'Contraseña debe contener un número'
                 else if (!/[$@$!%*?&#+-.]/.test(value)) return 'Contraseña debe contener un caracter especial'
                 else if (value.length <= 8) return 'Contraseña debe contener mas de 8 caracteres'
                 break;
             case 'country':
+                if(!value) return 'Pais requerido'
                 if (!countries.includes(value)) {
                     return 'País no válido'
                 }
                 break;
             case 'page':
+                if(!value) return 'Numero de pagina requerido'
                 if (value <= 0) return 'Pagina no puede ser menor o igual a 0'
                 break;
             case 'rol':
                 if(!value) return;
                 const roles = ['Administrador', 'Estudiante', 'Graduado', 'TA', 'Henry Hero']
-                if(!roles.includes(value)) return 'Rol invalido.'
+                if(!roles.includes(value)) return 'Rol invalido'
+                break;
+            case 'userSlack':
+                if(!value) return 'Usuario de Slack requerido'
+                if(value.length > 30) return 'Usuario de Slack debe ser menor o igual a 30 caracteres'
                 break;
         }
     }
@@ -38,8 +49,7 @@ function checkFields(fields) {
 
 const registerUser = async (req, res) => {
     const { uid, mail, userSlack, country } = req.body
-    if (!mail || !userSlack || !country) return res.status(400).json({ message: 'Mail, usuario de Slack, modulo y pais requeridos.' })
-    const message = checkFields({ mail, userSlack, country })
+    const message = checkFields({ uid, mail, userSlack, country })
     if (message) return res.status(400).json({ message })
 
     const duplicated = await User.findOne({ mail })
@@ -68,7 +78,6 @@ const editUser = async (req, res) => {
 
 const registerAdmin = async (req, res) => {
     const { mail, password, userSlack, country } = req.body
-    if (!mail || !userSlack || !country) return res.status(400).json({ message: 'Mail, usuario de Slack, modulo y pais requeridos.' })
     const message = checkFields({ mail, password, userSlack, country })
     if (message) return res.status(400).json({ message })
 
@@ -102,7 +111,6 @@ const getUserById = async (req, res) => {
 
 const getUsers = async (req, res) => {
     const { page, mail, rol } = req.query
-    if (!page) return res.status(400).json({ message: 'Numero de pagina requerido.' })
     const message = checkFields({ page, rol })
     if (message) return res.status(400).json({ message })
 
