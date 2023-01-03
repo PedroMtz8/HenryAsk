@@ -46,16 +46,7 @@ export default function NavBar() {
     dispatch(getUserData(user.accessToken))
   }, []);
 
-  if(userData && userData.status === "Esperando") {
-     toast({
-      description: "Tu confirmación esta pendiente, espera a que sea aprobada",
-      duration: 6000,
-      isClosable: true,
-      status: "info",
-      position: "top",
-    })
-    signout()
-  } 
+
 
   return (
     <>

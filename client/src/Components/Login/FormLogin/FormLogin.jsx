@@ -17,16 +17,23 @@ import {
     InputRightElement,
     Checkbox,
     Center,
-    Box
+    Box,
+    useToast
 } from '@chakra-ui/react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { useNavigate, Link as RouteLink } from 'react-router-dom'
 import { useAuth } from "../../AuthComponents/AuthContext"
+import { getUserData } from "../../../slices/userSlice";
+import { useDispatch, useSelector } from 'react-redux'
 
 const FormLogin = () => {
 
+    const toast = useToast()
     const navigate = useNavigate()
-    const { login } = useAuth()
+    const { login, signout, user } = useAuth()
+    const dispatch = useDispatch()
+    const userData = useSelector((state) => state.user.user)
+    
 
     const [infoUser, setInfoUser] = useState({
         email: "",
@@ -54,7 +61,7 @@ const FormLogin = () => {
             (errorInfoUser.email === "green")
             &&
             (errorInfoUser.password.complete === "green")))
-    })
+    }, [errorInfoUser])
 
     const onChangeInput = (e) => {
 
@@ -115,10 +122,9 @@ const FormLogin = () => {
             setWrongPass(false)
             setWrongEmail(false)
             setAttempts(false)
-            await login(infoUser.email, infoUser.password)
-            navigate("/home")
+            const res = await login(infoUser.email, infoUser.password)
+            dispatch(getUserData(res.user.accessToken))
         } catch (error) {
-            console.log(error.message)
             if (error.message.includes("auth/wrong-password")) setWrongPass(true)
             else setWrongPass(false)
             if (error.message.includes("not-found")) setWrongEmail(true)
@@ -127,6 +133,21 @@ const FormLogin = () => {
             else setAttempts(false)
         }
     }
+
+    useEffect(() => {
+        if(userData?.status === "Esperando") {
+            toast({
+             description: "Tu confirmación esta pendiente, espera a que sea aprobada",
+             duration: 6000,
+             isClosable: true,
+             status: "info",
+             position: "top",
+           })
+           signout()
+         } else if(user && userData?.status === "Aprobado"){
+            navigate('/home')
+         }
+    }, [userData])
 
     return (
         <VStack spacing={6}>
@@ -187,7 +208,6 @@ const FormLogin = () => {
                             direction={{ base: 'column', sm: 'row' }}
                             align={'start'}
                             justify={'space-between'}>
-                            <Checkbox>Recordarme</Checkbox>
                             <RouteLink to="/forgotpassword">
                             <Link as={"u"} fontWeight="semibold" textDecoration={"underline"}>
                                 Olvidé mi contraseña
