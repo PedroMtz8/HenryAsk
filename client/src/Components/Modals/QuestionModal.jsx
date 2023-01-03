@@ -48,6 +48,8 @@ export default function QuestionModal({ title }) {
   const initialRef = useRef(null)
   const finalRef = useRef(null)
 
+  const toast = useToast()
+
   const handleChange = (e) => {
     setPost({
       ...post,
@@ -57,9 +59,32 @@ export default function QuestionModal({ title }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    let token = user.accessToken
-    await axios.post(API_URL + "/posts", post, { headers: { Authorization: "Bearer " + token } })
-    onClose()
+
+    try {
+
+      let token = user.accessToken
+      await axios.post(API_URL + "/posts", post, { headers: { Authorization: "Bearer " + token } })
+      onClose()
+
+      toast({
+        title: `Pregunta publicada.`,
+        status: "success",
+        duration: 4000,
+        isClosable: true,
+      })
+
+    } catch (error) {
+
+      onClose()
+
+      toast({
+        title: `No se pudo publicar la pregunta, inténtelo nuevamente.`,
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      })
+
+    }
   }
 
   useEffect(() => {

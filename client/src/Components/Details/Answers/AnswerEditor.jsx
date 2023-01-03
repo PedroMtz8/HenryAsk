@@ -19,7 +19,8 @@ import {
     Grid,
     GridItem,
     Button,
-    Text
+    Text,
+    useToast
 } from "@chakra-ui/react";
 import axios from 'axios'
 import API_URL from '../../../config/environment'
@@ -47,6 +48,7 @@ function AnswerEditor({ post_id, responseData, setResponseData, token, scrollFro
             setText(editor.getText())
         },
     })
+    const toast = useToast()
 
     useEffect(() => {
         let disabled = false, error = ''
@@ -65,10 +67,31 @@ function AnswerEditor({ post_id, responseData, setResponseData, token, scrollFro
     }, [body])
 
     const submitAnswer = async () => {
-        await axios.post(`${API_URL}/answer`, { post_id, body }, { headers: { Authorization: "Bearer " + token } })
-        const response = await axios.get(API_URL + `/answer/post?page=${responseData.answersPage}&sort=${responseData.answersSort}&post_id=${post_id}`, { headers: { Authorization: "Bearer " + token } })
-        setResponseData({ ...responseData, answersArr: response.data.foundAnswers, maxPages: response.data.maxPages })
-        scrollTo.current.scrollIntoView({ block: 'end', behavior: 'smooth' })
+
+        try {
+
+            await axios.post(`${API_URL}/answer`, { post_id, body }, { headers: { Authorization: "Bearer " + token } })
+            const response = await axios.get(API_URL + `/answer/post?page=${responseData.answersPage}&sort=${responseData.answersSort}&post_id=${post_id}`, { headers: { Authorization: "Bearer " + token } })
+            setResponseData({ ...responseData, answersArr: response.data.foundAnswers, maxPages: response.data.maxPages })
+            scrollTo.current.scrollIntoView({ block: 'end', behavior: 'smooth' })
+
+            toast({
+                title: `Respuesta agregada.`,
+                status: "success",
+                duration: 4000,
+                isClosable: true,
+            })
+
+        } catch (error) {
+
+            toast({
+                title: `No se pudo agregar la respuesta, inténtelo nuevamente.`,
+                status: "error",
+                duration: 4000,
+                isClosable: true,
+            })
+        }
+
     }
 
     return (
