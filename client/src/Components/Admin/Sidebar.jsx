@@ -1,6 +1,7 @@
 import { Divider, Flex, Heading, IconButton, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { FiBriefcase, FiHome, FiMenu, FiUser } from "react-icons/fi";
+import { useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
 import NavItem from "./NavItem";
 import { useSelector } from "react-redux";
@@ -8,7 +9,8 @@ import { useSelector } from "react-redux";
 const Sidebar = () => {
   const [navSize, setNavSize] = useState("large");
   const navigate = useNavigate();
-  const userData = useSelector((state) => state.user.user);
+  const currentUser = useSelector((state) => state.user.user);
+  console.log(currentUser);
 
   const handleMenuSize = () => {
     if (navSize === "small") {
@@ -69,9 +71,9 @@ const Sidebar = () => {
         display={navSize === "small" ? "none" : "flex"}
       >
         <Heading as="h3" size="sm">
-          {userData?.userSlack}
+          {currentUser?.userSlack}
         </Heading>
-        <Text color="gray">Admin</Text>
+        <Text color="gray"> {currentUser.rol} </Text>
       </Flex>
     </Flex>
   );
