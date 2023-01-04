@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { savePosts, changePage } from "../../../slices/paginatedSlice";
-import { Flex, Stack, Skeleton } from "@chakra-ui/react";
+import { Flex, SimpleGrid, Skeleton } from "@chakra-ui/react";
 import CardsHome from "../../Card/CardsHome";
 import PaginatedButtons from "./PaginatedButtons/PaginatedButtons.jsx";
 import SearchBar from "./SearchBar/SearchBar";
@@ -69,18 +69,18 @@ const Paginated = () => {
     >
       <SearchBar />
       {loadingPosts ?
-        <Stack w={"85%"} gap={3} >
-          <Skeleton height="180px" />
-          <Skeleton height="180px" />
-          <Skeleton height="180px" />
-          <Skeleton height="180px" />
-          <Skeleton height="180px" />
-          <Skeleton height="180px" />
-          <Skeleton height="180px" />
-          <Skeleton height="180px" />
-          <Skeleton height="180px" />
-          <Skeleton height="180px" />
-        </Stack>
+        <SimpleGrid columns={{base: 1, lg: 2}} spacing={5} w={{ base: '90%', lg: '70%' }}>
+          <Skeleton borderRadius={5} h={100}>x</Skeleton>
+          <Skeleton borderRadius={5} h={100}>x</Skeleton>
+          <Skeleton borderRadius={5} h={100}>x</Skeleton>
+          <Skeleton borderRadius={5} h={100}>x</Skeleton>
+          <Skeleton borderRadius={5} h={100}>x</Skeleton>
+          <Skeleton borderRadius={5} h={100}>x</Skeleton>
+          <Skeleton borderRadius={5} h={100}>x</Skeleton>
+          <Skeleton borderRadius={5} h={100}>x</Skeleton>
+          <Skeleton borderRadius={5} h={100}>x</Skeleton>
+          <Skeleton borderRadius={5} h={100}>x</Skeleton>
+        </SimpleGrid>
         : (
           <>
             <CardsHome />

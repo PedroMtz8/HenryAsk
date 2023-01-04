@@ -7,8 +7,8 @@ const initialState = {
   user: {},
   users: [],
   page: 1,
-  userQuestions: [],
-  userAnswers: [],
+  userQuestions: {questions: {}, loader: false},
+  userAnswers: {answers: {}, loader: false},
   requests: [],
   reqMaxPages: 0,
   usersMaxPages: 0,
@@ -101,10 +101,18 @@ export const userSlice = createSlice({
       state.user = action.payload;
     },
     saveQuestions: (state, action) => {
-      state.userQuestions = action.payload;
+      state.userQuestions.questions = action.payload;
+      state.userQuestions.loader = false
+    },
+    loaderQuestions: (state) => {
+      state.userQuestions.loader = true;
     },
     saveAnswers: (state, action) => {
-      state.userAnswers = action.payload;
+      state.userAnswers.answers = action.payload;
+      state.userAnswers.loader = false
+    },
+    loaderAnswers: (state) => {
+      state.userAnswers.loader = true;
     },
     nextPage: (state) => {
       state.page += 1;
@@ -148,6 +156,8 @@ export const {
   setPage,
   filterByRol,
   saveAnswers,
+  loaderAnswers,
+  loaderQuestions
 } = userSlice.actions;
 
 export default userSlice.reducer;
@@ -167,6 +177,7 @@ export const getUserData = (token) => async (dispatch) => {
 
 export const getUserQuestions = (token, userID, page) => async (dispatch) => {
   try {
+    dispatch(loaderQuestions());
     let questions = await axios(
       `${API_URL}/posts/user?page=${page}&user_id=${userID}`,
       { headers: { Authorization: "Bearer " + token } }
@@ -179,6 +190,7 @@ export const getUserQuestions = (token, userID, page) => async (dispatch) => {
 
 export const getUserAnswers = (token, userID, page) => async (dispatch) => {
   try {
+    dispatch(loaderAnswers());
     let answers = await axios(
       `${API_URL}/answer/user?page=${page}&user_id=${userID}`,
       { headers: { Authorization: "Bearer " + token } }

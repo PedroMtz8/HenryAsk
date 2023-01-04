@@ -32,8 +32,7 @@ import {
   ModalFooter,
   Divider,
   Skeleton,
-  Stack,
-  Grid
+  Spinner
 } from "@chakra-ui/react";
 import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -83,7 +82,6 @@ const Profile = () => {
   const [paginated, setPaginated] = useState('Question')
   const { isOpen, onOpen, onClose } = useDisclosure()
 
- 
   const defineRolImg = () => {
     setIsLoading(true);
     if (userData.rol === "Henry Hero") setRolImg(HeroOrTA);
@@ -238,14 +236,12 @@ const Profile = () => {
       ) : null}
 
       <Center>
-        <Box
-          backgroundColor={"#F2F2F2"}
+        <Box backgroundColor={"#F2F2F2"}
           height={"100%"}
           mb={"50px"}
           w={{ base: "90%", md: "80%", lg: "70%" }}
           mt={"50px"}
-          borderRadius={"10px"}
-        >
+          borderRadius={"10px"}>
           <Flex
             flexDirection={{ base: "column", md: "initial", lg: "initial" }}
           /* w={{base: "300px", sm: "300px", md: "inherit", lg: "inherit"}} */
@@ -501,37 +497,52 @@ const Profile = () => {
                   borderBottomLeftRadius={"10px"}
 
                 >
-                  {myQuestions.foundPosts
-                    ?
-                    <SimpleGrid
-                      columns={{ base: 1, sm: 2, md: 2, lg: 2 }}
-                      gap={4}
-                      mt={"10px"}>
-                      {myQuestions.foundPosts?.map((q, i) => {
-                        return (
-                          <CardProfile
-                            cardData={q}
-                            isQuestion={true}
-                            key={i}
-                          />
-                        );
-                      })}
-                    </SimpleGrid>
-                    :
-                    <SimpleGrid
-                      columns={{ base: 1, sm: 2, md: 2, lg: 2 }}
-                      gap={4}
-                      mt={"10px"}>
-                      <Skeleton h={100}>x</Skeleton>
-                      <Skeleton h={100}>x</Skeleton>
-                      <Skeleton h={100}>x</Skeleton>
-                      <Skeleton h={100}>x</Skeleton>
-                      <Skeleton h={100}>x</Skeleton>
-                      <Skeleton h={100}>x</Skeleton>
-                    </SimpleGrid>
+                  {!myQuestions.loader && myQuestions.questions?.foundPosts
+                    ? <> {
+                      myQuestions.questions.foundPosts.length > 0
+                        ?
+                        <SimpleGrid
+                          columns={{ base: 1, sm: 2, md: 2, lg: 2 }}
+                          gap={4}
+                          mt="10px">
+                          {myQuestions.questions.foundPosts?.map((q, i) => {
+                            return (
+                              <CardProfile
+                                cardData={q}
+                                isQuestion={true}
+                                key={i}
+                              />
+                            );
+                          })}
+                        </SimpleGrid>
+                        :
+                        <Flex justifyContent="center"
+                          alignItems="center"
+                          minH="13rem"
+                          color="yellow">
+                          <Text fontWeight="bold"
+                            fontSize="2xl"
+                            textAlign="center">
+                            Todavía no ha publicado ninguna pregunta
+                          </Text>
+                        </Flex>
+                    }
+                    </> : (
+                      <SimpleGrid
+                        columns={{ base: 1, sm: 2, md: 2, lg: 2 }}
+                        gap={4}
+                        mt="10px"
+                      >
+                        <Skeleton h={100}>x</Skeleton>
+                        <Skeleton h={100}>x</Skeleton>
+                        <Skeleton h={100}>x</Skeleton>
+                        <Skeleton h={100}>x</Skeleton>
+                        <Skeleton h={100}>x</Skeleton>
+                        <Skeleton h={100}>x</Skeleton>
+                      </SimpleGrid>)
                   }
                   <Box>
-                    {paginated === 'Question' ? <QuestionPaginated data={myQuestions} /> : null}
+                    {paginated === 'Question' ? <QuestionPaginated data={myQuestions.questions} /> : null}
                   </Box>
                 </TabPanel>
                 <TabPanel
@@ -542,38 +553,52 @@ const Profile = () => {
                   borderBottomRightRadius={"10px"}
                   borderBottomLeftRadius={"10px"}
                 >
-                  {myAnswers
-                    ?
-                    <SimpleGrid
-                      columns={{ base: 1, sm: 2, md: 2, lg: 2 }}
-                      gap={4}
-                      mt="10px">
-                      {myAnswers.foundAnswers?.map((q, i) => {
-                        return (
-                          <CardProfile
-                            cardData={q}
-                            isQuestion={false}
-                            key={i}
-                          />
-                        );
-                      })}
-                    </SimpleGrid>
-                    :
-                    <SimpleGrid
-                      columns={{ base: 1, sm: 2, md: 2, lg: 2 }}
-                      gap={4}
-                      mt="10px"
-                    >
-                      <Skeleton h={100}>x</Skeleton>
-                      <Skeleton h={100}>x</Skeleton>
-                      <Skeleton h={100}>x</Skeleton>
-                      <Skeleton h={100}>x</Skeleton>
-                      <Skeleton h={100}>x</Skeleton>
-                      <Skeleton h={100}>x</Skeleton>
-                    </SimpleGrid>
+                  {!myAnswers.loader && myAnswers.answers?.foundAnswers
+                    ? <> {
+                      myAnswers.answers.foundAnswers.length > 0
+                        ?
+                        <SimpleGrid
+                          columns={{ base: 1, sm: 2, md: 2, lg: 2 }}
+                          gap={4}
+                          mt="10px">
+                          {myAnswers.answers.foundAnswers?.map((q, i) => {
+                            return (
+                              <CardProfile
+                                cardData={q}
+                                isQuestion={false}
+                                key={i}
+                              />
+                            );
+                          })}
+                        </SimpleGrid>
+                        :
+                        <Flex justifyContent="center"
+                          alignItems="center"
+                          minH="13rem"
+                          color="yellow">
+                          <Text fontWeight="bold"
+                            fontSize="2xl"
+                            textAlign="center">
+                            Todavía no ha publicado ninguna respuesta
+                          </Text>
+                        </Flex>
+                    }
+                    </> : (
+                      <SimpleGrid
+                        columns={{ base: 1, sm: 2, md: 2, lg: 2 }}
+                        gap={4}
+                        mt="10px"
+                      >
+                        <Skeleton h={100}>x</Skeleton>
+                        <Skeleton h={100}>x</Skeleton>
+                        <Skeleton h={100}>x</Skeleton>
+                        <Skeleton h={100}>x</Skeleton>
+                        <Skeleton h={100}>x</Skeleton>
+                        <Skeleton h={100}>x</Skeleton>
+                      </SimpleGrid>)
                   }
                   <Box>
-                    {paginated === 'Answer' ? <AnswerPaginated data={myAnswers} /> : null}
+                    {paginated === 'Answer' ? <AnswerPaginated data={myAnswers.answers} /> : null}
                   </Box>
                 </TabPanel>
               </TabPanels>
