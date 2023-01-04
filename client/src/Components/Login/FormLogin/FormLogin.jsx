@@ -4,21 +4,19 @@ import {
     HStack,
     FormControl,
     Input,
-    Select,
     Stack,
     Link,
     Button,
     Heading,
-    SimpleGrid,
     Flex,
     Text,
     Image,
     InputGroup,
     InputRightElement,
-    Checkbox,
     Center,
     Box,
-    useToast
+    useToast,
+    Spinner
 } from '@chakra-ui/react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { useNavigate, Link as RouteLink } from 'react-router-dom'
@@ -33,7 +31,7 @@ const FormLogin = () => {
     const { login, signout, user } = useAuth()
     const dispatch = useDispatch()
     const userData = useSelector((state) => state.user.user)
-    
+
 
     const [infoUser, setInfoUser] = useState({
         email: "",
@@ -42,6 +40,7 @@ const FormLogin = () => {
     const [wrongPass, setWrongPass] = useState(false)
     const [wrongEmail, setWrongEmail] = useState(false)
     const [attempts, setAttempts] = useState(false)
+    const [loading, setLoading] = useState(true)
 
     const [errorInfoUser, setErrorInfoUser] = useState({
         email: "black",
@@ -119,34 +118,35 @@ const FormLogin = () => {
     const submitHandler = async (e) => {
         e.preventDefault()
         try {
+            setLoading(false)
             setWrongPass(false)
             setWrongEmail(false)
             setAttempts(false)
             const res = await login(infoUser.email, infoUser.password)
             dispatch(getUserData(res.user.accessToken))
         } catch (error) {
-            if (error.message.includes("auth/wrong-password")) setWrongPass(true)
+            if (error.message.includes("auth/wrong-password")) {setLoading(true);setWrongPass(true)}
             else setWrongPass(false)
-            if (error.message.includes("not-found")) setWrongEmail(true)
+            if (error.message.includes("not-found")){setLoading(true); setWrongEmail(true)}
             else setWrongEmail(false)
-            if (error.message.includes("login attempts")) setAttempts(true)
+            if (error.message.includes("login attempts")) {setLoading(true); setAttempts(true)}
             else setAttempts(false)
         }
     }
 
     useEffect(() => {
-        if(userData?.status === "Esperando") {
+        if (userData?.status === "Esperando") {
             toast({
-             description: "Tu confirmación esta pendiente, espera a que sea aprobada",
-             duration: 6000,
-             isClosable: true,
-             status: "info",
-             position: "top",
-           })
-           signout()
-         } else if(user && userData?.status === "Aprobado"){
+                description: "Tu confirmación esta pendiente, espera a que sea aprobada",
+                duration: 6000,
+                isClosable: true,
+                status: "info",
+                position: "top",
+            })
+            signout()
+        } else if (user && userData?.status === "Aprobado") {
             navigate('/home')
-         }
+        }
     }, [userData])
 
     return (
@@ -220,13 +220,26 @@ const FormLogin = () => {
                                 </Link>
                             </RouteLink>
                         </Stack>
-                        <Button type='submit'
-                            bg='#ffff01'
-                            color='black'
-                            disabled={showSubmitButton}
-                        >
-                            Ingresar
-                        </Button>
+                        {loading ?
+                            <Button type='submit'
+                                bg='#ffff01'
+                                color='black'
+                                disabled={showSubmitButton}
+                            >
+                                Ingresar
+                            </Button>
+                            :
+                            <Flex justifyContent="center" >
+                                <Spinner
+                                    thickness='.7rem'
+                                    speed='0.7s'
+                                    emptyColor='gray.200'
+                                    color='#FFFF01'
+                                    w="5rem"
+                                    h="5rem"
+                                />
+                            </Flex>
+                        }
                         {
                             wrongEmail ?
                                 <Center>

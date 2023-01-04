@@ -5,11 +5,11 @@ import {
     Image,
     Box,
     Stack,
-    useDisclosure
+    useDisclosure,
+    Tooltip
 } from '@chakra-ui/react'
 import { TriangleUpIcon, TriangleDownIcon } from '@chakra-ui/icons'
 import Editor from '../../DetailBody/DetailBody'
-import { formatDate } from '../../Card/CardHome'
 import axios from "axios";
 import { useAuth } from "../../AuthComponents/AuthContext"
 import API_URL from "../../../config/environment"
@@ -17,12 +17,18 @@ import { useParams } from "react-router-dom";
 import { useEffect } from 'react'
 import Comments from '../Comments/Comments'
 import CreateComment from '../Comments/CreateComment'
+import moment from "moment"
+import { localeData } from 'moment_spanish_locale';
+import 'moment/locale/es';
 
 const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userScore }) => {
 
     const { user } = useAuth();
     let token = user.accessToken;
     const idPost = useParams().id;
+
+    moment.updateLocale('es', localeData)
+    let dif = moment(dataPost.post.createdAt).startOf('minutes').fromNow()
 
     const [numberOfVotesPost, setNumberOfVotes] = useState(parseInt(dataPost.post.score))
     const [numberOfVotesUser, setNumberOfVotesUser] = useState(parseInt(dataPost.post.user.score))
@@ -134,8 +140,13 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
                                 <Text display={{ base: 'none', sm: 'inline' }} >
                                     •
                                 </Text>
-                                <Text display={{ base: 'block', sm: 'inline' }}>
-                                    {formatDate(dataPost.post.createdAt)}
+                                <Text display={{ base: 'block', sm: 'inline' }}
+                                    cursor="pointer"
+                                >
+                                    <Tooltip label={new Date(dataPost.post.createdAt).toLocaleString()}
+                                        placement='top'>
+                                        {dif}
+                                    </Tooltip>
                                 </Text>
                             </Flex>
                             <Image w="1.4rem"

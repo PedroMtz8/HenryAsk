@@ -9,7 +9,7 @@ const Home = () => {
         <Box >
             <NavBar />
             <Paginated />
-            {/* <Footer /> */}
+            <Footer />
         </Box>
     )
 }

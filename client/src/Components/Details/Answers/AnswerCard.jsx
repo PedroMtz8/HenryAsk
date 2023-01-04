@@ -6,7 +6,8 @@ import {
     Flex,
     Image,
     Text,
-    useDisclosure
+    useDisclosure,
+    Tooltip
 } from "@chakra-ui/react";
 import { TriangleUpIcon, TriangleDownIcon } from "@chakra-ui/icons";
 import axios from "axios";
@@ -14,13 +15,19 @@ import { useAuth } from "../../AuthComponents/AuthContext"
 import API_URL from "../../../config/environment"
 import Comments from '../Comments/Comments';
 import DetailBody from '../../DetailBody/DetailBody';
-import CreateComment from '../Comments/CreateComment'
+import CreateComment from '../Comments/CreateComment';
+import moment from "moment"
+import { localeData } from 'moment_spanish_locale';
+import 'moment/locale/es';
 
 const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
 
     const { user } = useAuth();
     let token = user.accessToken
     const idPost = useParams().id;
+
+    moment.updateLocale('es', localeData)
+    let dif = moment(answerCardData.createdAt).startOf('minutes').fromNow()
 
     const [numberOfVotesAnswerd, setNumberOfVotesAnswerd] = useState(parseInt(answerCardData.score))
     const [numberOfVotesUser, setNumberOfVotesUser] = useState(parseInt(answerCardData.user.score))
@@ -94,7 +101,13 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
                         fontSize=".75rem"
                         fontWeight="bold">
                         <Text >
-                            {`${answerCardData.user.userSlack} • ${answerCardData.createdAt}`}
+                            {`${answerCardData.user.userSlack} •`}
+                        </Text>
+                        <Text cursor="pointer">
+                            <Tooltip label={new Date(answerCardData.createdAt).toLocaleString()}
+                                placement='top'>
+                                {`${dif} •`}
+                            </Tooltip>
                         </Text>
                         <Image w="1.4rem" alignSelf="flex-start"
                             src="https://i.postimg.cc/TwrFYv4p/image-30.png" alt="userImage" />
@@ -146,7 +159,7 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
                     </>
                 </Flex>
                 {
-                   (showComments) && commentAnswers.map((elem, i, arr) =>
+                    (showComments) && commentAnswers.map((elem, i, arr) =>
                         <Flex key={i} w="100%">
                             <Comments dataComment={elem} />
                         </Flex>)

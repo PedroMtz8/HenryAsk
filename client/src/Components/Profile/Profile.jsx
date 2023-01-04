@@ -31,6 +31,9 @@ import {
   ModalCloseButton,
   ModalFooter,
   Divider,
+  Skeleton,
+  Stack,
+  Grid
 } from "@chakra-ui/react";
 import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -62,9 +65,9 @@ const Profile = () => {
   const [openCrop, setOpenCrop] = useState(false);
   const [photoURL, setPhotoURL] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const toast = useToast()
-  
+
   //Para editar informacion de usuario
   const [userName, setUsernmae] = useState("");
   const [country, setCountry] = useState(null)
@@ -79,8 +82,8 @@ const Profile = () => {
   const myAnswers = useSelector((state) => state.user.userAnswers);
   const [paginated, setPaginated] = useState('Question')
   const { isOpen, onOpen, onClose } = useDisclosure()
-  
 
+ 
   const defineRolImg = () => {
     setIsLoading(true);
     if (userData.rol === "Henry Hero") setRolImg(HeroOrTA);
@@ -89,7 +92,7 @@ const Profile = () => {
     if (userData.rol === "Estudiante") setRolImg(Student);
     if (userData.rol === "Graduado") setRolImg(Graduate);
   };
-  
+
   async function handleChange(e) {
     if (e.target.files && e.target.files.length > 0) {
       setPhotoURL(URL.createObjectURL(e.target.files[0]));
@@ -99,7 +102,7 @@ const Profile = () => {
 
   const handleChangeRol = (e) => {
     setRol(e.target.value)
-  } 
+  }
 
   const cancelEdit = () => {
     setPhotoURL(userData.avatar)
@@ -109,10 +112,11 @@ const Profile = () => {
 
   const sendRequest = async () => {
     try {
-      await axios.post(`${API_URL}/request/rol`, {rol}, 
-      {headers: 
-        {Authorization: `Bearer ${user.accessToken}`}
-      })
+      await axios.post(`${API_URL}/request/rol`, { rol },
+        {
+          headers:
+            { Authorization: `Bearer ${user.accessToken}` }
+        })
       toast({
         description: "Tu solicitud ha sido enviada!",
         duration: 3000,
@@ -122,7 +126,7 @@ const Profile = () => {
       })
       onClose()
     } catch (error) {
-      if(error.response?.status === 409){
+      if (error.response?.status === 409) {
         toast({
           description: "Ya has solicitado un cambio de rol!",
           duration: 3000,
@@ -130,7 +134,7 @@ const Profile = () => {
           status: "error",
           isClosable: true
         })
-      } else{
+      } else {
         toast({
           description: "Ha ocurrido un error, intentalo de nuevo",
           duration: 3000,
@@ -141,25 +145,25 @@ const Profile = () => {
       }
     }
   }
-  
-  const handleSubmit = async() => {
-    if(!userName || userName.trim() === "") return toast({
-        description: "Agrega tu nombre de usuario",
-        duration: 3000,
-        position: "top",
-        status: "error",
-        isClosable: true
+
+  const handleSubmit = async () => {
+    if (!userName || userName.trim() === "") return toast({
+      description: "Agrega tu nombre de usuario",
+      duration: 3000,
+      position: "top",
+      status: "error",
+      isClosable: true
     })
-    
-    if(userName.length < 9) return toast({
-        description: "El nombre de usuario debe ser mayor a 8 caracteres",
-        duration: 3000,
-        position: "top",
-        status: "error",
-        isClosable: true
+
+    if (userName.length < 9) return toast({
+      description: "El nombre de usuario debe ser mayor a 8 caracteres",
+      duration: 3000,
+      position: "top",
+      status: "error",
+      isClosable: true
     })
-    
-    if(userName.length > 30) return toast({
+
+    if (userName.length > 30) return toast({
       description: "El nombre de usuario debe ser menor o igual a 30 caracteres",
       duration: 3000,
       position: "top",
@@ -167,37 +171,37 @@ const Profile = () => {
       isClosable: true
     })
 
-    
+
     try {
       let avatar = userData.avatar
-      if(file){
+      if (file) {
         avatar = await uploadFile(file, user.uid, userData.userSlack);
       }
-      await axios.put(`${API_URL}/auth`, {userSlack: userName, country, avatar}, { headers: { Authorization: "Bearer " + user.accessToken }})
+      await axios.put(`${API_URL}/auth`, { userSlack: userName, country, avatar }, { headers: { Authorization: "Bearer " + user.accessToken } })
       toast({
-          description: "Usuario Actualizado",
-          duration: 3000,
-          position: "top",
-          status: "success",
-          isClosable: true
-        })
+        description: "Usuario Actualizado",
+        duration: 3000,
+        position: "top",
+        status: "success",
+        isClosable: true
+      })
       setTimeout(() => {
         window.location.reload(false);
       }, 3000)
     } catch (error) {
       toast({
-      description: "Ocurrio un error, intentalo de nuevo",
-      duration: 3000,
-      position: "top",
-      status: "error",
-      isClosable: true
-     })
+        description: "Ocurrio un error, intentalo de nuevo",
+        duration: 3000,
+        position: "top",
+        status: "error",
+        isClosable: true
+      })
     }
   }
-  
+
   useEffect(() => {
     dispatch(getUserAnswers(user.accessToken, user.uid, 1))
-  }, []) 
+  }, [])
 
   useEffect(() => {
     setTimeout(() => {
@@ -205,13 +209,13 @@ const Profile = () => {
     }, 700);
   }, [isLoading]);
 
-  useEffect( () => {
+  useEffect(() => {
 
-    async function setAvatar(){
+    async function setAvatar() {
       const { file2 } = await getCroppedImg(photoURL, croppedAreaPixels);
       setFile(file2)
     }
-    if(submitImage){
+    if (submitImage) {
       setAvatar()
     }
   }, [submitImage])
@@ -244,7 +248,7 @@ const Profile = () => {
         >
           <Flex
             flexDirection={{ base: "column", md: "initial", lg: "initial" }}
-            /* w={{base: "300px", sm: "300px", md: "inherit", lg: "inherit"}} */
+          /* w={{base: "300px", sm: "300px", md: "inherit", lg: "inherit"}} */
           >
             <Center>
               <Flex
@@ -266,27 +270,27 @@ const Profile = () => {
                   onMouseEnter={() => setHover(true)}
                   onMouseLeave={() => setHover(false)}
                   position='relative'
-                  bottom={{base: '0px', md: '20px'}}
+                  bottom={{ base: '0px', md: '20px' }}
                 >
-                {hover && edit
-                  ? <button
-                        onClick={(e) => {
-                            e.preventDefault()
-                            hiddenFileInput.current.click();
-                        }}
-                        className={'img'}
-                        style={{backgroundColor: "white", width: '100%', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', opacity: '0.8', top:'0px'}}
-                    > 
-                        <img src={editpencil} alt="" style={{ minWidth: '27px', width: '27px' }} />
+                  {hover && edit
+                    ? <button
+                      onClick={(e) => {
+                        e.preventDefault()
+                        hiddenFileInput.current.click();
+                      }}
+                      className={'img'}
+                      style={{ backgroundColor: "white", width: '100%', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', opacity: '0.8', top: '0px' }}
+                    >
+                      <img src={editpencil} alt="" style={{ minWidth: '27px', width: '27px' }} />
                     </button>
-                  : null
-                }
+                    : null
+                  }
                 </Box>
                 <input type="file" ref={hiddenFileInput}
-                    onChange={handleChange}
-                    style={{ display: 'none' }}
-                    accept="image/png, image/gif, image/jpeg" 
-                    />
+                  onChange={handleChange}
+                  style={{ display: 'none' }}
+                  accept="image/png, image/gif, image/jpeg"
+                />
               </Flex>
             </Center>
             <Flex
@@ -294,32 +298,32 @@ const Profile = () => {
               mt={{ base: "0px", md: "20px", lg: "20px" }}
               h={"inherit"}
               textAlign="center"
-              alignItems={{base: "center", sm: "center", md: "inherit", lg: "inherit"}}
+              alignItems={{ base: "center", sm: "center", md: "inherit", lg: "inherit" }}
             >
-                {
-                    edit ? 
-                    <Flex w={{base: "250px", sm: "250px", md: "inherit", lg: "inherit"}}>
+              {
+                edit ?
+                  <Flex w={{ base: "250px", sm: "250px", md: "inherit", lg: "inherit" }}>
                     <Input
-                        type="text"
-                        borderColor={"black"}
-                        placeholder="Escribe tu nombre..."
-                        h={{base: "30px"}}
-                        mb={{base: 1, sm:1, md: 2, lg: 2}}
-                        value={userName}
-                        onChange={(e)=> setUsernmae(e.target.value) }
-                        />
-                    </Flex>
-                    :
-                    <Text
-                fontSize={{ base: "16px", sm: "20px", md: "24px", lg: "28px" }}
-                fontWeight={"bold"}
-                textAlign={"start"}
-                >
-                {" "}
-                {userData?.userSlack}
-              </Text>
-                }
-              
+                      type="text"
+                      borderColor={"black"}
+                      placeholder="Escribe tu nombre..."
+                      h={{ base: "30px" }}
+                      mb={{ base: 1, sm: 1, md: 2, lg: 2 }}
+                      value={userName}
+                      onChange={(e) => setUsernmae(e.target.value)}
+                    />
+                  </Flex>
+                  :
+                  <Text
+                    fontSize={{ base: "16px", sm: "20px", md: "24px", lg: "28px" }}
+                    fontWeight={"bold"}
+                    textAlign={"start"}
+                  >
+                    {" "}
+                    {userData?.userSlack}
+                  </Text>
+              }
+
 
               <Flex flexDirection={"column"} gap={2}>
                 <Box
@@ -327,7 +331,7 @@ const Profile = () => {
                   alignItems={"center"}
                   justifyContent={{ base: "center", md: "start", lg: "start" }}
                   gap={2}
-                  >
+                >
                   <Img
                     src="https://cdn-icons-png.flaticon.com/512/1041/1041897.png"
                     w={"16px"}
@@ -336,14 +340,14 @@ const Profile = () => {
 
                   {
                     edit ?
-                    <Select h={"25px"} w={"fit-content"} onChange={(e) => setCountry(e.target.value) }  >
+                      <Select h={"25px"} w={"fit-content"} onChange={(e) => setCountry(e.target.value)}  >
                         <option value={country}>{country}</option>
                         {
-                            paises.map((e, i) => <option key={i} value={e}>{e}</option>)
+                          paises.map((e, i) => <option key={i} value={e}>{e}</option>)
                         }
-                    </Select>
-                    :
-                    <Text>{userData?.country}</Text>
+                      </Select>
+                      :
+                      <Text>{userData?.country}</Text>
                   }
                 </Box>
                 <Box
@@ -355,65 +359,65 @@ const Profile = () => {
                   <Img src={rolImg} w={"24px"} h={"24px"} ml={-1} />
                   {
                     edit ?
-                    <Button
-                          h='20px'
-                          w='fit-content'
-                          borderRadius="0px"
-                          fontSize={'16px'}
-                          outline='none'
-                          _hover={{ outline: '1px solid #CBD5E0' }}
-                          fontWeight='normal'
-                          onClick={() => {
-                            setRol(userData.rol)
-                            onOpen()
-                          }}>
-                          {userData.rol}
+                      <Button
+                        h='20px'
+                        w='fit-content'
+                        borderRadius="0px"
+                        fontSize={'16px'}
+                        outline='none'
+                        _hover={{ outline: '1px solid #CBD5E0' }}
+                        fontWeight='normal'
+                        onClick={() => {
+                          setRol(userData.rol)
+                          onOpen()
+                        }}>
+                        {userData.rol}
                       </Button>
-                    :
-                    <Text ml={-1}> {userData?.rol} </Text>
+                      :
+                      <Text ml={-1}> {userData?.rol} </Text>
                   }
-                    <Modal
-                        isOpen={isOpen}
-                        onClose={onClose}
-                    >
-                        <ModalOverlay>
-                            <ModalContent
-                                margin={'8px'}
-                                width='95%'
-                                h='fit-content'
-                                alignSelf={'center'}
-                                >
-                                <ModalHeader>Cambio de rol</ModalHeader>
-                                <ModalCloseButton />
-                                <Divider backgroundColor={'#FFFF01'} h='3px' />
-                                <ModalBody pb={6}>
-                                    <Flex flexDirection={'column'}>
-                                    <Text mb={5}>
-                                      Deseas solicitar un cambio de rol?
-                                    </Text>
-                                    <Text>Ten en cuenta que:</Text>
-                                    <Text>• Una vez solicitado no puedes retornarlo ni solicitar otro.</Text>
-                                    <Text>• Los administradores verificaran y aprobaran o denegaran tu pedido.</Text>
-                                    <Text mt={5}>Si comprendes eso, especifica tu nuevo rol aqui:</Text>
-                                    </Flex>
-                                    <Select h={"25px"} w={"fit-content"} onChange={handleChangeRol}  >
-                                        <option value={userData.rol}>{userData.rol}</option>
-                                        {
-                                            roles.filter(r => r !== userData.rol).map((e, i) => <option key={i} value={e}>{e}</option>)
-                                        }
-                                    </Select>
-                                </ModalBody>
+                  <Modal
+                    isOpen={isOpen}
+                    onClose={onClose}
+                  >
+                    <ModalOverlay>
+                      <ModalContent
+                        margin={'8px'}
+                        width='95%'
+                        h='fit-content'
+                        alignSelf={'center'}
+                      >
+                        <ModalHeader>Cambio de rol</ModalHeader>
+                        <ModalCloseButton />
+                        <Divider backgroundColor={'#FFFF01'} h='3px' />
+                        <ModalBody pb={6}>
+                          <Flex flexDirection={'column'}>
+                            <Text mb={5}>
+                              Deseas solicitar un cambio de rol?
+                            </Text>
+                            <Text>Ten en cuenta que:</Text>
+                            <Text>• Una vez solicitado no puedes retornarlo ni solicitar otro.</Text>
+                            <Text>• Los administradores verificaran y aprobaran o denegaran tu pedido.</Text>
+                            <Text mt={5}>Si comprendes eso, especifica tu nuevo rol aqui:</Text>
+                          </Flex>
+                          <Select h={"25px"} w={"fit-content"} onChange={handleChangeRol}  >
+                            <option value={userData.rol}>{userData.rol}</option>
+                            {
+                              roles.filter(r => r !== userData.rol).map((e, i) => <option key={i} value={e}>{e}</option>)
+                            }
+                          </Select>
+                        </ModalBody>
 
-                                <ModalFooter>
-                                    <Button onClick={sendRequest} backgroundColor={'black'} color='#E4E400' mr={3} _hover={{ backgroundColor: '#E4E400', color: 'black' }}>
-                                        Enviar
-                                    </Button>
-                                    <Button onClick={onClose} _hover={{ background: "tomato" }}>Cancelar</Button>
-                                </ModalFooter>
-                            </ModalContent>
-                        </ModalOverlay>
-                    </Modal>
-                  
+                        <ModalFooter>
+                          <Button onClick={sendRequest} backgroundColor={'black'} color='#E4E400' mr={3} _hover={{ backgroundColor: '#E4E400', color: 'black' }}>
+                            Enviar
+                          </Button>
+                          <Button onClick={onClose} _hover={{ background: "tomato" }}>Cancelar</Button>
+                        </ModalFooter>
+                      </ModalContent>
+                    </ModalOverlay>
+                  </Modal>
+
                 </Box>
                 <Box
                   display={"inline-flex"}
@@ -428,43 +432,43 @@ const Profile = () => {
                   />
                   <Text>{userData?.score}</Text>
                 </Box>
-                <Flex justifyContent={{base: "center", sm: "center",  md: "start", lg: "start"}} w={"100%"}>
-                {edit ? (
+                <Flex justifyContent={{ base: "center", sm: "center", md: "start", lg: "start" }} w={"100%"}>
+                  {edit ? (
                     <Flex gap={3}>
-                  <Popover>
-                    <PopoverTrigger>
-                      <Button bgColor={"gray.300"} _hover={{bgColor: "gray.400"}} >Enviar</Button>
-                    </PopoverTrigger>
-                    <Portal>
-                      <PopoverContent w="250px">
-                        <PopoverCloseButton />
-                        <PopoverHeader w={"95%"}>
-                          ¿Estas seguro?
-                        </PopoverHeader>
+                      <Popover>
+                        <PopoverTrigger>
+                          <Button bgColor={"gray.300"} _hover={{ bgColor: "gray.400" }} >Enviar</Button>
+                        </PopoverTrigger>
+                        <Portal>
+                          <PopoverContent w="250px">
+                            <PopoverCloseButton />
+                            <PopoverHeader w={"95%"}>
+                              ¿Estas seguro?
+                            </PopoverHeader>
 
-                        <PopoverBody>
-                          <Flex justifyContent="flex-end" gap={2}>
-                            <Button colorScheme="blue" onClick={handleSubmit}>Confirmar</Button>
-                            <Button colorScheme="blue" onClick={cancelEdit}>Cancelar</Button>
-                          </Flex>
-                        </PopoverBody>
-                      </PopoverContent>
-                    </Portal>
-                  </Popover>
-                  <Button bgColor={"tomato"} 
-                    _hover={{bgColor: "red"}} 
-                    onClick={cancelEdit}
-                    >
-                    X
-                  </Button>
-                </Flex>
-              ) : (
-                  <Button onClick={() => {
-                    setEdit(true)
-                    setCountry(userData.country)
-                }}>Editar</Button>
+                            <PopoverBody>
+                              <Flex justifyContent="flex-end" gap={2}>
+                                <Button colorScheme="blue" onClick={handleSubmit}>Confirmar</Button>
+                                <Button colorScheme="blue" onClick={cancelEdit}>Cancelar</Button>
+                              </Flex>
+                            </PopoverBody>
+                          </PopoverContent>
+                        </Portal>
+                      </Popover>
+                      <Button bgColor={"tomato"}
+                        _hover={{ bgColor: "red" }}
+                        onClick={cancelEdit}
+                      >
+                        X
+                      </Button>
+                    </Flex>
+                  ) : (
+                    <Button onClick={() => {
+                      setEdit(true)
+                      setCountry(userData.country)
+                    }}>Editar</Button>
                   )}
-          </Flex>
+                </Flex>
               </Flex>
             </Flex>
           </Flex>
@@ -476,9 +480,9 @@ const Profile = () => {
             w={{ base: "97%", md: "90%", lg: "90%" }}
           >
             <Tabs variant="enclosed" onChange={(index) => {
-              if(!index) setPaginated('Question')
+              if (!index) setPaginated('Question')
               else setPaginated('Answer')
-            } }>
+            }}>
               <TabList>
                 <Tab _selected={{ color: "white", bg: "#1F1F1F" }}>
                   Mis preguntas{" "}
@@ -491,57 +495,86 @@ const Profile = () => {
                 <TabPanel
                   position={"relative"}
                   bg={"#1F1F1F"}
-                  minHeight={{ base: "1105px", sm:'590px', md:'590px', lg: "590px" }}
+                  minHeight={{ base: "1105px", sm: '590px', md: '590px', lg: "590px" }}
                   mb={"50px"}
                   borderBottomRightRadius={"10px"}
                   borderBottomLeftRadius={"10px"}
-                  
+
                 >
-                  <SimpleGrid
-                    columns={{ base: 1, sm: 2, md: 2, lg: 2 }}
-                    gap={4}
-                    mt={"10px"}
-                  >
-                    {myQuestions.foundPosts?.map((q, i) => {
-                          return (
-                            <CardProfile
+                  {myQuestions.foundPosts
+                    ?
+                    <SimpleGrid
+                      columns={{ base: 1, sm: 2, md: 2, lg: 2 }}
+                      gap={4}
+                      mt={"10px"}>
+                      {myQuestions.foundPosts?.map((q, i) => {
+                        return (
+                          <CardProfile
                             cardData={q}
                             isQuestion={true}
                             key={i}
-                            />
-                          );
-                        })
-                    }
-                  </SimpleGrid>
-                  {paginated === 'Question' ? <QuestionPaginated data={myQuestions}/> : null}
+                          />
+                        );
+                      })}
+                    </SimpleGrid>
+                    :
+                    <SimpleGrid
+                      columns={{ base: 1, sm: 2, md: 2, lg: 2 }}
+                      gap={4}
+                      mt={"10px"}>
+                      <Skeleton h={100}>x</Skeleton>
+                      <Skeleton h={100}>x</Skeleton>
+                      <Skeleton h={100}>x</Skeleton>
+                      <Skeleton h={100}>x</Skeleton>
+                      <Skeleton h={100}>x</Skeleton>
+                      <Skeleton h={100}>x</Skeleton>
+                    </SimpleGrid>
+                  }
+                  <Box>
+                    {paginated === 'Question' ? <QuestionPaginated data={myQuestions} /> : null}
+                  </Box>
                 </TabPanel>
-
                 <TabPanel
                   position={"relative"}
                   bg={"#1F1F1F"}
-                  minHeight={{ base: "1105px", sm:'590px', md:'590px', lg: "590px" }}
+                  minHeight={{ base: "1105px", sm: '590px', md: '590px', lg: "590px" }}
                   mb={"50px"}
                   borderBottomRightRadius={"10px"}
                   borderBottomLeftRadius={"10px"}
                 >
-                  <SimpleGrid
-                    columns={{ base: 1, sm: 2, md: 2, lg: 2 }}
-                    gap={4}
-                    mt={"10px"}
-                  >
-                    {myAnswers
-                      ? myAnswers.foundAnswers?.map((q, i) => {
-                          return (
-                            <CardProfile
+                  {myAnswers
+                    ?
+                    <SimpleGrid
+                      columns={{ base: 1, sm: 2, md: 2, lg: 2 }}
+                      gap={4}
+                      mt="10px">
+                      {myAnswers.foundAnswers?.map((q, i) => {
+                        return (
+                          <CardProfile
                             cardData={q}
                             isQuestion={false}
                             key={i}
-                            />
-                          );
-                        })
-                      : null}
-                  </SimpleGrid>
-                  {paginated === 'Answer' ? <AnswerPaginated data={myAnswers}/> : null}
+                          />
+                        );
+                      })}
+                    </SimpleGrid>
+                    :
+                    <SimpleGrid
+                      columns={{ base: 1, sm: 2, md: 2, lg: 2 }}
+                      gap={4}
+                      mt="10px"
+                    >
+                      <Skeleton h={100}>x</Skeleton>
+                      <Skeleton h={100}>x</Skeleton>
+                      <Skeleton h={100}>x</Skeleton>
+                      <Skeleton h={100}>x</Skeleton>
+                      <Skeleton h={100}>x</Skeleton>
+                      <Skeleton h={100}>x</Skeleton>
+                    </SimpleGrid>
+                  }
+                  <Box>
+                    {paginated === 'Answer' ? <AnswerPaginated data={myAnswers} /> : null}
+                  </Box>
                 </TabPanel>
               </TabPanels>
             </Tabs>

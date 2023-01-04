@@ -17,7 +17,8 @@ import {
     InputRightElement,
     useToast,
     Center,
-    Box
+    Box,
+    Spinner
 } from '@chakra-ui/react'
 import { CheckCircleIcon, InfoIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { useNavigate } from 'react-router-dom'
@@ -67,6 +68,7 @@ const FormRegister = () => {
     })
 
     const [showSubmitButton, setShowSubmitButton] = useState(true)
+    const [loading, setLoading] = useState(true)
 
 
     useEffect(() => {
@@ -115,9 +117,9 @@ const FormRegister = () => {
                 }
             })
         }
-        else if(e.target.name === 'userSlack'){
+        else if (e.target.name === 'userSlack') {
             const current = e.target.value
-            let length =  current.length <= 30
+            let length = current.length <= 30
             let empty = current !== ''
 
             const complete = length && empty
@@ -145,14 +147,15 @@ const FormRegister = () => {
 
     const submitHandler = async (e) => {
         e.preventDefault()
-        try {
+        try {setLoading(false)
             let res = await signup(infoUser.email, infoUser.password, infoUser.userSlack, infoUser.country) //registro al usario en firebase y en base de datos
             await updateUsername(res.user, infoUser.userSlack)
 
-            await axios.post(`${API_URL}/request/registro`, {rol: infoUser.rol}, 
-            {headers: 
-                {Authorization: `Bearer ${res.user.accessToken}`}
-            }) //creo el pedido para que el usuario sea aprobado por los administradores
+            await axios.post(`${API_URL}/request/registro`, { rol: infoUser.rol },
+                {
+                    headers:
+                        { Authorization: `Bearer ${res.user.accessToken}` }
+                }) //creo el pedido para que el usuario sea aprobado por los administradores
 
             toast({
                 title: "Registro exitoso",
@@ -168,16 +171,16 @@ const FormRegister = () => {
         }
         catch (error) {
 
-            if (error.code === 'auth/email-already-in-use'){
-                setSubmitErrors({emailError: true, unexpectedError: false, registerError: false})
+            if (error.code === 'auth/email-already-in-use') {setLoading(true);
+                setSubmitErrors({ emailError: true, unexpectedError: false, registerError: false })
             }
 
-            else if(error.response?.status === 409){
-                setSubmitErrors({emailError: false, unexpectedError: false, registerError: true})
-            } 
+            else if (error.response?.status === 409) {setLoading(true);
+                setSubmitErrors({ emailError: false, unexpectedError: false, registerError: true })
+            }
 
-            else{
-                setSubmitErrors({emailError: false, unexpectedError: true, registerError: false})
+            else {setLoading(true);
+                setSubmitErrors({ emailError: false, unexpectedError: true, registerError: false })
             }
 
         }
@@ -215,8 +218,8 @@ const FormRegister = () => {
                             onChange={onChangeInput}
                         />
                         <Flex justifyContent={"flex-end"}>
-                        {(!errorInfoUser.userSlack.empty) && <Text color="red">* Campo obligatorio</Text>}
-                        {(!errorInfoUser.userSlack['length']) && <Text color="red">* Usuario debe ser menor o igual a 30 caracteres</Text>}
+                            {(!errorInfoUser.userSlack.empty) && <Text color="red">* Campo obligatorio</Text>}
+                            {(!errorInfoUser.userSlack['length']) && <Text color="red">* Usuario debe ser menor o igual a 30 caracteres</Text>}
                         </Flex>
                     </FormControl>
                     <FormControl id="country"
@@ -292,20 +295,32 @@ const FormRegister = () => {
 
                     <Stack spacing={{ base: 3, lg: 4 }}
                         w={{ base: '19rem', sm: '23rem' }} >
-                        <Button alignSelf={"center"}
-                            bg='#ffff01'
-                            type='submit'
-                            color='black'
-                            fontSize={{ base: '.8rem', lg: '1rem' }}
-                            disabled={showSubmitButton}
-                            w={{ base: '100%', lg: '23rem' }}
-                        >
-                            Registrame
-                        </Button>
+                        {loading ?
+                            <Button alignSelf={"center"}
+                                bg='#ffff01'
+                                type='submit'
+                                color='black'
+                                fontSize={{ base: '.8rem', lg: '1rem' }}
+                                disabled={showSubmitButton}
+                                w={{ base: '100%', lg: '23rem' }}
+                            >
+                                Registrame
+                            </Button>
+                            :
+                            <Flex justifyContent="center" >
+                                <Spinner
+                                    thickness='.7rem'
+                                    speed='0.7s'
+                                    emptyColor='gray.200'
+                                    color='#FFFF01'
+                                    w="5rem"
+                                    h="5rem"
+                                />
+                            </Flex>}
 
                         {
-                            submitErrors.emailError ? 
-                            <Center>
+                            submitErrors.emailError ?
+                                <Center>
                                     <Box border={"2px solid red"} color={"red"} w={"90%"} borderRadius={"5px"} p={"5px"} textAlign="center">
                                         <Text>Ya existe un usuario con ese email</Text>
                                     </Box>
@@ -315,25 +330,25 @@ const FormRegister = () => {
                         }
 
                         {
-                             submitErrors.unexpectedError ? 
-                             <Center>
-                                     <Box border={"2px solid red"} color={"red"} w={"90%"} borderRadius={"5px"} p={"5px"} textAlign="center">
-                                         <Text>Ocurrio un error inesperado, intentelo de nuevo</Text>
-                                     </Box>
-                                 </Center>
-                                 :
-                                 null
+                            submitErrors.unexpectedError ?
+                                <Center>
+                                    <Box border={"2px solid red"} color={"red"} w={"90%"} borderRadius={"5px"} p={"5px"} textAlign="center">
+                                        <Text>Ocurrio un error inesperado, intentelo de nuevo</Text>
+                                    </Box>
+                                </Center>
+                                :
+                                null
                         }
 
                         {
-                             submitErrors.requestError ? 
-                             <Center>
-                                     <Box border={"2px solid red"} color={"red"} w={"90%"} borderRadius={"5px"} p={"5px"} textAlign="center">
-                                         <Text>Ya has sido registro, espera a ser aprobado!</Text>
-                                     </Box>
-                                 </Center>
-                                 :
-                                 null
+                            submitErrors.requestError ?
+                                <Center>
+                                    <Box border={"2px solid red"} color={"red"} w={"90%"} borderRadius={"5px"} p={"5px"} textAlign="center">
+                                        <Text>Ya has sido registro, espera a ser aprobado!</Text>
+                                    </Box>
+                                </Center>
+                                :
+                                null
                         }
 
                         <HStack justifyContent={{ base: 'center', lg: 'flex-start' }}
@@ -363,8 +378,8 @@ const showPasswordErrorText = (colorError) => {
 
     return (
         <Flex justifyContent="center"
-              alignItems="center"
-              w={{ base: '19rem', sm: '23rem' }}>
+            alignItems="center"
+            w={{ base: '19rem', sm: '23rem' }}>
             <SimpleGrid
                 columns={2}
                 spacing={3}
