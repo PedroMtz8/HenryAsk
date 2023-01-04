@@ -17,16 +17,23 @@ import {
     InputRightElement,
     Checkbox,
     Center,
-    Box
+    Box,
+    useToast
 } from '@chakra-ui/react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { useNavigate, Link as RouteLink } from 'react-router-dom'
 import { useAuth } from "../../AuthComponents/AuthContext"
+import { getUserData } from "../../../slices/userSlice";
+import { useDispatch, useSelector } from 'react-redux'
 
 const FormLogin = () => {
 
+    const toast = useToast()
     const navigate = useNavigate()
-    const { login } = useAuth()
+    const { login, signout, user } = useAuth()
+    const dispatch = useDispatch()
+    const userData = useSelector((state) => state.user.user)
+    
 
     const [infoUser, setInfoUser] = useState({
         email: "",
@@ -54,7 +61,7 @@ const FormLogin = () => {
             (errorInfoUser.email === "green")
             &&
             (errorInfoUser.password.complete === "green")))
-    })
+    }, [errorInfoUser])
 
     const onChangeInput = (e) => {
 
@@ -115,10 +122,9 @@ const FormLogin = () => {
             setWrongPass(false)
             setWrongEmail(false)
             setAttempts(false)
-            await login(infoUser.email, infoUser.password)
-            navigate("/home")
+            const res = await login(infoUser.email, infoUser.password)
+            dispatch(getUserData(res.user.accessToken))
         } catch (error) {
-            console.log(error.message)
             if (error.message.includes("auth/wrong-password")) setWrongPass(true)
             else setWrongPass(false)
             if (error.message.includes("not-found")) setWrongEmail(true)
@@ -128,27 +134,46 @@ const FormLogin = () => {
         }
     }
 
+    useEffect(() => {
+        if(userData?.status === "Esperando") {
+            toast({
+             description: "Tu confirmación esta pendiente, espera a que sea aprobada",
+             duration: 6000,
+             isClosable: true,
+             status: "info",
+             position: "top",
+           })
+           signout()
+         } else if(user && userData?.status === "Aprobado"){
+            navigate('/home')
+         }
+    }, [userData])
+
     return (
-        <VStack spacing={6}>
-            <VStack spacing={4}
+        <VStack >
+            <VStack spacing={{ base: 3, lg: 4 }}
                 align="left"
                 alignSelf="flex-start">
                 <Image src='https://assets.soyhenry.com/henry-landing/assets/Henry/logo.png'
                     alt='logoHenry'
                     w="9rem" />
-                <Heading fontSize='3xl'>
+                <Heading fontSize={{ base: '1.2rem', lg: '1.5rem' }}>
                     ¡<Text display={"inline"} boxShadow='0px 7px 0px 0px #ffff01'>Hola</Text> de nuevo! 👋
                 </Heading>
-                <Text fontSize='1rem'
+                <Text fontSize={{ base: '0.9rem', lg: '1rem' }}
                     color='gray.600'>
                     Ingresa a Henry ASK y resuelve todas tus dudas
                 </Text>
             </VStack>
             <form onSubmit={submitHandler}>
-                <Stack spacing={3} w="23rem" >
+                <Stack spacing={3}
+                    w={{ base: '19rem', sm: '23rem' }}
+                    fontSize={{ base: '.75rem', lg: '.8rem' }} >
                     <FormControl id="email"
+                        w={{ base: '19rem', sm: '23rem' }}
                         fontSize=".8rem">
-                        <Input name='email'
+                        <Input fontSize={{ base: '.8rem', lg: '1rem' }}
+                            name='email'
                             placeholder='Email'
                             type="email"
                             borderColor={errorInfoUser.email}
@@ -163,9 +188,11 @@ const FormLogin = () => {
                         </Flex>
                     </FormControl>
                     <FormControl id="password"
+                        w={{ base: '19rem', sm: '23rem' }}
                         fontSize=".8rem">
                         <InputGroup size='md'>
-                            <Input name='password'
+                            <Input fontSize={{ base: '.8rem', lg: '1rem' }}
+                                name='password'
                                 placeholder='Contraseña'
                                 type={show ? 'text' : 'password'}
                                 borderColor={errorInfoUser.password.complete}
@@ -187,11 +214,10 @@ const FormLogin = () => {
                             direction={{ base: 'column', sm: 'row' }}
                             align={'start'}
                             justify={'space-between'}>
-                            <Checkbox>Recordarme</Checkbox>
                             <RouteLink to="/forgotpassword">
-                            <Link as={"u"} fontWeight="semibold" textDecoration={"underline"}>
-                                Olvidé mi contraseña
-                            </Link>
+                                <Link as={"u"} fontWeight="semibold" textDecoration={"underline"}>
+                                    Olvidé mi contraseña
+                                </Link>
                             </RouteLink>
                         </Stack>
                         <Button type='submit'
@@ -232,7 +258,7 @@ const FormLogin = () => {
                             gap={"0.2rem"}
                             fontSize=".9rem">
                             <Text>
-                            ¿Aún no tienes una cuenta?
+                                ¿Aún no tienes una cuenta?
                             </Text>
                             <Link as={"u"} fontWeight="semibold" textDecoration={"underline"}
                                 onClick={() => navigate("/signup")}>

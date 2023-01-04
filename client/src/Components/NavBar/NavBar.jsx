@@ -46,21 +46,15 @@ export default function NavBar() {
     dispatch(getUserData(user.accessToken))
   }, []);
 
-  if(userData && userData.status === "Esperando") {
-     toast({
-      description: "Tu confirmación esta pendiente, espera a que sea aprobada",
-      duration: 6000,
-      isClosable: true,
-      status: "info",
-      position: "top",
-    })
-    signout()
-  } 
+
 
   return (
     <>
       <Box bg={useColorModeValue("black", "black")} px={4}>
-        <Flex h={"96px"} alignItems={"center"} justifyContent={"space-around"}>
+        <Flex h={"96px"} 
+        alignItems="center" 
+        justifyContent="space-between"
+        px={{base: "0rem", md: "1rem"}}>
           <RouteLink to={"/home"}>
             <Flex
               alignItems={"center"}
