@@ -52,7 +52,7 @@ function AnswerEditor({ post_id, responseData, setResponseData, token, scrollFro
 
     useEffect(() => {
         let disabled = false, error = ''
-        if (text.length < 15) {
+        if (text.length < 20) {
             disabled = true
             error = 'Cuerpo debe tener al menos 20 caracteres'
         }
@@ -101,7 +101,7 @@ function AnswerEditor({ post_id, responseData, setResponseData, token, scrollFro
             p=".8rem"
             boxSize="100%"
             gap="1rem"
-            width='80%'
+            width='92%'
             borderRadius='.375rem'
             background='white'
             mb='1rem'
