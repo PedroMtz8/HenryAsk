@@ -36,7 +36,6 @@ const ReqAdmin = () => {
 
   return (
     <Flex>
-      <Sidebar />
       <div style={{ margin: "20px auto" }}>
         <SearchbarAdmin name="Petición" op1="Registro" op2="Cambio de rol" />
         <Text
@@ -54,7 +53,11 @@ const ReqAdmin = () => {
               borderRadius="10px"
               boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.5)"
             >
-              <Table variant="striped" colorScheme="blackAlpha" size="lg">
+              <Table
+                variant="striped"
+                colorScheme="blackAlpha"
+                size={{ base: "sm", md: "md", lg: "lg" }}
+              >
                 <Thead backgroundColor="#ffff01" textAlign="center">
                   <Tr>
                     <Th textAlign="center">Usuario</Th>
