@@ -1,13 +1,12 @@
 import {
   Grid,
   GridItem,
-  Button,
   Card,
   Flex,
-  Heading,
   Image,
   Text,
-  Box
+  Box,
+  Tooltip
 } from "@chakra-ui/react";
 import { Link } from 'react-router-dom'
 import React from "react";
@@ -19,42 +18,32 @@ import Admin from "../../assets/Rol Images/Administrador.png"
 import Graduate from "../../assets/Rol Images/Graduate.png"
 import Student from "../../assets/Rol Images/Students.png"
 import HeroOrTA from "../../assets/Rol Images/Hero,TA.png"
-import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
-export const formatDate = (date) => {
-
-  const arrDate = date.split('-')
-
-  const arrTime = arrDate[2].split('T')
-
-  return arrTime[1].slice(0, 8) + ' ' + arrTime[0] + '-' + arrDate[1] + '-' + arrDate[0]
-
-}
-
 const CardHome = ({ cardData }) => {
+
   moment.updateLocale('es', localeData)
   let dif = moment(cardData.createdAt).startOf('minutes').fromNow()
-  const [ rolImg, setRolImg ] = useState()
+  const [rolImg, setRolImg] = useState()
   useEffect(() => {
-    if(cardData.user.rol === "Henry Hero") setRolImg(HeroOrTA)
-    if(cardData.user.rol === "TA") setRolImg(HeroOrTA)
-    if(cardData.user.rol === "Administrador") setRolImg(Admin)
-    if(cardData.user.rol === "Estudiante") setRolImg(Student)
-    if(cardData.user.rol === "Graduado") setRolImg(Graduate)
+    if (cardData.user.rol === "Henry Hero") setRolImg(HeroOrTA)
+    if (cardData.user.rol === "TA") setRolImg(HeroOrTA)
+    if (cardData.user.rol === "Administrador") setRolImg(Admin)
+    if (cardData.user.rol === "Estudiante") setRolImg(Student)
+    if (cardData.user.rol === "Graduado") setRolImg(Graduate)
   }, [])
-  
+
   return (
     <Card position="relative"
       bg="#F2F2F2"
       p=".8rem"
       w="100%"
-      
+
       overflow="hidden"
       variant="outline"
       boxShadow="dark-lg"
     >
-      <Grid templateRows={{base:'min-content min-content min-content'}}
+      <Grid templateRows={{ base: 'min-content min-content min-content' }}
         templateColumns='min-content repeat(2, 1fr)'
         boxSize="100%"
         columnGap={'1rem'}
@@ -80,98 +69,70 @@ const CardHome = ({ cardData }) => {
             src={rolImg} alt="userImage" />
         </GridItem >
         <GridItem gridArea={'1 / 2 / 2 / 4'} justifySelf='flex-start'>
-            {/* {cardData.user?.userSlack.length < 20
-            ? <Flex display='flex' alignItems={"center"} justifyContent='center' gap=".4rem" fontSize=".75rem" fontWeight="bold">
-            <Text>
-              {`${cardData.user?.userSlack}`}
-            </Text>
-            <Text>
-              {`• ${dif}`}
-            </Text>
-
-            <Image w="1.4rem" alignSelf="flex-start"
-              src="https://i.postimg.cc/TwrFYv4p/image-30.png" alt="userImage" />
-            <Text >
-              {cardData.user?.score}
-            </Text>
-          </Flex>
-          : <Flex display='flex' flexDirection='column' alignItems='flex-start' gap=".4rem" fontSize=".75rem" fontWeight="bold">
-              <Text>
-              {`${cardData.user?.userSlack}`}
-            </Text>
-              <Flex display='flex' gap=".4rem">
-              <Text>
-                {`${dif} •`}
-              </Text>
-              <Image w="1.4rem" alignSelf="flex-start"
-              src="https://i.postimg.cc/TwrFYv4p/image-30.png" alt="userImage" />
-              <Text >
-              {cardData.user?.score}
-              </Text>
-              </Flex>
-          </Flex>
-              } */}
           <Flex display='flex' flexDirection='column' alignItems='flex-start' gap=".4rem" fontSize=".75rem" fontWeight="bold">
-              <Text>
+            <Text>
               {`${cardData.user?.userSlack}`}
             </Text>
-              <Flex display='flex' gap=".4rem">
-              <Text>
-                {`${dif} •`}
+            <Flex display='flex' gap=".4rem">
+              <Text cursor="pointer">
+                <Tooltip label={new Date(cardData.createdAt).toLocaleString()}
+                  placement='top'>
+                  {`${dif} •`}
+                </Tooltip>
               </Text>
               <Image w="1.4rem" alignSelf="flex-start"
-              src="https://i.postimg.cc/TwrFYv4p/image-30.png" alt="userImage" />
+                src="https://i.postimg.cc/TwrFYv4p/image-30.png" alt="userImage" />
               <Text >
-              {cardData.score}
+                {cardData.score}
               </Text>
-              </Flex>
+            </Flex>
           </Flex>
         </GridItem >
         <GridItem gridArea={'2 / 2 / 3 / 4'} justifySelf='flex-start' display={'flex'} flexWrap='wrap' >
-        <Text 
-        style={{'WebkitBoxOrient': 'vertical', 'WebkitLineClamp': 4}}
-        fontSize={'17px'}
-        fontWeight={700} 
-        wordBreak='break-word' 
-        display={'-webkit-box'} 
-        margin='0 auto'
-        lineHeight={1.4}
-        overflow='hidden'
-        textOverflow={'ellipsis'}
-        >
+          <Text
+            style={{ 'WebkitBoxOrient': 'vertical', 'WebkitLineClamp': 4 }}
+            fontSize={'17px'}
+            fontWeight={700}
+            wordBreak='break-word'
+            display={'-webkit-box'}
+            margin='0 auto'
+            lineHeight={1.4}
+            overflow='hidden'
+            textOverflow={'ellipsis'}
+          >
             <Link to={`/home/post/${cardData._id}`}>
               {cardData.title}
             </Link>
           </Text>
         </GridItem>
-       
-         <GridItem gridArea={'3 / 1 / 4 / 2'}>
-            <Flex display='flex' gap={'5px'} justifyContent='center' alignItems='center' mt={'5px'}>
-              <Text>{cardData.numberAnswers}</Text>
-              <ChatIcon marginRight={"3px"} /> 
-            </Flex>
-          </GridItem>
-          <GridItem gridArea={'3 / 2 / 4 / 4'}>
-            <Flex 
-          justifyContent="flex-start"
+
+        <GridItem gridArea={'3 / 1 / 4 / 2'}>
+          <Flex display='flex' gap={'5px'} justifyContent='center' alignItems='center' mt={'5px'}>
+            <Text>{cardData.numberAnswers}</Text>
+            <ChatIcon marginRight={"3px"} />
+          </Flex>
+        </GridItem>
+        <GridItem gridArea={'3 / 2 / 4 / 4'}>
+          <Flex
+            justifyContent="flex-start"
             alignItems="flex-start"
             columnGap={'15px'}
             rowGap={'5px'}
             flexWrap={'wrap'}
-            >
+          >
             {cardData.tags.map((elem, i) =>
               <Box key={i} fontSize={14}
-              p=".5rem .5rem"
+                p=".5rem .5rem"
                 variant="solid"
                 bgColor="#ffff01">
                 {elem}
               </Box>)
             }
           </Flex>
-          </GridItem>
+        </GridItem>
       </Grid>
     </Card>
-);
+  );
 };
 
 export default CardHome; 

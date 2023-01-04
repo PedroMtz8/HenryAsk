@@ -69,7 +69,7 @@ const Paginated = () => {
     >
       <SearchBar />
       {loadingPosts ?
-        <Stack w={"85%"} gap={3} /* bgColor="blue" position={"absolute"} zIndex={4} */>
+        <Stack w={"85%"} gap={3} >
           <Skeleton height="180px" />
           <Skeleton height="180px" />
           <Skeleton height="180px" />
