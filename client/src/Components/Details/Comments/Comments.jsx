@@ -5,13 +5,20 @@ import {
     Text,
     Box,
     Flex,
-    useDisclosure
+    useDisclosure,
+    Tooltip
 } from '@chakra-ui/react'
+import moment from "moment"
+import { localeData } from 'moment_spanish_locale';
+import 'moment/locale/es';
 
 const Comments = ({ dataComment }) => {
 
     const { user } = useAuth();
     const { isOpen, onOpen, onClose } = useDisclosure()
+
+    moment.updateLocale('es', localeData)
+    let dif = moment(dataComment.createdAt).startOf('minutes').fromNow()
 
     return (
         <Flex borderTop="solid 1px"
@@ -36,8 +43,12 @@ const Comments = ({ dataComment }) => {
                     {" - "}
                 </Text>
                 <Text display="inline-block"
-                    color="gray.500">
-                    {`${dataComment.createdAt}`}
+                    color="gray.500"
+                    cursor="pointer">
+                    <Tooltip label={new Date(dataComment.createdAt).toLocaleString()}
+                        placement='top'>
+                        {`${dif}`}
+                    </Tooltip>
                 </Text>
                 {(dataComment.user._id === user.uid) &&
                     <>
