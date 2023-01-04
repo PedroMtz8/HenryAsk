@@ -10,7 +10,6 @@ function checkFields(fields) {
             case 'body':
                 if(!value) return 'Cuerpo requerido'
                 if(value.length < 20) return 'Cuerpo debe tener al menos 20 caracteres'
-                if(value.length > 30000) return 'Cuerpo debe ser menor o igual a 30000 caracteres'
                 break;
             case 'answer_id':
                 if(!value ) return 'Id de respuesta requerido'
@@ -90,7 +89,7 @@ const getAnswersFromPost = async (req, res) => {
         .skip(page * 5 - 5)
         .limit(5)
         .select({ post: 0 })
-        .populate('user', { userSlack: 1, score: 1, rol: 1 })
+        .populate('user', { userSlack: 1, score: 1, rol: 1, avatar: 1 })
 
     //Ejecuto dos busquedas al mismo tiempo
     Promise.all([
