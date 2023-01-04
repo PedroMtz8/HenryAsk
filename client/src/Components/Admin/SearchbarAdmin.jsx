@@ -44,7 +44,12 @@ const SearchbarAdmin = ({
 
   return (
     <div>
-      <FormControl m="auto" fontSize=".9rem" mb="60px">
+      <FormControl
+        m="auto"
+        fontSize=".9rem"
+        mb="60px"
+        w={{ base: "50%", md: "70%", lg: "100%" }}
+      >
         <HStack
           align="center"
           bg="#F2F2F2"
@@ -52,7 +57,10 @@ const SearchbarAdmin = ({
           spacing="3.5%"
           borderRadius="1.5rem"
         >
-          <InputGroup w="50%">
+          <InputGroup
+            w={{ base: "40%", md: "70%", lg: "100%" }}
+            display={{ base: "flex" }}
+          >
             <Input
               placeholder="Mail..."
               borderRadius="10rem"
@@ -63,7 +71,7 @@ const SearchbarAdmin = ({
               <SearchIcon fontSize="1.1rem" />
             </InputRightElement>
           </InputGroup>
-          <HStack w="50%">
+          <HStack w={{ base: "40%", md: "30%", lg: "60%" }}>
             <Text w="4rem"> {name}:</Text>
             <Select onChange={handleChangeFilter} borderRadius="10rem">
               <option value={"all"}>----</option>

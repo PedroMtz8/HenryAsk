@@ -54,7 +54,7 @@ const Sidebar = () => {
       justifyContent="space-between"
       backgroundColor="#ffff01"
     >
-      <Flex p="5%" flexDir="column" alignItems="flex-start" as="nav">
+      <Flex p="5%" flexDir="column" alignItems="center" as="nav">
         <IconButton
           background="none"
           mt={5}
