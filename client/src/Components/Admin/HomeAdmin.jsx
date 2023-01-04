@@ -27,8 +27,7 @@ const HomeAdmin = () => {
         <Text
           as="b"
           textTransform="uppercase"
-          fontSize="30px"
-          w={["100%", "50%", "25%", "15%"]}
+          fontSize={{ base: "24px", md: "30px", lg: "40px" }}
         >
           ¡Bienvenido al panel de administrador: {currentUser?.userSlack}!
         </Text>
