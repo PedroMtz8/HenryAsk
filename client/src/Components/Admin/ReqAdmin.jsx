@@ -36,6 +36,7 @@ const ReqAdmin = () => {
 
   return (
     <Flex>
+      <Sidebar />
       <div style={{ margin: "20px auto" }}>
         <SearchbarAdmin name="Petición" op1="Registro" op2="Cambio de rol" />
         <Text
