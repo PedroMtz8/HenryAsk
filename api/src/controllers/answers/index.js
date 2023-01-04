@@ -2,9 +2,43 @@ const Answer = require('../../models/Answer')
 const Post = require('../../models/Post')
 const User = require('../../models/User')
 
+
+function checkFields(fields) {
+    for (const field in fields) {
+        const value = fields[field]
+        switch (field) {
+            case 'body':
+                if(!value) return 'Cuerpo requerido'
+                if(value.length < 20) return 'Cuerpo debe tener al menos 20 caracteres'
+                if(value.length > 30000) return 'Cuerpo debe ser menor o igual a 30000 caracteres'
+                break;
+            case 'answer_id':
+                if(!value ) return 'Id de respuesta requerido'
+                break;
+            case 'post_id':
+                if(!value) return 'Id de post requerido'
+                break;
+            case 'page':
+                if(!value) return 'Numero de pagina requerido'
+                if(value <= 0) return 'Numero de pagina debe ser mayor a 0'
+                break;
+            case 'user_id':
+                if(!value) return 'Id de usuario requerido'
+                break;
+            case 'type':
+                if(!value) return 'Tipo de voto requerido'
+                break;
+            default:
+                break;
+        }
+    }
+    return ''
+}
+
 const createAnswer = async (req, res) => {
     const { body, post_id } = req.body
-    if (!body) return res.status(400).json({ message: 'Descripcion requerida.' })
+    const message = checkFields({ body, post_id})
+    if (message) return res.status(400).json({ message })
 
     try {
         const newAnswer = await Answer.create({
@@ -22,7 +56,8 @@ const createAnswer = async (req, res) => {
 
 const editAnswer = async (req, res) => {
     const { answer_id, body } = req.body
-    if (!answer_id || !body) return res.status(400).json({ message: 'Id de respuesta y descripcion requeridos.' })
+    const message = checkFields({ page, answer_id})
+    if (message) return res.status(400).json({ message })
 
     try {
         const answer = await Answer.findById(answer_id)
@@ -41,7 +76,8 @@ const editAnswer = async (req, res) => {
 
 const getAnswersFromPost = async (req, res) => {
     let { page, sort, post_id } = req.query
-    if (!page || !post_id) return res.status(400).json({ message: 'Numero de pagina e id de post requeridos.' })
+    const message = checkFields({ page, post_id})
+    if (message) return res.status(400).json({ message })
 
     let searchPaginatedAnswers = Answer.find({ post: post_id }) //busqueda para obtener respuestas paginadas
     let searchAllAnswers = Answer.find({ post: post_id }) //busqueda para obtener numero maximo de pagina
@@ -70,7 +106,8 @@ const getAnswersFromPost = async (req, res) => {
 
 const getAnswersFromUser = async (req, res) => {
     let { page, sort, user_id } = req.query
-    if (!page) return res.status(400).json({ message: 'Numero de pagina e id de usuario requeridos.' })
+    const message = checkFields({ page, user_id})
+    if (message) return res.status(400).json({ message })
 
     let searchPaginatedAnswers = Answer.find({ user: user_id }) //busqueda para obtener respuestas paginadas
     let searchAllAnswers = Answer.find({ user: user_id }) //busqueda para obtener numero maximo de pagina
@@ -101,6 +138,8 @@ const getAnswersFromUser = async (req, res) => {
 const voteAnswer = async (req, res) => {
     const { type } = req.params
     const { answer_id } = req.body
+    const message = checkFields({ type, answer_id})
+    if (message) return res.status(400).json({ message })
     try {
         const voter = await User.findById(req.id)
         const votedAnswer = await Answer.findById(answer_id)

@@ -37,6 +37,7 @@ const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     let user = await signInWithEmailAndPassword(auth, email, password)
+    return user
   }
 
   function forgotPasswordFunction(email) {

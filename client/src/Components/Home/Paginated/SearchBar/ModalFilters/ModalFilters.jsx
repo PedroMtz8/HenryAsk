@@ -61,7 +61,6 @@ function ModalFilters() {
     }
 
     useEffect(() => {
-        console.log(search)
         let disabled = false
         if (search.tags.length === 3) {
             disabled = true

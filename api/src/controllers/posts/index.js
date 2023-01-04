@@ -1,9 +1,54 @@
 const Post = require('../../models/Post')
 const User = require('../../models/User')
 
+function checkFields(fields) {
+    for (const field in fields) {
+        const value = fields[field]
+        switch (field) {
+            case 'title':
+                if(!value) return 'Titulo requerido';
+                if(value.length < 15) return 'Titulo debe tener al menos 15 caracteres'
+                if(value.length > 150) return 'Titulo debe ser menor o igual a 150 caracteres'
+                break;
+            case 'body':
+                if(!value) return 'Cuerpo requerido'
+                if(value.length < 20) return 'Cuerpo debe tener al menos 20 caracteres'
+                if(value.length > 30000) return 'Cuerpo debe ser menor o igual a 30000 caracteres'
+                break;
+            case 'tags':
+                if(value && value.length === 0) return 'Debe haber al menos un tag'
+                if(value && value.length > 3) return 'Pueden haber hasta 3 tags'
+                break;
+            case 'module':
+                const modules = ['M1', 'M2', 'M3', 'M4', 'Graduado']
+                if(value && !modules.includes(value)) return 'Modulo invalido'
+                break;
+            case 'post_id':
+                if(!value) return 'Id de post requerido'
+                break;
+            case 'page':
+                if(!value) return 'Numero de pagina requerido'
+                if(value <= 0) return 'Numero de pagina debe ser mayor a 0'
+                break;
+            case 'user_id':
+                if(!value) return 'Id de usuario requerido'
+                break;
+            case 'type':
+                if(!value) return 'Tipo de voto requerido'
+                break;
+            default:
+                break;
+        }
+    }
+    return ''
+}
+
 const createPost = async (req, res) => {
     const { title, body, tags, module } = req.body
-    if (!title || !body || !tags || !module) return res.status(400).json({ message: 'Titulo, descripcion, etiquetas y modulo requeridos.' })
+    let message = checkFields({ title, body, tags, module })
+    if(!tags) message = 'Tags requeridos'
+    if(!module) message = 'Modulo requerido'
+    if (message) return res.status(400).json({ message })
 
     try {
         const newPost = await Post.create({
@@ -21,8 +66,10 @@ const createPost = async (req, res) => {
 
 const editPost = async (req, res) => {
     const { post_id, title, body, tags, module } = req.body
-    if (!post_id || !title || !body || !tags || !module) return res.status(400).json({ message: 'Id del post, titulo, descripcion, etiquetas y modulo requeridos.' })
-
+    let message = checkFields({ post_id, title, body, tags, module })
+    if(!tags) message = 'Tags requeridos'
+    if(!module) message = 'Modulo requerido'
+    if (message) return res.status(400).json({ message })
     try {
         const post = await Post.findById(post_id) //siempre ya que cuando editas, por default, tiene la info anterior
         if (!post) return res.status(404).json({ message: 'El post no fue encontrado!' })
@@ -42,7 +89,8 @@ const editPost = async (req, res) => {
 
 const getPostsByUserId = async (req, res) => {
     const { page, user_id, sort } = req.query
-    if (!page) return res.status(400).json({ message: 'Numero de pagina e id de usuario requeridos.' })
+    const message = checkFields({ page, user_id })
+    if (message) return res.status(400).json({ message })
 
     let searchPaginatedPosts = Post.find({ user: user_id }) //busqueda para obtener posts paginados
     let searchAllPosts = Post.find({ user: user_id }) //busqueda para obtener numero maximo de pagina    
@@ -76,7 +124,8 @@ const getPostDetail = async (req, res) => {
 
 const getPosts = async (req, res) => {
     let { page, module, sort, tags, q } = req.query
-    if (!page) return res.status(400).json({ message: 'Numero de pagina requerido.' })
+    const message = checkFields({ page, module })
+    if (message) return res.status(400).json({ message })
 
     //Creo la query de busqueda
     function buildQuery() {
@@ -133,6 +182,8 @@ const getPosts = async (req, res) => {
 const votePost = async (req, res) => {
     const { type } = req.params
     const { post_id } = req.body
+    const message = checkFields({ type, post_id})
+    if (message) return res.status(400).json({ message })
     try {
         const voter = await User.findById(req.id) //votante
         const votedPost = await Post.findById(post_id)
