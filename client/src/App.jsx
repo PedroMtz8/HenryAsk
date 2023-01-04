@@ -12,6 +12,7 @@ import Accounts from "./Components/Admin/Accounts";
 import Details from "./Components/Details/Details";
 import ForgotPassword from "./Components/ForgotPassword/ForgotPassword";
 import ReqAdmin from "./Components/Admin/ReqAdmin";
+import ErrorPage from "./Components/Admin/ErrorPage/ErrorPage";
 
 function App() {
   return (
@@ -21,6 +22,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Register />} />
         <Route path="/forgotpassword" element={<ForgotPassword />} />
+        <Route
+          path={"*"}
+          element={<ErrorPage numb_err="404" error="URL inexistente." />}
+        />
         // Rutas de admin
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<Home />} />

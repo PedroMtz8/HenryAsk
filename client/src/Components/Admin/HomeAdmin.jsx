@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getRequest } from "../../slices/userSlice";
 import { useAuth } from "../AuthComponents/AuthContext";
+import ErrorPage from "./ErrorPage/ErrorPage";
 import Sidebar from "./Sidebar";
 
 const HomeAdmin = () => {
@@ -60,6 +61,7 @@ const HomeAdmin = () => {
           </UnorderedList>
         </Text>
       </div>
+      <ErrorPage />
     </Flex>
   );
 };
