@@ -39,7 +39,6 @@ function QuestionPaginated({data}) {
             alignItems="center"
             justifyContent={"space-between"}
             gap={3}
-            mt={"15px"}
             mb='15px'
             position='absolute'
             bottom={'0px'}

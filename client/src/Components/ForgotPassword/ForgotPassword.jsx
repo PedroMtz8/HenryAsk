@@ -27,7 +27,7 @@ export default function ForgotPassword() {
         try {
             await forgotPasswordFunction(email)
             toast({
-                description: "Email sent, check your email",
+                description: "Email enviado, chequea spam",
                 status: "success",
                 duration: 4000,
                 isClosable: true,
@@ -36,7 +36,7 @@ export default function ForgotPassword() {
             navigate('/login')
         } catch (error) {
             toast({
-                description: "Email not found",
+                description: "Email no registrado",
                 status: "error",
                 duration: 4000,
                 isClosable: true,

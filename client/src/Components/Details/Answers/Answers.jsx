@@ -10,13 +10,17 @@ import {
     Select,
     Button,
     HStack,
-    Heading
+    Heading,
+    useMediaQuery
 } from '@chakra-ui/react'
 import AnswerCard from './AnswerCard'
 import AnswerEditor from "./AnswerEditor";
 import { useRef } from "react";
 
 const Answers = ({ dataPost, setDataPost }) => {
+
+    const [largerThan600px] = useMediaQuery('(min-width: 600px)')
+    const [largerThan460px] = useMediaQuery('(min-width: 460px)')
 
     function id() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -75,55 +79,65 @@ const Answers = ({ dataPost, setDataPost }) => {
         <>
             <Flex position="relative"
                 justifyContent="space-between"
-                alignItems="flex-end"
-                w="80%"
+                alignItems={largerThan600px ? "center" : 'flex-end'}
+                w="92%"
             >
-                <Text color="white">
+                <Flex flexDirection={largerThan460px ? 'row' : 'column'}>
+                <Text color="white" position={'relative'}>
                     Respuestas: {`(${dataPost.post.numberAnswers})`}
                 </Text>
+                {!largerThan460px ? <Button bg="#FFFF01"
+                        fontSize={largerThan600px ? '16px' : '.8rem'}
+                        p="1rem 2rem"
+                        onClick={() => form.current.scrollIntoView({ block: 'end', behavior: 'smooth' })}
+                        ref={button}>
+                        Responder
+                    </Button>
+                    : null}
+                </Flex>
                 <Flex position="relative"
-                    w="50%"
                     justifyContent="flex-end"
-                    alignItems="center"
-                    gap="1rem">
-                    <Flex alignItems="center"
+                    alignItems={largerThan600px ? "center" : 'flex-end'}
+                    gap="1rem"
+                    >
+                    <Flex alignItems={largerThan600px ? "center" : 'flex-start'}
                         justifyContent="flex-end"
-                        gap="1rem"
-                        w="60%">
+                        gap={largerThan600px ? "1rem" : '0'}
+                        flexDirection={largerThan600px ? 'row' : 'column'}
+                        >
                         <Text color="white">
                             ordenar por:
                         </Text>
                         <Select
                             bg="white"
                             borderRadius=".5rem"
-                            w="50%"
+                            w={'fit-content'}
                             onChange={e => setResponseData({ ...responseData, answersSort: e.target.value })}
                         >
                             <option value={"score"}>Puntuación</option>
                             <option value={"newest"}>Más recientes</option>
                         </Select>
                     </Flex>
-                    <Button bg="#FFFF01"
+                    {largerThan460px ? <Button bg="#FFFF01"
+                        fontSize={largerThan600px ? '16px' : '.8rem'}
                         p="1rem 2rem"
                         onClick={() => form.current.scrollIntoView({ block: 'end', behavior: 'smooth' })}
                         ref={button}>
                         Responder
                     </Button>
+                    : null}
                 </Flex>
             </Flex>
             {responseData.answersArr && responseData.answersArr.length ?
                 <Flex position="relative"
                     flexDir="column"
-                    w="80%"
+                    w="92%"
                     gap="1rem">
                     <Flex flexDir="column"
                         alignItems="center"
-                        minH="10rem"
-                        p="1%"
-                        bg="#F2F2F2"
                         borderRadius="md"
                         fontWeight="semibold"
-                        gap="2%">
+                        gap="1rem">
                         {mapCards(responseData)}
                     </Flex>
                     <HStack spacing={2} alignSelf="center">
@@ -145,7 +159,7 @@ const Answers = ({ dataPost, setDataPost }) => {
             <Flex position="relative"
                 justifyContent="space-between"
                 alignItems="flex-end"
-                w="80%">
+                w="92%">
                 <Heading color="white" size={'md'} fontWeight='normal'>Tu respuesta</Heading>
             </Flex>
             <AnswerEditor post_id={idPost} responseData={responseData} setResponseData={setResponseData} token={token} scrollFrom={form} scrollTo={button} />

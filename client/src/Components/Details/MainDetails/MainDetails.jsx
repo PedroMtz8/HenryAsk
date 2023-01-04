@@ -6,10 +6,12 @@ import {
     Box,
     Stack,
     useDisclosure,
+    useMediaQuery,
+    Grid,
+    GridItem,
     Tooltip
 } from '@chakra-ui/react'
 import { TriangleUpIcon, TriangleDownIcon } from '@chakra-ui/icons'
-import Editor from '../../DetailBody/DetailBody'
 import axios from "axios";
 import { useAuth } from "../../AuthComponents/AuthContext"
 import API_URL from "../../../config/environment"
@@ -17,19 +19,24 @@ import { useParams } from "react-router-dom";
 import { useEffect } from 'react'
 import Comments from '../Comments/Comments'
 import CreateComment from '../Comments/CreateComment'
+import DetailBody from '../../DetailBody/DetailBody'
 import moment from "moment"
 import { localeData } from 'moment_spanish_locale';
 import 'moment/locale/es';
+import Admin from "../../../assets/Rol Images/Administrador.png";
+import Graduate from "../../../assets/Rol Images/Graduate.png";
+import Student from "../../../assets/Rol Images/Students.png";
+import HeroOrTA from "../../../assets/Rol Images/Hero,TA.png";
 
-const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userScore }) => {
+const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData }) => {
+
+    const [largerThan575px] = useMediaQuery('(min-width: 575px)')
+    moment.updateLocale('es', localeData)
 
     const { user } = useAuth();
     let token = user.accessToken;
     const idPost = useParams().id;
-
-    moment.updateLocale('es', localeData)
-    let dif = moment(dataPost.post.createdAt).startOf('minutes').fromNow()
-
+    const [dif, setDif] = useState(moment(dataPost.post.createdAt).startOf('seconds').fromNow())
     const [numberOfVotesPost, setNumberOfVotes] = useState(parseInt(dataPost.post.score))
     const [numberOfVotesUser, setNumberOfVotesUser] = useState(parseInt(dataPost.post.user.score))
     const [postComments, setPostComments] = useState([])
@@ -37,6 +44,7 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
     const [remainingComments, setRemainingComments] = useState(dataPost.post.numberComments)
     const [showComments, setShowComments] = useState(false)
     const { isOpen, onOpen, onClose } = useDisclosure()
+    const [rolImg, setRolImg] = useState();
 
     useEffect(() => {
 
@@ -52,6 +60,14 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
     useEffect(() => {
         (commentPage > 0) && getComment()
     }, [commentPage])
+
+    useEffect(() => {
+        if (dataPost.post.user.rol === "Henry Hero") setRolImg(HeroOrTA);
+        if (dataPost.post.user.rol === "TA") setRolImg(HeroOrTA);
+        if (dataPost.post.user.rol === "Administrador") setRolImg(Admin);
+        if (dataPost.post.user.rol === "Estudiante") setRolImg(Student);
+        if (dataPost.post.user.rol === "Graduado") setRolImg(Graduate);
+    }, [])
 
     const getComment = async () => {
 
@@ -83,29 +99,30 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
     }
 
     return (
-        <Flex position="relative"
-            flexDir="column"
-            bg="#F2F2F2"
-            w="92%"
-            minH="10rem"
-            mt="3rem"
-            borderRadius="md"
-            fontWeight="semibold">
-            <Flex position="relative"
-                alignItems="flex-start"
-                w="100%">
-                <Flex w={{ base: '20%', sm: '16%', md: '13%' }}
-                    flexDir="column"
-                    alignItems="center"
-                    pt={{ base: '1.5rem', sm: '1.1rem', md: '.9rem' }}
-                    gap="1rem">
-                    <Image src="https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60"
-                        alt="Caffe Latte"
-                        w={{ base: '2rem', sm: '3rem', md: '5rem' }}
-                        h={{ base: '2rem', sm: '3rem', md: '5rem' }}
-                        borderRadius={{ base: '2rem', sm: '3rem', md: '5rem' }}
+        <>
+          <Grid position="relative"
+                templateRows={'repeat(3, min-content)'}
+                templateColumns={'min-content 1fr'}
+                boxSize="100%"
+                gap="1rem"
+                w="92%"
+                p={'0.8rem'}
+                bg="#F2F2F2"
+                mt={'3rem'}
+                fontWeight={600}
+                borderRadius={'0.375rem'}>
+                <GridItem gridArea={'1 / 1 / 2 / 2'} display='flex' flexDirection={'column'} alignItems='center' >
+                    <Image
+                        objectFit="cover"
+                        w={largerThan575px ? "80px" : "50px"}
+                        borderRadius="3rem"
+                        src={dataPost.post.user.avatar}
+                        alt="No encontrada"
+                        maxWidth={'none'}
                     />
-                    <Stack fontSize={{ base: '1.2rem', sm: '1.5rem', md: '2rem' }} align="center">
+                    <Image w={largerThan575px ? "2.8rem" : '2.3rem'} mt=".5rem"
+                        src={rolImg} alt="userImage" />
+                    <Flex flexDirection='column' alignItems={'center'} justifyContent='flex-start' fontSize="2rem">
                         {user.email !== dataPost.post.user.email &&
                             <TriangleUpIcon
                                 color={votingData === 1 ? "green" : "gray"}
@@ -119,54 +136,48 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
                                 color={votingData === -1 ? "red" : "gray"}
                                 onClick={e => votePost(-1)} />
                         }
-                    </Stack>
-                </Flex>
-                <Flex flexDir="column"
-                    justifyContent="space-between"
-                    w={{ base: '80%', sm: '84%', md: '87%' }}
-                    minH="14rem"
-                    pr="1rem"
-                    gap="2rem">
-                    <Stack spacing={4}>
-                        <Flex gap=".5rem"
-                            fontSize={{ base: '.7rem', sm: '.8rem' }}
-                            ml="10px"
-                            mt="1rem">
-                            <Flex gap={{ base: '.1rem', sm: '.3rem' }}
-                                flexDir={{ base: 'column', sm: 'row' }}>
-                                <Text display={{ base: 'block', sm: 'inline' }}>
-                                    {dataPost.post.user.userSlack}
-                                </Text>
-                                <Text display={{ base: 'none', sm: 'inline' }} >
-                                    •
-                                </Text>
-                                <Text display={{ base: 'block', sm: 'inline' }}
-                                    cursor="pointer"
-                                >
-                                    <Tooltip label={new Date(dataPost.post.createdAt).toLocaleString()}
-                                        placement='top'>
-                                        {dif}
-                                    </Tooltip>
-                                </Text>
-                            </Flex>
-                            <Image w="1.4rem"
-                                alignSelf={{ base: 'center', sm: 'flex-start' }}
+                    </Flex>
+                </GridItem >
+                <GridItem gridArea={'1 / 2 / 2 / 3'} direction="column" minWidth={0}>
+                    <Flex alignItems={largerThan575px ? `center` : `flex-start`}
+                        gap=".4rem"
+                        fontSize=".75rem"
+                        fontWeight="bold"
+                        flexDirection={largerThan575px ? `row` : `column`}
+                        ml='10px'
+                        mr='10px'>
+                        <Text >
+                        {largerThan575px ? `${dataPost.post.user.userSlack} • ` : `${dataPost.post.user.userSlack}`}
+                        </Text>
+                        <Flex gap={'0.4rem'} alignItems='center'>
+                            <Text cursor="pointer" fontSize={{base: '11px', sm: '12px'}}>
+                                <Tooltip label={new Date(dataPost.post.createdAt).toLocaleString()}
+                                    placement='top'>
+                                    {largerThan575px ?  `${dif}` : `${dif} •`}
+                                </Tooltip>
+                            </Text>
+                            <Image w="1.4rem" alignSelf="flex-start"
                                 src="https://i.postimg.cc/TwrFYv4p/image-30.png" alt="userImage" />
-                            <Text alignSelf={{ base: 'center', sm: 'flex-start' }}>
-                                {userScore}
+                            <Text >
+                                {numberOfVotesUser}
                             </Text>
                         </Flex>
-                        <Flex pl="10px">
-                            <Text maxH={"10rem"}
-                                fontSize={{ base: '1rem', sm: '1.2rem' }}
-                                as="h2">
+                    </Flex>
+                    <Flex pl="10px">
+                            <Text
+                                fontSize={'1.2rem'}
+                                as="h2"
+                                wordBreak={'break-word'}>
                                 {dataPost.post.title}
                             </Text>
-                        </Flex>
-                        <Editor body={dataPost.post.body} />
-                    </Stack>
-                    <Flex justifyContent="flex-end">
+                    </Flex>
+                    <DetailBody body={dataPost.post.body} />
+                </GridItem>
+                <GridItem gridArea={'2 / 2 / 3 / 3'}>
+                <Flex justifyContent="flex-end" flexWrap={'wrap'}>
                         <Flex gap={{ base: '0.5rem', sm: '1rem' }}
+                        justifyContent='flex-end'
+                        flexWrap={'wrap'}
                             mr={{ base: '0.2rem', sm: '0rem' }}>
                             {
                                 dataPost.post.tags.map((e, i) =>
@@ -183,70 +194,60 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData, userSco
                             }
                         </Flex>
                     </Flex>
-                </Flex>
-            </Flex>
-            <Flex position="relative"
-                justifyContent={"center"}
-                w="100%"
-                mt=".5rem">
-                <Flex justifyContent="space-between"
-                    borderTop="solid gray 1px"
-                    w={{ base: '94%', md: '98%' }}
-                    px="1rem"
-                    pt={{ base: '.3rem', sm: '.5rem' }}
-                    fontSize={{ base: '.7rem', sm: '1rem' }}>
-                    <Flex >
-                        {(dataPost.post.numberComments !== 0) ? ((!showComments) ?
-                            <Text cursor="pointer"
-                                onClick={e => { commentPage === 0 && setCommentPage(1); setShowComments(true) }}>
-                                Comentarios: {`(${dataPost.post.numberComments})`} <TriangleDownIcon />
-                            </Text>
-                            :
-                            <Text cursor="pointer"
-                                onClick={e => { setShowComments(false) }}>
-                                Comentarios: {`(${dataPost.post.numberComments})`} <TriangleUpIcon />
-                            </Text>)
-                            :
-                            null}
+                </GridItem>
+                <GridItem gridArea={'3 / 1 / 4 / 3;'}>
+                    <Flex w="100%" justifyContent="space-between">
+                        <Flex fontSize=".8rem"
+                            color="gray.600">
+                            {(dataPost.post.numberComments !== 0) ? ((!showComments) ?
+                                <Text cursor="pointer"
+                                    onClick={e => { commentPage === 0 && setCommentPage(1); setShowComments(true) }}>
+                                    Comentarios: {`(${dataPost.post.numberComments})`} <TriangleDownIcon />
+                                </Text>
+                                :
+                                <Text cursor="pointer"
+                                    onClick={e => { setShowComments(false) }}>
+                                    Comentarios: {`(${dataPost.post.numberComments})`} <TriangleUpIcon />
+                                </Text>)
+                                :
+                                null}
+                        </Flex>
+                        <>
+                            <Text color="blue.600"
+                                cursor="pointer"
+                                fontSize={{base: '12px', sm: '16px'}}
+                                onClick={onOpen}>Comentar pregunta</Text>
+                            <CreateComment isOpen={isOpen}
+                                onClose={onClose}
+                                type={"post"}
+                                id={idPost}
+                            />
+                        </>
                     </Flex>
-                    <Flex>
-                        <Text color="blue.600"
-                            cursor="pointer"
-                            onClick={onOpen}>Comentar respuesta</Text>
-                        <CreateComment isOpen={isOpen}
-                            onClose={onClose}
-                            type={"post"}
-                            id={idPost}
-                        />
+                    <Flex flexDirection='column'>
+                        {(showComments) && postComments.map((elem, i) =>
+                            <Flex key={i}
+                                w="100%"
+                                px="1rem">
+                                <Comments dataComment={elem} />
+                            </Flex>)
+                        }
+                        {
+                            (showComments && remainingComments > 0) &&
+                            <Flex color="blue.500"
+                                px="1rem"
+                                pb="1rem">
+                                <Text
+                                    cursor="pointer"
+                                    onClick={e => setCommentPage(commentPage + 1)}>
+                                    Ver más
+                                </Text>
+                            </Flex>
+                        }
                     </Flex>
-                </Flex>
-            </Flex>
-            <Flex position="relative"
-                px="0.5rem"
-                flexDir="column"
-                mt={{ base: '.3rem', sm: '1rem' }}
-                lineHeight="1.2rem">
-                {(showComments) && postComments.map((elem, i) =>
-                    <Flex key={i}
-                        w="100%"
-                        px="1rem">
-                        <Comments dataComment={elem} />
-                    </Flex>)
-                }
-                {
-                    (showComments && remainingComments > 0) &&
-                    <Flex color="blue.500"
-                        px="1rem"
-                        pb="1rem">
-                        <Text
-                            cursor="pointer"
-                            onClick={e => setCommentPage(commentPage + 1)}>
-                            Ver más
-                        </Text>
-                    </Flex>
-                }
-            </Flex>
-        </Flex>
+                </GridItem>
+            </Grid>
+        </>      
     )
 }
 

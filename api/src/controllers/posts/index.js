@@ -13,7 +13,6 @@ function checkFields(fields) {
             case 'body':
                 if(!value) return 'Cuerpo requerido'
                 if(value.length < 20) return 'Cuerpo debe tener al menos 20 caracteres'
-                if(value.length > 30000) return 'Cuerpo debe ser menor o igual a 30000 caracteres'
                 break;
             case 'tags':
                 if(value && value.length === 0) return 'Debe haber al menos un tag'

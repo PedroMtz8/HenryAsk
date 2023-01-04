@@ -24,7 +24,6 @@
 }
 
 .ProseMirror {
-    min-height: 200px;
     height: auto;
 }
 
@@ -109,8 +108,8 @@ button:disabled {
 .ProseMirror {
 
     transition-property: border-color,
-        box-shadow,
-        transform;
+    box-shadow,
+    transform;
     transition-duration: 200ms;
     border: 1px solid transparent;
     border-radius: 0.375rem;

@@ -24,7 +24,8 @@ const Comments = ({ dataComment }) => {
         <Flex borderTop="solid 1px"
             borderTopColor="gray.400"
             py=".8rem"
-            w="100%">
+            w="100%"
+            wordBreak={'break-word'}>
             <Box fontSize=".8rem"
                 fontWeight="normal"
                 textAlign="inherit"
