@@ -61,7 +61,6 @@ const HomeAdmin = () => {
           </UnorderedList>
         </Text>
       </div>
-      <ErrorPage />
     </Flex>
   );
 };

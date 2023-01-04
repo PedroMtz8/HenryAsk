@@ -11,7 +11,7 @@ const ErrorPage = ({ numb_err, error }) => {
         <Text textAlign="center" as="b" fontSize="30px">
           {numb_err} NOT FOUND
         </Text>
-        <img src={rocket} alt="" />
+        <img src={rocket} alt="" style={{ textAlign: "center" }} />
         <Text textAlign="center" fontSize="20px">
           {error} prueba volver al{" "}
           <Link to="/">
