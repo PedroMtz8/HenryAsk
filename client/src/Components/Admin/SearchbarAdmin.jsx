@@ -22,7 +22,7 @@ const SearchbarAdmin = ({
   op4,
   op5,
   handleChangeFilter,
-  setFilter
+  setFilter,
 }) => {
   const dispatch = useDispatch();
 
@@ -39,7 +39,7 @@ const SearchbarAdmin = ({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    setFilter('')
+    setFilter("");
     dispatch(getByMail({ mail: search.toLowerCase(), page, token }));
   };
 
@@ -49,14 +49,14 @@ const SearchbarAdmin = ({
         m="auto"
         fontSize=".9rem"
         mb="60px"
-        w={{ base: "50%", md: "70%", lg: "100%" }}
+        w={{ base: "50%", sm: "100%", md: "100%", lg: "100%" }}
       >
         <HStack
           align="center"
           bg="#F2F2F2"
           p="1% 2%"
           spacing="3.5%"
-          borderRadius="1.5rem"
+          borderRadius="10px"
         >
           <InputGroup
             w={{ base: "40%", md: "70%", lg: "100%" }}
