@@ -114,10 +114,10 @@ const ReqAdmin = () => {
               <Table
                 variant="striped"
                 colorScheme="blackAlpha"
-                w={{ base: "40%", md: "30%", lg: "60%" }}
+                size={{ base: "20em", md: "md", lg: "lg" }}
                 p="20px"
               >
-                <Thead backgroundColor="#ffff01" textAlign="center">
+                <Thead w="100%" backgroundColor="#ffff01" textAlign="center">
                   <Tr>
                     <Th textAlign="center">Usuario</Th>
                     <Th textAlign="center">Email</Th>
