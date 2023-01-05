@@ -25,26 +25,19 @@ const Accounts = () => {
 
   const accounts = useSelector((state) => state.user);
   const users = accounts.users;
-  const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState("");
   const maxPag = useSelector((state) => state.user.usersMaxPages);
 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    dispatch(getUsers({ token, page: accounts.page }));
-    setLoading(false);
-  }, [dispatch, accounts.page]);
-
-  const getAccounts = () => {
-    if (filter === "all") {
+    setLoading(true)
+    if (filter === "") {
       dispatch(getUsers({ token, page: accounts.page }));
     } else {
       dispatch(getUserByRol({ page: accounts.page, rol: filter, token }));
     }
-  };
-
-  useEffect(() => {
-    getAccounts();
+    setLoading(false);
   }, [dispatch, accounts.page]);
 
   const handleChangeFilter = (e) => {
@@ -53,13 +46,15 @@ const Accounts = () => {
   };
 
   useEffect(() => {
-    if (accounts.page === 1) {
-      getAccounts();
+    setLoading(true)
+    if (filter === "") {
+      dispatch(getUsers({ token, page: 1 }));
     } else {
-      setPage(1);
+      dispatch(getUserByRol({ page: 1, rol: filter, token }));
     }
+    dispatch(setPage(1));
     setLoading(false);
-  });
+  }, [filter]);
 
   return (
     <Flex>
@@ -72,7 +67,7 @@ const Accounts = () => {
           op3="Henry Hero"
           op4="Graduado"
           op5="TA"
-          isAccounts={true}
+          setFilter={setFilter}
           handleChangeFilter={handleChangeFilter}
         />
         <Text
