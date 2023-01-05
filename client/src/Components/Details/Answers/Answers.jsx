@@ -11,7 +11,8 @@ import {
     Button,
     HStack,
     Heading,
-    useMediaQuery
+    useMediaQuery,
+    Skeleton
 } from '@chakra-ui/react'
 import AnswerCard from './AnswerCard'
 import AnswerEditor from "./AnswerEditor";
@@ -35,15 +36,17 @@ const Answers = ({ dataPost, setDataPost }) => {
     const button = useRef(null)
 
     const idPost = useParams().id
+    const [loading, setLoading] = useState(true)
 
     const [responseData, setResponseData] = useState({ answersPage: 1, maxPages: 1, answersSort: "score", answersArr: undefined });
 
     useEffect(() => {
-
+        setLoading(true)
         const getAnswers = async () => {
             const res = await
                 axios.get(API_URL + `/answer/post?page=${responseData.answersPage}&sort=${responseData.answersSort}&post_id=${idPost}`, { headers: { Authorization: "Bearer " + token } })
             setResponseData({ ...responseData, answersArr: res.data.foundAnswers, maxPages: res.data.maxPages })
+            setLoading(false)
         }
 
         getAnswers()
@@ -67,11 +70,13 @@ const Answers = ({ dataPost, setDataPost }) => {
 
     const mapCards = (arrRes) => {
 
-        let arr = arrRes.answersArr.map((dataCard, i, arr) =>
+        let arr = arrRes.answersArr?.map((dataCard, i, arr) =>
             <AnswerCard key={id()}
                 answerCardData={dataCard}
                 setDataPost={setDataPost}
-                finish={(i !== arr.length - 1)} />)
+                finish={(i !== arr.length - 1)}
+                loading={loading}
+                setLoading={setLoading} />)
         return arr;
     }
 
@@ -128,11 +133,10 @@ const Answers = ({ dataPost, setDataPost }) => {
                     : null}
                 </Flex>
             </Flex>
-            {responseData.answersArr && responseData.answersArr.length ?
                 <Flex position="relative"
                     flexDir="column"
                     w="92%"
-                    gap="1rem">
+                    gap="1rem" hidden={loading}>
                     <Flex flexDir="column"
                         alignItems="center"
                         borderRadius="md"
@@ -140,22 +144,27 @@ const Answers = ({ dataPost, setDataPost }) => {
                         gap="1rem">
                         {mapCards(responseData)}
                     </Flex>
-                    <HStack spacing={2} alignSelf="center">
-                        <Button name={'<'} onClick={clickSideButtons} > {'<'} </Button>
-                        {showButtons(responseData.answersPage, responseData.maxPages).map(
-                            (elem, i) => <Button key={i}
-                                name={elem}
-                                bg={responseData.answersPage !== elem ? "#E2E8F0" : "#FFFF01"}
-                                onClick={clickButtonNumbers}
-                            >
-                                {elem}
-                            </Button>
-                        )}
-                        <Button name={'>'} onClick={clickSideButtons}> {'>'} </Button>
-                    </HStack>
                 </Flex>
-                :
-                "loading"}
+                <Flex flexDirection={'column'} gap='1rem' w='100%' hidden={!loading} justify='center' align={'center'}>
+                <Skeleton startColor='gray' endColor='#FFFFFF' w={'92%'} h='250px' borderRadius={'0.375rem'}/>
+                <Skeleton startColor='gray' endColor='#FFFFFF' w={'92%'} h='250px' borderRadius={'0.375rem'}/>
+                <Skeleton startColor='gray' endColor='#FFFFFF' w={'92%'} h='250px' borderRadius={'0.375rem'}/>
+                <Skeleton startColor='gray' endColor='#FFFFFF' w={'92%'} h='250px' borderRadius={'0.375rem'}/>
+                <Skeleton startColor='gray' endColor='#FFFFFF' w={'92%'} h='250px' borderRadius={'0.375rem'}/>
+                </Flex>
+                {responseData.answersArr?.length ? <HStack spacing={2} alignSelf="center">
+                    <Button name={'<'} onClick={clickSideButtons} > {'<'} </Button>
+                    {showButtons(responseData.answersPage, responseData.maxPages).map(
+                        (elem, i) => <Button key={i}
+                            name={elem}
+                            bg={responseData.answersPage !== elem ? "#E2E8F0" : "#FFFF01"}
+                            onClick={clickButtonNumbers}
+                        >
+                            {elem}
+                        </Button>
+                    )}
+                    <Button name={'>'} onClick={clickSideButtons}> {'>'} </Button>
+                </HStack> : <Text fontWeight="bold"fontSize="2xl" textAlign="center" color='yellow' w='92%'>Todavía no se ha publicado ninguna respuesta</Text>}
             <Flex position="relative"
                 justifyContent="space-between"
                 alignItems="flex-end"

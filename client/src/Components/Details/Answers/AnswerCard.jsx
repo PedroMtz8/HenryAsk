@@ -11,7 +11,8 @@ import {
     Spinner,
     Box,
     Button,
-    useMediaQuery
+    useMediaQuery,
+    Skeleton
 } from "@chakra-ui/react";
 import { TriangleUpIcon, TriangleDownIcon } from "@chakra-ui/icons";
 import axios from "axios";
@@ -48,12 +49,12 @@ const AnswerCard = ({ answerCardData, setDataPost}) => {
     const [rolImg, setRolImg] = useState();
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [commentsLoading, setCommentLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         setNumberOfVotesAnswerd(parseInt(answerCardData.score))
         setNumberOfVotesUser(parseInt(answerCardData.user.score))
         setCurrentVote(Object.keys(answerCardData.voters).includes(user.uid) ? parseInt(answerCardData.voters[user.uid]) : 0)
-
     }, [answerCardData])
 
     useEffect(() => {
@@ -62,12 +63,14 @@ const AnswerCard = ({ answerCardData, setDataPost}) => {
             axios.get(API_URL + `/posts/${idPost}`, { headers: { Authorization: "Bearer " + token } })
                 .then(res => { setDataPost(res.data) })
         }
-
+        console.log(2)
     }, [numberOfVotesUser])
 
     useEffect(() => {
         (commentPage > 0) && setCommentLoading(true);
         (commentPage > 0) && getComment()
+        console.log('3')
+
     }, [commentPage])
 
     useEffect(() => {
@@ -76,6 +79,8 @@ const AnswerCard = ({ answerCardData, setDataPost}) => {
         if (answerCardData.user.rol === "Administrador") setRolImg(Admin);
         if (answerCardData.user.rol === "Estudiante") setRolImg(Student);
         if (answerCardData.user.rol === "Graduado") setRolImg(Graduate);
+        setLoading(false)
+        console.log('oliwis')
     }, [])
     
     const voteAnswer = async (type) => {
@@ -99,6 +104,7 @@ const AnswerCard = ({ answerCardData, setDataPost}) => {
 
     return (
         <>
+        <Skeleton startColor='gray' endColor='#FFFFFF' isLoaded={!loading} width='100%' h={loading ? '250px' : 'auto'} borderRadius={'0.375rem'}>
             <Grid position="relative"
                 templateRows={'repeat(2, min-content)'}
                 templateColumns={largerThan575px ? 'min-content 1fr 80px' : 'min-content 1fr'}
@@ -232,6 +238,7 @@ const AnswerCard = ({ answerCardData, setDataPost}) => {
                     </Flex>
                 </GridItem>
             </Grid>
+            </Skeleton>
         </>
     )
 }

@@ -14,7 +14,9 @@ import {
     Button,
     Input,
     Text,
-    useToast
+    useToast,
+    Flex,
+    Spinner
 } from '@chakra-ui/react'
 
 
@@ -25,6 +27,7 @@ const CreateComment = ({ isOpen, onClose, type, id }) => {
     const idParam = useParams().id
     const navigate = useNavigate()
     const toast = useToast()
+    const [loading, setLoading] = useState(false)
 
     const [comment, setComment] = useState("")
     const [enableSubmitButton, setEnableSubmitButton] = useState(true)
@@ -39,6 +42,7 @@ const CreateComment = ({ isOpen, onClose, type, id }) => {
 
         try {
 
+            setLoading(true)
             const res = await axios.post(API_URL + `/comment`, { body: comment, [`${type}_id`]: id }, { headers: { Authorization: "Bearer " + token } })
 
             toast({
@@ -64,6 +68,8 @@ const CreateComment = ({ isOpen, onClose, type, id }) => {
             onClose()
             setComment("")
 
+        } finally{
+            setLoading(false)
         }
 
     }
@@ -73,7 +79,7 @@ const CreateComment = ({ isOpen, onClose, type, id }) => {
             isOpen={isOpen}
             onClose={onClose}>
             <ModalOverlay />
-            <ModalContent>
+            <ModalContent alignSelf={'center'}>
                 <ModalHeader>Comentar {type === "post" ? "pregunta" : "respuesta"}</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
@@ -84,17 +90,33 @@ const CreateComment = ({ isOpen, onClose, type, id }) => {
                     {comment.length === 600 ? <Text py={".2rem"} color="orange.500">Límite de caracteres alcanzado {"(600)"}</Text> : ""}
                 </ModalBody>
                 <ModalFooter>
-                    <Button colorScheme='blue'
-                        mr={3}
-                        disabled={enableSubmitButton}
-                        onClick={sendComment}>
-                        Enviar
-                    </Button>
-                    <Button colorScheme='gray'
-                        mr={3}
-                        onClick={onClose}>
-                        Cancelar
-                    </Button>
+                    {
+                        loading
+                        ? <Flex justifyContent="flex-start" >
+                            <Spinner
+                                thickness='.7rem'
+                                speed='0.7s'
+                                emptyColor='gray.200'
+                                color='#FFFF01'
+                                w="5rem"
+                                h="5rem"
+                                mr='35px'
+                            />
+                          </Flex>
+                      : <Flex>
+                        <Button colorScheme='blue'
+                            mr={3}
+                            disabled={enableSubmitButton}
+                            onClick={sendComment}>
+                            Enviar
+                        </Button>
+                        <Button colorScheme='gray'
+                            mr={3}
+                            onClick={onClose}>
+                            Cancelar
+                        </Button>
+                      </Flex>
+                    }
                 </ModalFooter>
             </ModalContent>
         </Modal>

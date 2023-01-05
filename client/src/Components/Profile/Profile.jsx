@@ -65,6 +65,8 @@ const Profile = () => {
   const [openCrop, setOpenCrop] = useState(false);
   const [photoURL, setPhotoURL] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false)
+  const [rolLoading, setRolLoading] = useState(false)
 
   const toast = useToast()
 
@@ -115,6 +117,7 @@ const Profile = () => {
 
   const sendRequest = async () => {
     try {
+      setRolLoading(true)
       await axios.post(`${API_URL}/request/rol`, { rol },
         {
           headers:
@@ -146,6 +149,8 @@ const Profile = () => {
           isClosable: true
         })
       }
+    } finally{
+      setRolLoading(false)
     }
   }
 
@@ -176,6 +181,7 @@ const Profile = () => {
 
 
     try {
+      setSubmitLoading(true)
       let avatar = userData.avatar
       if (file) {
         avatar = await uploadFile(file, user.uid, userData.userSlack);
@@ -199,6 +205,7 @@ const Profile = () => {
         status: "error",
         isClosable: true
       })
+      setSubmitLoading(false)
     }
   }
 
@@ -249,7 +256,6 @@ const Profile = () => {
           borderRadius={"10px"}>
           <Flex
             flexDirection={{ base: "column", md: "initial", lg: "initial" }}
-          /* w={{base: "300px", sm: "300px", md: "inherit", lg: "inherit"}} */
           >
             <Center>
               <Flex
@@ -316,7 +322,7 @@ const Profile = () => {
                   </Flex>
                   :
                   <Text
-                    fontSize={{ base: "16px", sm: "20px", md: "24px", lg: "28px" }}
+                    fontSize={{ base: "14px", sm: "20px", md: "24px", lg: "28px" }}
                     fontWeight={"bold"}
                     textAlign={"start"}
                   >
@@ -410,10 +416,23 @@ const Profile = () => {
                         </ModalBody>
 
                         <ModalFooter>
-                          <Button onClick={sendRequest} backgroundColor={'black'} color='#E4E400' mr={3} _hover={{ backgroundColor: '#E4E400', color: 'black' }}>
-                            Enviar
-                          </Button>
-                          <Button onClick={onClose} _hover={{ background: "tomato" }}>Cancelar</Button>
+                          {rolLoading 
+                            ? <Flex justifyContent="center" >
+                              <Spinner
+                                  thickness='.7rem'
+                                  speed='1s'
+                                  color='#FFFF01'
+                                  w="5rem"
+                                  h="5rem"
+                              />
+                            </Flex>
+                            : <Flex>
+                              <Button onClick={sendRequest} backgroundColor={'black'} color='#E4E400' mr={3} _hover={{ backgroundColor: '#E4E400', color: 'black' }}>
+                                Enviar
+                              </Button>
+                              <Button onClick={onClose} _hover={{ background: "tomato" }}>Cancelar</Button>
+                            </Flex>
+                          }
                         </ModalFooter>
                       </ModalContent>
                     </ModalOverlay>
@@ -448,9 +467,24 @@ const Profile = () => {
                             </PopoverHeader>
 
                             <PopoverBody>
-                              <Flex justifyContent="flex-end" gap={2}>
-                                <Button colorScheme="blue" onClick={handleSubmit}>Confirmar</Button>
-                                <Button colorScheme="blue" onClick={cancelEdit}>Cancelar</Button>
+                              <Flex justifyContent={submitLoading ? "center" : 'flex-end'} gap={2}>
+                                {
+                                  submitLoading 
+                                  ? <Flex justifyContent="center" >
+                                      <Spinner
+                                          thickness='.7rem'
+                                          speed='0.7s'
+                                          emptyColor='gray.200'
+                                          color='#FFFF01'
+                                          w="5rem"
+                                          h="5rem"
+                                      />
+                                    </Flex>
+                                  : <Flex>
+                                      <Button colorScheme="blue" onClick={handleSubmit}>Confirmar</Button>
+                                      <Button colorScheme="blue" onClick={cancelEdit}>Cancelar</Button>
+                                    </Flex>
+                               }
                               </Flex>
                             </PopoverBody>
                           </PopoverContent>
