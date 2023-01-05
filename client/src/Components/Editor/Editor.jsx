@@ -329,11 +329,13 @@ const MenuBar = ({ editor, setUrl }) => {
 
 export default ({ post, setPost, setBodyText, setUrl }) => {
     const [HTML, setHTML] = useState('')
+    const [stopEdit, setStopEdit] = useState(true)
 
     //useEditor no recibe el estado post actualizado por lo que force una manera de obtener el estado actualizado
     useEffect(() => {
-        setPost({ ...post, body: HTML })
+        if(!stopEdit) setPost({ ...post, body: HTML })
     }, [HTML])
+
 
     const editor = useEditor({
         extensions: [
@@ -348,7 +350,9 @@ export default ({ post, setPost, setBodyText, setUrl }) => {
             })
         ],
         editable: true,
+        content: post.body,
         onUpdate({ editor }) {
+            setStopEdit(false)
             setBodyText(editor.getText())
             setHTML(editor.getHTML())
         },
