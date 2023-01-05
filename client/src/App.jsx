@@ -24,13 +24,14 @@ function App() {
         <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route
           path={"*"}
-          element={<ErrorPage numb_err="404" error="URL inexistente." />}
-        />
+          element={<ErrorPage numb_err="404" error="URL inexistente." redirect="/home" />}
+          />
         // Rutas de admin
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<Home />} />
           <Route path="/home/post/:id" element={<Details />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path='/not-admin' element={<ErrorPage numb_err="401" error="No eres administrador." redirect="/home" />} />
         </Route>
         <Route element={<ProtectedRouteAdmin />}>
           <Route path="/admin" element={<HomeAdmin />} />
