@@ -12,6 +12,7 @@ const PaginatedButtons = () => {
 
     const currentPage = useSelector((state) => state.paginated.currentPage);
     const maxPages = useSelector((state) => state.paginated.maxPages);
+    const currentPosts = useSelector((state) => state.paginated.currentPosts)
 
     const clickButtonNumbers = (e) => {
 
@@ -29,21 +30,28 @@ const PaginatedButtons = () => {
             window.scroll(0, 0)
         }
     }
-    
+
     return (
-        <HStack spacing={2} >
-            <Button key={'<'} name={'<'} onClick={clickSideButtons} > {'<'} </Button>
-            {showButtons(currentPage, maxPages).map(
-                (elem, i ) => <Button key={i}
-                                      name={elem}
-                                      bg={currentPage !== elem? "#E2E8F0" : "#FFFF01"}
-                                      onClick={clickButtonNumbers} 
-                                      > 
-                                      {elem} 
-                              </Button>
-            )}
-            <Button key={'>'} name={'>'} onClick={clickSideButtons}> {'>'} </Button>
-        </HStack>
+        <>
+            {(currentPosts.length <= 0)
+                ?
+                null
+                :
+                <HStack spacing={2} >
+                    <Button key={'<'} name={'<'} onClick={clickSideButtons} > {'<'} </Button>
+                    {showButtons(currentPage, maxPages).map(
+                        (elem, i) => <Button key={i}
+                            name={elem}
+                            bg={currentPage !== elem ? "#E2E8F0" : "#FFFF01"}
+                            onClick={clickButtonNumbers}
+                        >
+                            {elem}
+                        </Button>
+                    )}
+                    <Button key={'>'} name={'>'} onClick={clickSideButtons}> {'>'} </Button>
+                </HStack>
+            }
+        </>
     )
 }
 

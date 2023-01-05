@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { savePosts, changePage } from "../../../slices/paginatedSlice";
+import { savePosts, changePage, postLoading } from "../../../slices/paginatedSlice";
 import { Flex, SimpleGrid, Skeleton } from "@chakra-ui/react";
 import CardsHome from "../../Card/CardsHome";
 import PaginatedButtons from "./PaginatedButtons/PaginatedButtons.jsx";
@@ -17,10 +17,9 @@ const Paginated = () => {
 
   const paginated = useSelector((state) => state.paginated);
 
-  const [loadingPosts, setLoadingPosts] = useState(true);
-
   useEffect(() => {
     const getPosts = async () => {
+      dispatch(postLoading(true));
       const res = await axios.get(
         API_URL +
         `/posts?page=1&q=${paginated.titleFilter}&module=${paginated.moduleFilter}&tags=${paginated.tagsFilter}&sort=${paginated.order}`,
@@ -29,7 +28,6 @@ const Paginated = () => {
 
       dispatch(savePosts(res.data));
       dispatch(changePage('1'));
-      setLoadingPosts(false);
     };
 
     getPosts();
@@ -41,6 +39,8 @@ const Paginated = () => {
 
   useEffect(() => {
     const getPosts = async () => {
+
+      dispatch(postLoading(true));
       const res = await axios.get(
         API_URL +
         `/posts?page=${paginated.currentPage}&q=${paginated.titleFilter}&module=${paginated.moduleFilter}&tags=${paginated.tagsFilter}&sort=${paginated.order}`,
@@ -48,7 +48,6 @@ const Paginated = () => {
       );
 
       dispatch(savePosts(res.data));
-      setLoadingPosts(false);
     };
 
     getPosts();
@@ -68,7 +67,7 @@ const Paginated = () => {
       gap="1rem"
     >
       <SearchBar />
-      {loadingPosts ?
+      {paginated.loading?
         <SimpleGrid columns={{base: 1, lg: 2}} spacing={5} w={{ base: '90%', lg: '70%' }}>
           <Skeleton borderRadius={5} h={100}>x</Skeleton>
           <Skeleton borderRadius={5} h={100}>x</Skeleton>
