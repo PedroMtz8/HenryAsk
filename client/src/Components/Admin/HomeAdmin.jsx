@@ -15,8 +15,6 @@ const HomeAdmin = () => {
   const currentUser = useSelector((state) => state.user.user);
   const page = useSelector((state) => state.user.page);
 
-  console.log(currentUser);
-
   useEffect(() => {
     dispatch(getRequest({ token, page }));
   }, [dispatch, page]);

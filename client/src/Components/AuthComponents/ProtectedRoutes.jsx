@@ -6,6 +6,7 @@ import { Flex, Spinner } from "@chakra-ui/react";
 
 export default function ProtectedRoute({ children }) {
     const { user, loadingUser } = useAuth()
+    console.log(user)
     if (loadingUser) {
         return (
             <Flex justifyContent="center" alignItems="center" h="100vh" w="100vw" bg='black'>

@@ -24,8 +24,6 @@ const Sidebar = () => {
   const { user } = useAuth();
   let token = user.accessToken;
 
-  const requests = useSelector((state) => state.user.requests);
-
   const currentUser = useSelector((state) => state.user.user);
 
   useEffect(() => {
@@ -71,7 +69,7 @@ const Sidebar = () => {
         <NavItem
           navSize={navSize}
           icon={FiBriefcase}
-          title={`Peticiones (${requests.length})`}
+          title={`Peticiones`}
           url="/admin/requests"
         />
       </Flex>

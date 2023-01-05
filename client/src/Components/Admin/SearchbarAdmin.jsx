@@ -21,8 +21,8 @@ const SearchbarAdmin = ({
   op3,
   op4,
   op5,
-  isAccounts,
   handleChangeFilter,
+  setFilter
 }) => {
   const dispatch = useDispatch();
 
@@ -39,6 +39,7 @@ const SearchbarAdmin = ({
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    setFilter('')
     dispatch(getByMail({ mail: search.toLowerCase(), page, token }));
   };
 
@@ -74,16 +75,12 @@ const SearchbarAdmin = ({
           <HStack w={{ base: "40%", md: "30%", lg: "60%" }}>
             <Text w="4rem"> {name}:</Text>
             <Select onChange={handleChangeFilter} borderRadius="10rem">
-              <option value={"all"}>----</option>
+              <option value={""}>----</option>
               <option value={op1}> {op1} </option>
               <option value={op2}> {op2} </option>
-              {isAccounts && (
-                <>
-                  <option value={op3}> {op3} </option>
-                  <option value={op4}> {op4} </option>
-                  <option value={op5}> {op5} </option>
-                </>
-              )}
+              <option value={op3}> {op3} </option>
+              <option value={op4}> {op4} </option>
+              <option value={op5}> {op5} </option>
             </Select>
           </HStack>
         </HStack>

@@ -14,7 +14,6 @@ function checkFields(fields) {
                 if(!roles.includes(value)) return 'Rol invalido'
                 break;
             case 'approve':
-                if(!value) return 'Debe especificar el tipo de aprobado'
                 if(value !== true && value !== false) return 'approve debe ser true o false'
                 break;
             case 'type':
