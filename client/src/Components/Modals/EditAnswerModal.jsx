@@ -12,6 +12,8 @@ import {
     ModalFooter,
     ModalBody,
     ModalCloseButton,
+    Flex,
+    Spinner
 } from "@chakra-ui/react";
 import axios from 'axios'
 import API_URL from '../../config/environment'
@@ -26,6 +28,8 @@ function EditAnswerModal({  answerData }) {
     const { user, deleteFile } = useAuth()
     const [url, setUrl] = useState(null)
     const toast = useToast()
+    const [loading, setLoading] = useState(false)
+
 
     useEffect(() => {
         let disabled = false, error = ''
@@ -51,9 +55,8 @@ function EditAnswerModal({  answerData }) {
 
         try {
 
-            console.log
+            setLoading(true)
             await axios.put(`${API_URL}/answer`, { answer_id: answerData._id, body }, { headers: { Authorization: "Bearer " + user.accessToken } })
-
             onClose()
 
             toast({
@@ -75,6 +78,8 @@ function EditAnswerModal({  answerData }) {
                 duration: 4000,
                 isClosable: true,
             })
+        } finally{
+            setLoading(false)
         }
 
     }
@@ -108,18 +113,34 @@ function EditAnswerModal({  answerData }) {
             <Text color={'red'}>{error}</Text>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={submitAnswer} bg='#ffff01' _hover={{ background: "black", color: "white" }} boxShadow={"0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);"} mr={3} disabled={disabled}>
-              Enviar
-            </Button>
-            <Button 
-            _hover={{ background: "tomato" }} 
-            onClick={() => {
-              url ? deleteFile(url) : null
-              setUrl(null)
-              setBody('')
-              onClose()}}>
-              Cancelar
-            </Button>
+            {
+                loading 
+                ? <Flex justifyContent="flex-start" >
+                    <Spinner
+                        thickness='.7rem'
+                        speed='0.7s'
+                        emptyColor='gray.200'
+                        color='#FFFF01'
+                        w="5rem"
+                        h="5rem"
+                        mr='35px'
+                    />
+                  </Flex>
+                : <Flex>
+                    <Button onClick={submitAnswer} bg='#ffff01' _hover={{ background: "black", color: "white" }} boxShadow={"0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);"} mr={3} disabled={disabled}>
+                    Enviar
+                    </Button>
+                    <Button 
+                    _hover={{ background: "tomato" }} 
+                    onClick={() => {
+                    url ? deleteFile(url) : null
+                    setUrl(null)
+                    setBody('')
+                    onClose()}}>
+                    Cancelar
+                    </Button>
+                </Flex>
+            }
           </ModalFooter>
         </ModalContent>
       </Modal>

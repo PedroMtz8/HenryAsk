@@ -20,7 +20,9 @@ import {
     GridItem,
     Button,
     Text,
-    useToast
+    useToast,
+    Flex,
+    Spinner
 } from "@chakra-ui/react";
 import axios from 'axios'
 import API_URL from '../../../config/environment'
@@ -30,6 +32,8 @@ function AnswerEditor({ post_id, responseData, setResponseData, token, scrollFro
     const [text, setText] = useState('')
     const [error, setError] = useState('')
     const [disabled, setDisabled] = useState(true)
+    const [loadingImage, setLoadingImage] = useState(false)
+    const [loadingSubmit, setLoadingSubmit] = useState(false)
     const editor = useEditor({
         extensions: [
             StarterKit,
@@ -70,6 +74,7 @@ function AnswerEditor({ post_id, responseData, setResponseData, token, scrollFro
 
         try {
 
+            setLoadingSubmit(true)
             await axios.post(`${API_URL}/answer`, { post_id, body }, { headers: { Authorization: "Bearer " + token } })
             const response = await axios.get(API_URL + `/answer/post?page=${responseData.answersPage}&sort=${responseData.answersSort}&post_id=${post_id}`, { headers: { Authorization: "Bearer " + token } })
             setResponseData({ ...responseData, answersArr: response.data.foundAnswers, maxPages: response.data.maxPages })
@@ -90,6 +95,8 @@ function AnswerEditor({ post_id, responseData, setResponseData, token, scrollFro
                 duration: 4000,
                 isClosable: true,
             })
+        } finally{
+            setLoadingSubmit(false)
         }
 
     }
@@ -112,14 +119,34 @@ function AnswerEditor({ post_id, responseData, setResponseData, token, scrollFro
 
         >
             <GridItem area={'menu'} >
-                <MenuBar editor={editor} />
+                <MenuBar editor={editor} setLoadingImage={setLoadingImage} />
             </GridItem >
             <GridItem area={'editor'}  >
-                <EditorContent editor={editor} />
+                {loadingImage 
+                ? <Flex justifyContent={'center'} alignItems='center' position={'relative'} top='10px'>
+                    <Spinner  color='#FFFF01' size='lg'/>
+                </Flex>
+                : null}
+                <EditorContent editor={editor} hidden={loadingImage} />
                 <Text color={'red'}>{error}</Text>
             </GridItem >
             <GridItem area={'button'}  >
-                <Button bg="#FFFF01" onClick={submitAnswer} disabled={disabled}>Responder</Button>
+                { 
+                    loadingSubmit 
+                    ? <Flex justifyContent="flex-start" >
+                        <Spinner
+                            thickness='.7rem'
+                            speed='0.7s'
+                            emptyColor='gray.200'
+                            color='#FFFF01'
+                            w="5rem"
+                            h="5rem"
+                            mr='35px'
+                        />
+                      </Flex>
+                    : <Button bg="#FFFF01" onClick={submitAnswer} disabled={disabled}>Responder</Button>
+                }
+                
             </GridItem >
         </Grid>
     )
@@ -127,7 +154,7 @@ function AnswerEditor({ post_id, responseData, setResponseData, token, scrollFro
 
 export default AnswerEditor
 
-const MenuBar = ({ editor, scrollTo }) => {
+const MenuBar = ({ editor, setLoadingImage }) => {
     const hiddenFileInput = useRef(null);
     const { user, uploadFile } = useAuth()
 
@@ -135,8 +162,10 @@ const MenuBar = ({ editor, scrollTo }) => {
         const fileUploaded = event.target.files[0];
         uploadFile(fileUploaded, user.uid).
             then(url => {
+                setLoadingImage(false)
                 editor.chain().focus().setImage({ src: url, alt: 'Imagen no encontrada :(' }).run()
             })
+        setLoadingImage(true)
     };
 
     if (!editor) {
