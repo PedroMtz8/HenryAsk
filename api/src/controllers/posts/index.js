@@ -114,6 +114,7 @@ const getPostDetail = async (req, res) => {
     try {
         const post = await Post.findById(req.params.id)
             .populate('user', { country: 0, status: 0, mail: 0 })
+        if(!post) return res.status(404).json({message: 'Post no encontrado!'})
         res.json({ message: 'Post encontrado!', post })
 
     } catch (error) {

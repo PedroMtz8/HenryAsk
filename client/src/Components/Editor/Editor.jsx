@@ -18,9 +18,10 @@ import { RiArrowGoForwardFill } from "react-icons/ri"
 import { useAuth } from '../AuthComponents/AuthContext'
 import { useSelector } from 'react-redux'
 import { v4 } from "uuid"
+import { Flex, Spinner } from '@chakra-ui/react'
 
 
-const MenuBar = ({ editor, setUrl }) => {
+const MenuBar = ({ editor, setUrl, setLoadingImage }) => {
     const hiddenFileInput = useRef(null);
     const { user, uploadFile } = useAuth()
     const userData = useSelector(state => state.user.user)
@@ -32,8 +33,10 @@ const MenuBar = ({ editor, setUrl }) => {
         uploadFile(fileUploaded, user.uid, userData.userSlack, uid).
             then(url => {
                 setUrl(url)
+                setLoadingImage(false)
                 editor.chain().focus().setImage({ src: url, alt: 'Imagen no encontrada :(' }).run()
             })
+        setLoadingImage(true)
     };
 
     if (!editor) {
@@ -330,6 +333,7 @@ const MenuBar = ({ editor, setUrl }) => {
 export default ({ post, setPost, setBodyText, setUrl }) => {
     const [HTML, setHTML] = useState('')
     const [stopEdit, setStopEdit] = useState(true)
+    const [loadingImage, setLoadingImage] = useState(false)
 
     //useEditor no recibe el estado post actualizado por lo que force una manera de obtener el estado actualizado
     useEffect(() => {
@@ -358,10 +362,16 @@ export default ({ post, setPost, setBodyText, setUrl }) => {
         },
     })
 
+
     return (
         <div>
-            <MenuBar editor={editor} setUrl={setUrl} />
-            <EditorContent editor={editor} />
+            <MenuBar editor={editor} setUrl={setUrl} setLoadingImage={setLoadingImage}/>
+           {loadingImage 
+            ? <Flex justifyContent={'center'} alignItems='center' position={'relative'} top='10px'>
+                <Spinner  color='#FFFF01' size='lg'/>
+             </Flex>
+            : null}
+            <EditorContent editor={editor} hidden={loadingImage}/>
         </div>
     )
 }

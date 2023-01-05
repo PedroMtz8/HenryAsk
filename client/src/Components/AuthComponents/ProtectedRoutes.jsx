@@ -12,7 +12,6 @@ export default function ProtectedRoute({ children }) {
                 <Spinner
                     thickness='0.8rem'
                     speed='0.65s'
-                    emptyColor='gray.200'
                     color='#FFFF01'
                     w="10rem"
                     h="10rem"

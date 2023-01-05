@@ -15,7 +15,8 @@ import {
   Select,
   Box,
   Flex,
-  useToast
+  useToast,
+  Spinner
 } from "@chakra-ui/react"
 import { useState } from "react"
 import { useRef } from "react"
@@ -50,6 +51,7 @@ export default function QuestionModal({ title }) {
   const finalRef = useRef(null)
 
   const toast = useToast()
+  const [loading, setLoading] = useState(false)
 
   const handleChange = (e) => {
     setPost({
@@ -62,7 +64,7 @@ export default function QuestionModal({ title }) {
     e.preventDefault()
 
     try {
-
+      setLoading(true)
       let token = user.accessToken
       await axios.post(API_URL + "/posts", post, { headers: { Authorization: "Bearer " + token } })
       onClose()
@@ -85,7 +87,9 @@ export default function QuestionModal({ title }) {
         isClosable: true,
       })
 
-    }
+    } finally{
+      setLoading(false)
+    } 
   }
 
   useEffect(() => {
@@ -194,15 +198,30 @@ export default function QuestionModal({ title }) {
           </ModalBody>
 
           <ModalFooter>
-            <Button onClick={handleSubmit} bg='#ffff01' _hover={{ background: "black", color: "white" }} boxShadow={"0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);"} mr={3} disabled={disabled}>
-              Enviar
-            </Button>
-            <Button _hover={{ background: "tomato" }} onClick={() => {
-              url ?
-                deleteFile(url) : null
-              setUrl(null)
-              onClose()
-            }}>Cancelar</Button>
+            {loading 
+            ? <Flex justifyContent="flex-start" >
+              <Spinner
+                  thickness='.7rem'
+                  speed='0.7s'
+                  emptyColor='gray.200'
+                  color='#FFFF01'
+                  w="5rem"
+                  h="5rem"
+                  mr='35px'
+              />
+              </Flex>
+            : <Flex>
+                <Button onClick={handleSubmit} bg='#ffff01' _hover={{ background: "black", color: "white" }} boxShadow={"0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);"} mr={3} disabled={disabled}>
+                Enviar
+                </Button>
+                <Button _hover={{ background: "tomato" }} onClick={() => {
+                  url ?
+                    deleteFile(url) : null
+                  setUrl(null)
+                  onClose()
+                }}>Cancelar</Button>
+            </Flex>
+           }
           </ModalFooter>
         </ModalContent>
       </Modal>
