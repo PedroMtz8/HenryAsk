@@ -9,7 +9,8 @@ const initialState = {
   order: "newest",
   titleFilter: "",
   tagsFilter: "",
-  moduleFilter: ""
+  moduleFilter: "",
+  loading: false
 };
 
 export const paginatedSlice = createSlice({
@@ -19,6 +20,7 @@ export const paginatedSlice = createSlice({
     savePosts: (state, action) => {
       state.currentPosts = action.payload.foundPosts
       state.maxPages = action.payload.maxPages
+      state.loading = false
     },
     incrementPage: (state) => {
       state.currentPage += 1
@@ -41,6 +43,9 @@ export const paginatedSlice = createSlice({
     changeTitleFilter: (state, action) => {
       state.titleFilter = action.payload
     },
+    postLoading: (state, action) => {
+      state.loading = action.payload
+    }
   },
   extraReducers: (builder) => { },
 });
@@ -52,7 +57,8 @@ export const { savePosts,
   changeModuleFilter, 
   changeOrder,
   addFilterByTags,
-  changeTitleFilter
+  changeTitleFilter,
+  postLoading
 } = paginatedSlice.actions
 
 export default paginatedSlice.reducer;
