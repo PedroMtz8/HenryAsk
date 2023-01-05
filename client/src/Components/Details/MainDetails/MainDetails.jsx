@@ -4,7 +4,7 @@ import {
     Text,
     Image,
     Box,
-    Stack,
+    Spinner,
     useDisclosure,
     useMediaQuery,
     Grid,
@@ -45,6 +45,7 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData }) => {
     const [showComments, setShowComments] = useState(false)
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [rolImg, setRolImg] = useState();
+    const [commentsLoading, setCommentLoading] = useState(false)
 
     useEffect(() => {
 
@@ -58,6 +59,7 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData }) => {
     }, [numberOfVotesUser])
 
     useEffect(() => {
+        (commentPage > 0) && setCommentLoading(true);
         (commentPage > 0) && getComment()
     }, [commentPage])
 
@@ -75,7 +77,9 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData }) => {
             { headers: { Authorization: "Bearer " + token } })
 
         setPostComments([...postComments, ...res.data.comments])
-        setRemainingComments(res.data.numberOfCommentsLeft)
+        setRemainingComments(res.data.numberOfCommentsLeft);
+        (commentPage <= 1) && setShowComments(true)
+        setCommentLoading(false)
 
     }
 
@@ -100,7 +104,7 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData }) => {
 
     return (
         <>
-          <Grid position="relative"
+            <Grid position="relative"
                 templateRows={'repeat(3, min-content)'}
                 templateColumns={'min-content 1fr'}
                 boxSize="100%"
@@ -147,13 +151,13 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData }) => {
                         ml='10px'
                         mr='10px'>
                         <Text >
-                        {largerThan575px ? `${dataPost.post.user.userSlack} • ` : `${dataPost.post.user.userSlack}`}
+                            {largerThan575px ? `${dataPost.post.user.userSlack} • ` : `${dataPost.post.user.userSlack}`}
                         </Text>
                         <Flex gap={'0.4rem'} alignItems='center'>
-                            <Text cursor="pointer" fontSize={{base: '11px', sm: '12px'}}>
+                            <Text cursor="pointer" fontSize={{ base: '11px', sm: '12px' }}>
                                 <Tooltip label={new Date(dataPost.post.createdAt).toLocaleString()}
                                     placement='top'>
-                                    {largerThan575px ?  `${dif}` : `${dif} •`}
+                                    {largerThan575px ? `${dif}` : `${dif} •`}
                                 </Tooltip>
                             </Text>
                             <Image w="1.4rem" alignSelf="flex-start"
@@ -164,20 +168,20 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData }) => {
                         </Flex>
                     </Flex>
                     <Flex pl="10px">
-                            <Text
-                                fontSize={'1.2rem'}
-                                as="h2"
-                                wordBreak={'break-word'}>
-                                {dataPost.post.title}
-                            </Text>
+                        <Text
+                            fontSize={'1.2rem'}
+                            as="h2"
+                            wordBreak={'break-word'}>
+                            {dataPost.post.title}
+                        </Text>
                     </Flex>
                     <DetailBody body={dataPost.post.body} />
                 </GridItem>
                 <GridItem gridArea={'2 / 2 / 3 / 3'}>
-                <Flex justifyContent="flex-end" flexWrap={'wrap'}>
+                    <Flex justifyContent="flex-end" flexWrap={'wrap'}>
                         <Flex gap={{ base: '0.5rem', sm: '1rem' }}
-                        justifyContent='flex-end'
-                        flexWrap={'wrap'}
+                            justifyContent='flex-end'
+                            flexWrap={'wrap'}
                             mr={{ base: '0.2rem', sm: '0rem' }}>
                             {
                                 dataPost.post.tags.map((e, i) =>
@@ -201,7 +205,7 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData }) => {
                             color="gray.600">
                             {(dataPost.post.numberComments !== 0) ? ((!showComments) ?
                                 <Text cursor="pointer"
-                                    onClick={e => { commentPage === 0 && setCommentPage(1); setShowComments(true) }}>
+                                    onClick={e => { commentPage === 0 && setCommentPage(1); commentPage > 0 && setShowComments(true) }}>
                                     Comentarios: {`(${dataPost.post.numberComments})`} <TriangleDownIcon />
                                 </Text>
                                 :
@@ -215,7 +219,7 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData }) => {
                         <>
                             <Text color="blue.600"
                                 cursor="pointer"
-                                fontSize={{base: '12px', sm: '16px'}}
+                                fontSize={{ base: '12px', sm: '16px' }}
                                 onClick={onOpen}>Comentar pregunta</Text>
                             <CreateComment isOpen={isOpen}
                                 onClose={onClose}
@@ -233,10 +237,21 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData }) => {
                             </Flex>)
                         }
                         {
-                            (showComments && remainingComments > 0) &&
+                            commentsLoading &&
+                            <Box alignSelf="center">
+                                <Spinner color='#3195DB'
+                                    thickness='4px'
+                                    speed='0.65s'
+                                    emptyColor='gray.200'
+                                    w="1.15rem"
+                                    h="1.15rem" />
+                            </Box>
+                        }
+                        {
+                            (showComments && remainingComments > 0 && !commentsLoading) &&
                             <Flex color="blue.500"
-                                px="1rem"
-                                pb="1rem">
+                                fontSize="1rem"
+                                px="1rem">
                                 <Text
                                     cursor="pointer"
                                     onClick={e => setCommentPage(commentPage + 1)}>
@@ -247,7 +262,7 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData }) => {
                     </Flex>
                 </GridItem>
             </Grid>
-        </>      
+        </>
     )
 }
 

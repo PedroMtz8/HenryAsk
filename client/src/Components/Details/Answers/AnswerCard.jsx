@@ -8,7 +8,9 @@ import {
     Text,
     useDisclosure,
     Tooltip,
-    useMediaQuery
+    useMediaQuery,
+    Spinner,
+    Box
 } from "@chakra-ui/react";
 import { TriangleUpIcon, TriangleDownIcon } from "@chakra-ui/icons";
 import axios from "axios";
@@ -43,6 +45,7 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
     const [dif, setDif] = useState(moment(answerCardData.createdAt).startOf('seconds').fromNow())
     const [rolImg, setRolImg] = useState();
     const { isOpen, onOpen, onClose } = useDisclosure()
+    const [commentsLoading, setCommentLoading] = useState(false)
 
     useEffect(() => {
         setNumberOfVotesAnswerd(parseInt(answerCardData.score))
@@ -60,7 +63,10 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
 
     }, [numberOfVotesUser])
 
-    useEffect(() => { (commentPage > 0) && getComment() }, [commentPage])
+    useEffect(() => {
+        (commentPage > 0) && setCommentLoading(true);
+        (commentPage > 0) && getComment()
+    }, [commentPage])
 
     useEffect(() => {
         if (answerCardData.user.rol === "Henry Hero") setRolImg(HeroOrTA);
@@ -82,8 +88,10 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
     const getComment = async () => {
 
         const res = await axios.get(API_URL + `/comment/answer?answer_id=${answerCardData._id}&page=${commentPage}`, { headers: { Authorization: "Bearer " + token } })
-        setCommentAnswers([...commentAnswers, ...res.data.comments])
-        setRemainingComments(res.data.numberOfCommentsLeft)
+        setCommentAnswers([...commentAnswers, ...res.data.comments]);
+        setRemainingComments(res.data.numberOfCommentsLeft);
+        (commentPage <= 1) && setShowComments(true);
+        setCommentLoading(false)
 
     }
 
@@ -109,17 +117,17 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
                     />
                     <Image w={largerThan575px ? "2.8rem" : '2.3rem'} mt=".5rem"
                         src={rolImg} alt="userImage" />
-                    {!largerThan575px ? 
-                    <Flex flexDirection='column' alignItems={'center'} justifyContent='flex-start' fontSize="2rem">
-                        <TriangleUpIcon
-                            color={currentVote === 1 ? "green" : "gray"}
-                            onClick={e => (user.uid !== answerCardData.user._id) ? (currentVote === 1 ? voteAnswer(0) : voteAnswer(1)) : null} />
-                        <Text>{numberOfVotesAnswerd}</Text>
-                        <TriangleDownIcon
-                            color={currentVote === -1 ? "red" : "gray"}
-                            onClick={e => (user.uid !== answerCardData.user._id) ? (currentVote === -1 ? voteAnswer(0) : voteAnswer(-1)) : null} />
-                    </Flex>
-                    : null}
+                    {!largerThan575px ?
+                        <Flex flexDirection='column' alignItems={'center'} justifyContent='flex-start' fontSize="2rem">
+                            <TriangleUpIcon
+                                color={currentVote === 1 ? "green" : "gray"}
+                                onClick={e => (user.uid !== answerCardData.user._id) ? (currentVote === 1 ? voteAnswer(0) : voteAnswer(1)) : null} />
+                            <Text>{numberOfVotesAnswerd}</Text>
+                            <TriangleDownIcon
+                                color={currentVote === -1 ? "red" : "gray"}
+                                onClick={e => (user.uid !== answerCardData.user._id) ? (currentVote === -1 ? voteAnswer(0) : voteAnswer(-1)) : null} />
+                        </Flex>
+                        : null}
                 </GridItem >
                 <GridItem gridArea={'1 / 2 / 2 / 3'} direction="column" minWidth={0}>
                     <Flex alignItems={largerThan575px ? `center` : `flex-start`}
@@ -130,13 +138,13 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
                         ml='10px'
                         mr='10px'>
                         <Text >
-                        {largerThan575px ? `${answerCardData.user.userSlack} • ` : `${answerCardData.user.userSlack}`}
+                            {largerThan575px ? `${answerCardData.user.userSlack} • ` : `${answerCardData.user.userSlack}`}
                         </Text>
                         <Flex gap={'0.4rem'} alignItems='center'>
-                            <Text cursor="pointer" fontSize={{base: '11px', sm: '12px'}}>
+                            <Text cursor="pointer" fontSize={{ base: '11px', sm: '12px' }}>
                                 <Tooltip label={new Date(answerCardData.createdAt).toLocaleString()}
                                     placement='top'>
-                                    {largerThan575px ?  `${dif}` : `${dif} •`}
+                                    {largerThan575px ? `${dif}` : `${dif} •`}
                                 </Tooltip>
                             </Text>
                             <Image w="1.4rem" alignSelf="flex-start"
@@ -158,52 +166,63 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
                         color={currentVote === -1 ? "red" : "gray"}
                         onClick={e => (user.uid !== answerCardData.user._id) ? (currentVote === -1 ? voteAnswer(0) : voteAnswer(-1)) : null} />
                 </GridItem>
-                : null}
-                <GridItem gridArea={largerThan575px ? '2 / 1 / 3 / 4' : '2 / 1 / 3 / 4' }>
-                <Flex w="100%" justifyContent="space-between">
-                    <Flex fontSize=".8rem"
-                        color="gray.600">
-                        {(!showComments) ?
-                            <Text cursor="pointer"
-                                onClick={e => { commentPage === 0 && setCommentPage(1); setShowComments(true) }}>
-                                Comentarios {` (${answerCardData.numberComments}) `} <TriangleDownIcon />
+                    : null}
+                <GridItem gridArea={largerThan575px ? '2 / 1 / 3 / 4' : '2 / 1 / 3 / 4'}>
+                    <Flex w="100%" justifyContent="space-between">
+                        <Flex fontSize=".8rem"
+                            color="gray.600">
+                            {(!showComments) ?
+                                <Text cursor="pointer"
+                                    onClick={e => { commentPage === 0 && setCommentPage(1); commentPage > 0 && setShowComments(true) }}>
+                                    Comentarios {` (${answerCardData.numberComments}) `} <TriangleDownIcon />
+                                </Text>
+                                :
+                                <Text cursor="pointer"
+                                    onClick={e => { setShowComments(false) }}>
+                                    Comentarios {` (${answerCardData.numberComments}) `} <TriangleUpIcon />
+                                </Text>}
+                        </Flex>
+                        <>
+                            <Text color="blue.600"
+                                cursor="pointer"
+                                fontSize={{ base: '12px', sm: '16px' }}
+                                onClick={onOpen}>
+                                Comentar respuesta
                             </Text>
-                            :
-                            <Text cursor="pointer"
-                                onClick={e => { setShowComments(false) }}>
-                                Comentarios {` (${answerCardData.numberComments}) `} <TriangleUpIcon />
-                            </Text>}
+                            <CreateComment isOpen={isOpen} onClose={onClose} type={"answer"} id={answerCardData._id} />
+                        </>
                     </Flex>
-                    <>
-                        <Text color="blue.600"
-                            cursor="pointer"
-                            fontSize={{base: '12px', sm: '16px'}}
-                            onClick={onOpen}>
-                            Comentar respuesta
-                        </Text>
-                        <CreateComment isOpen={isOpen} onClose={onClose} type={"answer"} id={answerCardData._id} />
-                    </>
-                </Flex>
-                <Flex flexDirection='column'>
-                {
-                    (showComments) && commentAnswers.map((elem, i, arr) =>
-                        <Flex key={i} w="100%">
-                            <Comments dataComment={elem} />
-                        </Flex>)
-                }
-                {
-                    (showComments && remainingComments > 0 && commentAnswers.length > 0) &&
-                    <Flex color="blue.500"
-                        fontSize=".8rem"
-                        w="100%"
-                        pb=".5rem">
-                        <Text cursor="pointer"
-                            onClick={e => setCommentPage(commentPage + 1)}>
-                            Ver más
-                        </Text>
+                    <Flex flexDirection='column'>
+                        {
+                            (showComments) && commentAnswers.map((elem, i, arr) =>
+                                <Flex key={i} w="100%">
+                                    <Comments dataComment={elem} />
+                                </Flex>)
+                        }
+                        {
+                            commentsLoading &&
+                            <Box alignSelf="center">
+                                <Spinner color='#3195DB'
+                                    thickness='4px'
+                                    speed='0.65s'
+                                    emptyColor='gray.200'
+                                    w="1.15rem"
+                                    h="1.15rem" />
+                            </Box>
+                        }
+                        {
+                            (showComments && remainingComments > 0 && !commentsLoading) &&
+                            <Flex color="blue.500"
+                                fontSize=".8rem"
+                                w="100%"
+                                pb=".5rem">
+                                <Text cursor="pointer"
+                                    onClick={e => setCommentPage(commentPage + 1)}>
+                                    Ver más
+                                </Text>
+                            </Flex>
+                        }
                     </Flex>
-                }
-                </Flex>
                 </GridItem>
             </Grid>
         </>
