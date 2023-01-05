@@ -1,9 +1,8 @@
-import { Divider, Flex, ListItem, Text, UnorderedList } from "@chakra-ui/react";
+import { Flex, Highlight, Text, Box } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getRequest } from "../../slices/userSlice";
 import { useAuth } from "../AuthComponents/AuthContext";
-import ErrorPage from "./ErrorPage/ErrorPage";
 import Sidebar from "./Sidebar";
 
 const HomeAdmin = () => {
@@ -20,44 +19,65 @@ const HomeAdmin = () => {
   }, [dispatch, page]);
 
   return (
-    <Flex>
+    <Flex position="relative"
+      bg="#1F1F1F"
+      minH="100vh"
+      flexDirection={{ base: "column", sm: 'row' }}>
       <Sidebar />
-      <div style={{ margin: "20px auto" }}>
-        <Text
-          as="b"
-          textTransform="uppercase"
-          fontSize={{ base: "24px", md: "30px", lg: "40px" }}
-        >
-          ¡Bienvenido al panel de administrador: {currentUser?.userSlack}!
-        </Text>
-        <Divider m="20px" />
-        <Text>
-          Desde aquí podremos tener un seguimiento de lo que está pasando en la
-          aplicación.
-          <p style={{ marginTop: "20px", marginBottom: "10px" }}>
-            Tenemos 3 apartados:
-          </p>
-          <UnorderedList>
-            <ListItem>
-              <Text>
-                <i>Tablero:</i> donde estamos ahora mismo.
-              </Text>
-            </ListItem>
-            <ListItem>
-              <Text>
-                <i>Cuentas:</i> tabla con algunos datos de todas las cuentas
-                registradas.
-              </Text>
-            </ListItem>
-            <ListItem>
-              <Text>
-                <i>Peticiones:</i> tabla con peticiones del usuario por
-                responder.
-              </Text>
-            </ListItem>
-          </UnorderedList>
-        </Text>
-      </div>
+      <Flex position="relative"
+        w="100%"
+        color="white"
+      >
+        <Flex flexDir="column"
+          p="2rem"
+          gap="1rem">
+          <Box
+            as="b"
+            textTransform="uppercase"
+            fontSize={{ base: "1.4rem", md: "1.8rem", lg: "2.2rem", xl: "3rem" }}
+          >
+            <Text display="inline" fontSize=".8em">
+              ¡Bienvenido {" "}
+            </Text>
+            <Text display="inline" color="#FFFF99">
+              {currentUser?.userSlack}
+            </Text>
+            <Text display="inline" >
+              ! 👋
+            </Text>
+            <Text fontSize=".8em" textTransform="none" pl="1.2rem" >
+              Estas en el panel de administrador.
+            </Text>
+          </Box>
+          <Box h="1px" bg="#FFFF99"/>
+          <Box fontSize={{ sm: '1rem', md: '1.2rem', lg: '1.4em' }} lineHeight={2} >
+            <Text display="inline">
+              Desde aquí podremos tener un seguimiento de lo que está pasando en la
+              aplicación. {" "}
+            </Text  >
+            <Text fontSize=".9em" >
+              Tenemos 3 apartados:
+            </Text>
+            <Box px="1rem" fontStyle="italic">
+              <Box>
+                <Highlight query='•' styles={{ color: "yellow" }}>
+                  • Tablero: donde estamos ahora mismo.
+                </Highlight >
+              </Box>
+              <Box>
+                <Highlight query='•' styles={{ color: "yellow" }}>
+                  • Cuentas: tabla con datos de todas las cuentas registradas.
+                </Highlight>
+              </Box>
+              <Box>
+                <Highlight query='•' styles={{ color: "yellow" }}>
+                  • Peticiones: tabla con peticiones del usuario por responder.
+                </Highlight>
+              </Box>
+            </Box>
+          </Box>
+        </Flex>
+      </Flex>
     </Flex>
   );
 };
