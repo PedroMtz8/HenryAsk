@@ -1,4 +1,4 @@
-import './editorStyles.scss'
+import '../Editor/editorStyles.scss'
 import { EditorContent, useEditor } from '@tiptap/react'
 import TextAlign from '@tiptap/extension-text-align'
 import StarterKit from '@tiptap/starter-kit'
@@ -327,15 +327,14 @@ const MenuBar = ({ editor, setUrl }) => {
     )
 }
 
-export default ({ post, setPost, setBodyText, setUrl }) => {
+export default ({ body, setBody, setText, setUrl}) => {
     const [HTML, setHTML] = useState('')
     const [stopEdit, setStopEdit] = useState(true)
 
     //useEditor no recibe el estado post actualizado por lo que force una manera de obtener el estado actualizado
     useEffect(() => {
-        if(!stopEdit) setPost({ ...post, body: HTML })
+        if(!stopEdit) setBody(HTML)
     }, [HTML])
-
 
     const editor = useEditor({
         extensions: [
@@ -346,14 +345,14 @@ export default ({ post, setPost, setBodyText, setUrl }) => {
             Underline,
             Image,
             Placeholder.configure({
-                placeholder: 'Detalla tu pregunta...'
+                placeholder: 'Detalla tu respuesta...'
             })
         ],
         editable: true,
-        content: post.body,
+        content: body,
         onUpdate({ editor }) {
             setStopEdit(false)
-            setBodyText(editor.getText())
+            setText(editor.getText())
             setHTML(editor.getHTML())
         },
     })

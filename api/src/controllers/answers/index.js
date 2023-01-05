@@ -55,7 +55,7 @@ const createAnswer = async (req, res) => {
 
 const editAnswer = async (req, res) => {
     const { answer_id, body } = req.body
-    const message = checkFields({ page, answer_id})
+    const message = checkFields({ body, answer_id})
     if (message) return res.status(400).json({ message })
 
     try {

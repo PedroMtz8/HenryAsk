@@ -10,6 +10,7 @@ import { SimpleGrid } from '@chakra-ui/react';
 import {
   useWindowWidth,
 } from '@react-hook/window-size'
+import { v4 } from 'uuid';
 
 const CardsHome = () => {
   const widthScreen = useWindowWidth()
@@ -38,7 +39,7 @@ const CardsHome = () => {
                 </Flex>
                 :
                 <SimpleGrid columns={2} spacing={5} w={{ base: '90%', lg: '70%' }}>
-                  {currentPosts.map((elem, i) => <CardHome key={i} cardData={elem} />)}
+                  {currentPosts.map((elem, i) => <CardHome key={v4()} cardData={elem} />)}
                 </SimpleGrid>
             }
           </>
@@ -63,8 +64,8 @@ const CardsHome = () => {
                 alignItems="center"
                 gap="1rem"
                 w={{ base: "100%", sm: "95%", md: "90%", lg: "85%" }}
-                bg={"red"}>
-                {currentPosts.map((elem, i) => <CardHome key={i} cardData={elem} />)}
+                >
+                {currentPosts.map((elem, i) => <CardHome key={v4()} cardData={elem} />)}
               </Flex>
             }
           </>

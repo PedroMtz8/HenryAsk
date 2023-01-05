@@ -9,7 +9,9 @@ import {
     useMediaQuery,
     Grid,
     GridItem,
-    Tooltip
+    Tooltip,
+    Button,
+    Modal
 } from '@chakra-ui/react'
 import { TriangleUpIcon, TriangleDownIcon } from '@chakra-ui/icons'
 import axios from "axios";
@@ -20,6 +22,7 @@ import { useEffect } from 'react'
 import Comments from '../Comments/Comments'
 import CreateComment from '../Comments/CreateComment'
 import DetailBody from '../../DetailBody/DetailBody'
+import EditQuestionModal from '../../Modals/EditQuestionModal';
 import moment from "moment"
 import { localeData } from 'moment_spanish_locale';
 import 'moment/locale/es';
@@ -199,6 +202,12 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData }) => {
                         </Flex>
                     </Flex>
                 </GridItem>
+                {dataPost.post.user._id === user.uid 
+                        ? <GridItem gridArea={'2 / 1 / 3 / 2'} textAlign='center' alignSelf={'center'} justifySelf='center'>
+                                            <EditQuestionModal editPost={{post_id: dataPost.post._id, title: dataPost.post.title, body: dataPost.post.body, module: dataPost.post.module, tags: dataPost.post.tags }}/>
+                        </GridItem>
+                        : null
+                }
                 <GridItem gridArea={'3 / 1 / 4 / 3;'}>
                     <Flex w="100%" justifyContent="space-between">
                         <Flex fontSize=".8rem"

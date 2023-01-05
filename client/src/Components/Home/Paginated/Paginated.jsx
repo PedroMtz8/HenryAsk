@@ -8,10 +8,12 @@ import SearchBar from "./SearchBar/SearchBar";
 import API_URL from "../../../config/environment";
 import { useAuth } from "../../AuthComponents/AuthContext";
 import axios from "axios";
+import { useWindowWidth } from '@react-hook/window-size'
 
 const Paginated = () => {
   const { user } = useAuth();
   let token = user.accessToken;
+  const widthScreen = useWindowWidth()
 
   const dispatch = useDispatch();
 
@@ -68,7 +70,7 @@ const Paginated = () => {
     >
       <SearchBar />
       {paginated.loading?
-        <SimpleGrid columns={{base: 1, lg: 2}} spacing={5} w={{ base: '90%', lg: '70%' }}>
+        <SimpleGrid columns={widthScreen > 1120 ? 2 : 1} spacing={5} w={ widthScreen > 1120 ? { base: '90%', lg: '70%' } : { base: "100%", sm: "95%", md: "90%", lg: "85%" }}>
           <Skeleton borderRadius={5} h={100}>x</Skeleton>
           <Skeleton borderRadius={5} h={100}>x</Skeleton>
           <Skeleton borderRadius={5} h={100}>x</Skeleton>

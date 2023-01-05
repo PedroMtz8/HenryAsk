@@ -24,7 +24,7 @@ export default function ProtectedRouteAdmin() {
     }
     if (!user) return <Navigate to={"/login"} />
     dispatch(getUserData(user.accessToken))
-    if (userData.rol !== 'Administrador') return <Navigate to={"/home"} />
+    if(userData.rol !== 'Administrador') return <Navigate to={"/not-admin"}/>
 
     return <><Outlet /></>
 }

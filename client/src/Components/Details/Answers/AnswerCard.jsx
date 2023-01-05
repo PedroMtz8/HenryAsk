@@ -8,9 +8,10 @@ import {
     Text,
     useDisclosure,
     Tooltip,
-    useMediaQuery,
     Spinner,
-    Box
+    Box,
+    Button,
+    useMediaQuery
 } from "@chakra-ui/react";
 import { TriangleUpIcon, TriangleDownIcon } from "@chakra-ui/icons";
 import axios from "axios";
@@ -19,6 +20,7 @@ import API_URL from "../../../config/environment"
 import Comments from '../Comments/Comments';
 import DetailBody from '../../DetailBody/DetailBody';
 import CreateComment from '../Comments/CreateComment'
+import EditAnswerModal from '../../Modals/EditAnswerModal';
 import moment from "moment"
 import { localeData } from 'moment_spanish_locale';
 import 'moment/locale/es';
@@ -28,7 +30,7 @@ import Student from "../../../assets/Rol Images/Students.png";
 import HeroOrTA from "../../../assets/Rol Images/Hero,TA.png";
 
 
-const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
+const AnswerCard = ({ answerCardData, setDataPost}) => {
 
     const { user } = useAuth();
     let token = user.accessToken
@@ -75,7 +77,7 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
         if (answerCardData.user.rol === "Estudiante") setRolImg(Student);
         if (answerCardData.user.rol === "Graduado") setRolImg(Graduate);
     }, [])
-
+    
     const voteAnswer = async (type) => {
 
         const res = await
@@ -116,18 +118,23 @@ const AnswerCard = ({ answerCardData, setDataPost, finish }) => {
                         maxWidth={'none'}
                     />
                     <Image w={largerThan575px ? "2.8rem" : '2.3rem'} mt=".5rem"
-                        src={rolImg} alt="userImage" />
-                    {!largerThan575px ?
-                        <Flex flexDirection='column' alignItems={'center'} justifyContent='flex-start' fontSize="2rem">
-                            <TriangleUpIcon
-                                color={currentVote === 1 ? "green" : "gray"}
-                                onClick={e => (user.uid !== answerCardData.user._id) ? (currentVote === 1 ? voteAnswer(0) : voteAnswer(1)) : null} />
-                            <Text>{numberOfVotesAnswerd}</Text>
-                            <TriangleDownIcon
-                                color={currentVote === -1 ? "red" : "gray"}
-                                onClick={e => (user.uid !== answerCardData.user._id) ? (currentVote === -1 ? voteAnswer(0) : voteAnswer(-1)) : null} />
-                        </Flex>
-                        : null}
+                        src={rolImg} alt="userImage" mb={'.5rem'} />
+                    {
+                        answerCardData.user._id === user.uid 
+                        ? <EditAnswerModal answerData={answerCardData}/>
+                        : null
+                    }
+                    {!largerThan575px ? 
+                    <Flex flexDirection='column' alignItems={'center'} justifyContent='flex-start' fontSize="2rem">
+                        <TriangleUpIcon
+                            color={currentVote === 1 ? "green" : "gray"}
+                            onClick={e => (user.uid !== answerCardData.user._id) ? (currentVote === 1 ? voteAnswer(0) : voteAnswer(1)) : null} />
+                        <Text>{numberOfVotesAnswerd}</Text>
+                        <TriangleDownIcon
+                            color={currentVote === -1 ? "red" : "gray"}
+                            onClick={e => (user.uid !== answerCardData.user._id) ? (currentVote === -1 ? voteAnswer(0) : voteAnswer(-1)) : null} />
+                    </Flex>
+                    : null}
                 </GridItem >
                 <GridItem gridArea={'1 / 2 / 2 / 3'} direction="column" minWidth={0}>
                     <Flex alignItems={largerThan575px ? `center` : `flex-start`}

@@ -32,6 +32,7 @@ import {
   ModalFooter,
   Divider,
   Skeleton,
+  GridItem,
   Spinner
 } from "@chakra-ui/react";
 import { useState, useEffect, useRef } from "react";
@@ -82,6 +83,10 @@ const Profile = () => {
   const [paginated, setPaginated] = useState('Question')
   const { isOpen, onOpen, onClose } = useDisclosure()
 
+   //para cambio de pagina
+   const tabQuestion = useRef('')
+   const tabAnswer = useRef('')
+ 
   const defineRolImg = () => {
     setIsLoading(true);
     if (userData.rol === "Henry Hero") setRolImg(HeroOrTA);
@@ -480,10 +485,10 @@ const Profile = () => {
               else setPaginated('Answer')
             }}>
               <TabList>
-                <Tab _selected={{ color: "white", bg: "#1F1F1F" }}>
+                <Tab _selected={{ color: "white", bg: "#1F1F1F" }} ref={tabQuestion}>
                   Mis preguntas{" "}
                 </Tab>
-                <Tab _selected={{ color: "white", bg: "#1F1F1F" }}>
+                <Tab _selected={{ color: "white", bg: "#1F1F1F" }} ref={tabAnswer}>
                   Mis respuestas{" "}
                 </Tab>
               </TabList>
@@ -491,32 +496,35 @@ const Profile = () => {
                 <TabPanel
                   position={"relative"}
                   bg={"#1F1F1F"}
-                  minHeight={{ base: "1105px", sm: '590px', md: '590px', lg: "590px" }}
                   mb={"50px"}
                   borderBottomRightRadius={"10px"}
                   borderBottomLeftRadius={"10px"}
-
+                  display='grid'
+                  gridTemplateColumns={'1fr'}
+                  gridTemplateRows={'repeat(2, min-content)'}
+                  gridGap={'15px'}
                 >
+                  <GridItem gridArea={'1 / 1 / 2 / 2'}>
                   {!myQuestions.loader && myQuestions.questions?.foundPosts
                     ? <> {
                       myQuestions.questions.foundPosts.length > 0
-                        ?
-                        <SimpleGrid
-                          columns={{ base: 1, sm: 2, md: 2, lg: 2 }}
-                          gap={4}
-                          mt="10px">
-                          {myQuestions.questions.foundPosts?.map((q, i) => {
-                            return (
-                              <CardProfile
-                                cardData={q}
-                                isQuestion={true}
-                                key={i}
-                              />
-                            );
-                          })}
-                        </SimpleGrid>
-                        :
-                        <Flex justifyContent="center"
+                      ?
+                    <SimpleGrid
+                      columns={{ base: 1, sm: 2, md: 2, lg: 2 }}
+                      gap={4}
+                      mt={"10px"}>
+                      {myQuestions.questions.foundPosts?.map((q, i) => {
+                        return (
+                          <CardProfile
+                            cardData={q}
+                            isQuestion={true}
+                            key={i}
+                          />
+                        );
+                      })}
+                    </SimpleGrid>
+                    :
+                    <Flex justifyContent="center"
                           alignItems="center"
                           minH="13rem"
                           color="yellow">
@@ -528,51 +536,56 @@ const Profile = () => {
                         </Flex>
                     }
                     </> : (
-                      <SimpleGrid
-                        columns={{ base: 1, sm: 2, md: 2, lg: 2 }}
-                        gap={4}
-                        mt="10px"
-                      >
-                        <Skeleton h={100}>x</Skeleton>
-                        <Skeleton h={100}>x</Skeleton>
-                        <Skeleton h={100}>x</Skeleton>
-                        <Skeleton h={100}>x</Skeleton>
-                        <Skeleton h={100}>x</Skeleton>
-                        <Skeleton h={100}>x</Skeleton>
-                      </SimpleGrid>)
+                    <SimpleGrid
+                      columns={{ base: 1, sm: 2, md: 2, lg: 2 }}
+                      gap={4}
+                      mt={"10px"}>
+                      <Skeleton h={100}>x</Skeleton>
+                      <Skeleton h={100}>x</Skeleton>
+                      <Skeleton h={100}>x</Skeleton>
+                      <Skeleton h={100}>x</Skeleton>
+                      <Skeleton h={100}>x</Skeleton>
+                      <Skeleton h={100}>x</Skeleton>
+                    </SimpleGrid>)
                   }
-                  <Box>
-                    {paginated === 'Question' ? <QuestionPaginated data={myQuestions.questions} /> : null}
-                  </Box>
+                  </GridItem>
+                  <GridItem gridArea={'2 / 1 / 3 / 2'}>
+                    {paginated === 'Question' ? <QuestionPaginated data={myQuestions.questions}  tabQuestion={tabQuestion} /> : null}
+                  </GridItem>
                 </TabPanel>
                 <TabPanel
                   position={"relative"}
                   bg={"#1F1F1F"}
-                  minHeight={{ base: "1105px", sm: '590px', md: '590px', lg: "590px" }}
                   mb={"50px"}
                   borderBottomRightRadius={"10px"}
                   borderBottomLeftRadius={"10px"}
+                  display='grid'
+                  gridTemplateColumns={'1fr'}
+                  gridTemplateRows={'repeat(2, min-content)'}
+                  gridGap={'15px'}
                 >
+                  <GridItem gridArea={'1 / 1 / 2 / 2'}>
+
                   {!myAnswers.loader && myAnswers.answers?.foundAnswers
                     ? <> {
                       myAnswers.answers.foundAnswers.length > 0
-                        ?
-                        <SimpleGrid
-                          columns={{ base: 1, sm: 2, md: 2, lg: 2 }}
-                          gap={4}
-                          mt="10px">
-                          {myAnswers.answers.foundAnswers?.map((q, i) => {
-                            return (
-                              <CardProfile
-                                cardData={q}
-                                isQuestion={false}
-                                key={i}
-                              />
+                      ?
+                      <SimpleGrid
+                        columns={{ base: 1, sm: 2, md: 2, lg: 2 }}
+                        gap={4}
+                        mt="10px">
+                        {myAnswers.answers.foundAnswers?.map((q, i) => {
+                          return (
+                            <CardProfile
+                              cardData={q}
+                              isQuestion={false}
+                              key={i}
+                            />
                             );
                           })}
-                        </SimpleGrid>
-                        :
-                        <Flex justifyContent="center"
+                      </SimpleGrid>
+                      :
+                      <Flex justifyContent="center"
                           alignItems="center"
                           minH="13rem"
                           color="yellow">
@@ -584,22 +597,23 @@ const Profile = () => {
                         </Flex>
                     }
                     </> : (
-                      <SimpleGrid
-                        columns={{ base: 1, sm: 2, md: 2, lg: 2 }}
-                        gap={4}
-                        mt="10px"
-                      >
-                        <Skeleton h={100}>x</Skeleton>
-                        <Skeleton h={100}>x</Skeleton>
-                        <Skeleton h={100}>x</Skeleton>
-                        <Skeleton h={100}>x</Skeleton>
-                        <Skeleton h={100}>x</Skeleton>
-                        <Skeleton h={100}>x</Skeleton>
-                      </SimpleGrid>)
+                    <SimpleGrid
+                    columns={{ base: 1, sm: 2, md: 2, lg: 2 }}
+                    gap={4}
+                      mt="10px"
+                    >
+                      <Skeleton h={100}>x</Skeleton>
+                      <Skeleton h={100}>x</Skeleton>
+                      <Skeleton h={100}>x</Skeleton>
+                      <Skeleton h={100}>x</Skeleton>
+                      <Skeleton h={100}>x</Skeleton>
+                      <Skeleton h={100}>x</Skeleton>
+                    </SimpleGrid>)
                   }
-                  <Box>
-                    {paginated === 'Answer' ? <AnswerPaginated data={myAnswers.answers} /> : null}
-                  </Box>
+                  </GridItem>
+                  <GridItem gridArea={'2 / 1 / 3 / 2'}>
+                    {paginated === 'Answer' ? <AnswerPaginated data={myAnswers.answers} tabAnswer={tabAnswer} /> : null}
+                  </GridItem>
                 </TabPanel>
               </TabPanels>
             </Tabs>
@@ -612,31 +626,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
-function ButtonConfirm() {
-  return (
-    <>
-      <Popover>
-        <PopoverTrigger>
-          <Button>Trigger</Button>
-        </PopoverTrigger>
-        <Portal>
-          <PopoverContent w="350px">
-            <PopoverArrow />
-            <PopoverCloseButton />
-            <PopoverHeader w={"95%"}>
-              ¿Estas seguro de cancelar la edición?
-            </PopoverHeader>
-
-            <PopoverBody>
-              <Flex justifyContent="flex-end" gap={2}>
-                <Button colorScheme="blue">Si</Button>
-                <Button colorScheme="blue">No</Button>
-              </Flex>
-            </PopoverBody>
-          </PopoverContent>
-        </Portal>
-      </Popover>
-    </>
-  );
-}
