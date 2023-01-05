@@ -6,6 +6,7 @@ import {
   Heading,
   IconButton,
   Text,
+  useMediaQuery
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { FiBriefcase, FiHome, FiMenu, FiUser } from "react-icons/fi";
@@ -18,6 +19,7 @@ import NavItem from "./NavItem";
 const Sidebar = () => {
   const [navSize, setNavSize] = useState("large");
   const navigate = useNavigate();
+  const [isLargerThan30em] = useMediaQuery('(min-width: 30em)')
 
   const dispatch = useDispatch();
 
@@ -40,78 +42,126 @@ const Sidebar = () => {
 
   return (
     <Flex
-      pos="sticky"
-      left="5"
-      h="95vh"
-      marginTop="2.5vh"
+      pos="relative"
+      h={{ base: navSize === "small" ? "10vh": "20vh", sm: '100vh' }}
       boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.5)"
-      w={navSize === "small" ? "75px" : "220px"}
-      borderRadius={navSize === "small" ? "15px" : "30px"}
-      flexDir="column"
-      justifyContent="space-between"
+      maxW={{ base: "100vw", sm: navSize === "small" ? "4rem" : "12rem" }}
+      flexDir={{ base: "row", sm: 'column' }}
       backgroundColor="#ffff01"
+      justifyContent={isLargerThan30em? "flex-start" : "space-between"}
+      alignItems={isLargerThan30em? "center" : "center"}
+      gap={isLargerThan30em? 4 : 0}
+      px={{base: 5 , sm: isLargerThan30em? "center" : "center"}}
     >
-      <Flex p="5%" flexDir="column" alignItems="center" as="nav">
+      <Flex flexDir="column"
+        alignItems={"center"}
+        as="nav">
         <IconButton
           background="none"
-          mt={5}
+          mt={isLargerThan30em? 5 : 0}
           _hover={{ background: "none" }}
           icon={<FiMenu />}
           onClick={handleMenuSize}
         />
-        <NavItem navSize={navSize} icon={FiHome} title="Tablero" url="/admin" />
-        <NavItem
-          navSize={navSize}
-          icon={FiUser}
-          title="Cuentas"
-          url="/admin/accounts"
-        />
-        <NavItem
-          navSize={navSize}
-          icon={FiBriefcase}
-          title={`Peticiones`}
-          url="/admin/requests"
-        />
+        {isLargerThan30em
+          ?
+          <Flex flexDir={{ base: "row", sm: 'column' }}>
+            <NavItem
+              navSize={navSize}
+              icon={FiHome}
+              title="Tablero"
+              url="/admin" />
+            <NavItem
+              navSize={navSize}
+              icon={FiUser}
+              title="Cuentas"
+              url="/admin/accounts"
+            />
+            <NavItem
+              navSize={navSize}
+              icon={FiBriefcase}
+              title={`Peticiones`}
+              url="/admin/requests"
+            />
+          </Flex>
+          :
+          <>
+            {
+              navSize === "small" ?
+                <>
+                </>
+                :
+                <Flex >
+                  <NavItem
+                    navSize={navSize}
+                    icon={FiHome}
+                    title="Tablero"
+                    url="/admin" />
+                  <NavItem
+                    navSize={navSize}
+                    icon={FiUser}
+                    title="Cuentas"
+                    url="/admin/accounts"
+                  />
+                  <NavItem
+                    navSize={navSize}
+                    icon={FiBriefcase}
+                    title={`Peticiones`}
+                    url="/admin/requests"
+                  />
+                </Flex>
+            }
+
+          </>
+        }
       </Flex>
+      <Divider display={{ base: "none", sm: navSize === "small" ? "none" : "flex" }}
+        flexDir={{ base: "row", sm: 'column' }}
+      />
 
-      <Flex
-        p="5%"
-        flexDir="column"
-        w="100%"
-        alignItems="flex-start"
-        mb={4}
-      ></Flex>
+      <Flex flexDir={{ base: "row", sm: 'column' }}
+        alignItems="center"
+        textAlign={"center"}
+        gap={2}>
+        <Avatar size="sm" 
+        src={currentUser.avatar}
+        mt={{base: 0, sm: navSize === "small" ? 5 : 0 }} />
+        {
+          !isLargerThan30em
+            ?
+            null
+            :
+            <>
+              <Heading
+                as="h3"
+                size="sm"
+                m="auto"
+                display={navSize === "small" ? "none" : "flex"}
+                mt="5px"
+              >
+                {currentUser?.userSlack}
+              </Heading>
+              <Text
+                m="auto"
+                color="gray"
+                display={navSize === "small" ? "none" : "flex"}
+              >
+                {" "}
+                {currentUser.rol}{" "}
+              </Text>
 
-      <Divider display={navSize === "small" ? "none" : "flex"} />
-      <Flex flexDir="column" p={4}>
-        <Avatar size="sm" src={currentUser.avatar} m="auto" />
-        <Heading
-          as="h3"
-          size="sm"
-          m="auto"
-          display={navSize === "small" ? "none" : "flex"}
-          mt="5px"
-        >
-          {currentUser?.userSlack}
-        </Heading>
-        <Text
-          m="auto"
-          color="gray"
-          display={navSize === "small" ? "none" : "flex"}
-        >
-          {" "}
-          {currentUser.rol}{" "}
-        </Text>
-        <Button
-          mt="15px"
-          size="sm"
-          variant="outline"
-          colorScheme="red"
-          onClick={() => navigate("/home")}
-          display={navSize === "small" ? "none" : "flex"}
-        >
-          Volver al Home
-        </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                colorScheme="red"
+                onClick={() => navigate("/home")}
+                display={navSize === "small" ? "none" : "flex"}
+              >
+                Volver al Home
+              </Button>
+            </>
+        }
+
       </Flex>
     </Flex>
   );
