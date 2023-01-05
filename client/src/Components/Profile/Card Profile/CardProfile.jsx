@@ -64,7 +64,7 @@ const CardHome = ({ cardData, isQuestion }) => {
             overflow='hidden'
             textOverflow={'ellipsis'}
           >
-            <Link to={`/home/post/${cardData._id}`}>
+            <Link to={isQuestion ? `/home/post/${cardData._id}` : `/home/post/${cardData.post._id}`}>
               {isQuestion ? cardData.title : cardData.post.title}
             </Link>
           </Text>

@@ -14,7 +14,9 @@ import {
     Button,
     Input,
     Text,
-    useToast
+    useToast,
+    Flex,
+    Spinner
 } from '@chakra-ui/react'
 
 const CreateComment = ({ isOpen, onClose, id }) => {
@@ -24,6 +26,7 @@ const CreateComment = ({ isOpen, onClose, id }) => {
     const idParam = useParams().id
     const navigate = useNavigate()
     const toast = useToast()
+    const [loading, setLoading] = useState(false)
 
     const [comment, setComment] = useState("")
     const [enableSubmitButton, setEnableSubmitButton] = useState(true)
@@ -38,6 +41,7 @@ const CreateComment = ({ isOpen, onClose, id }) => {
 
         try {
 
+            setLoading(true)
             const res = await axios.put(API_URL + `/comment`, { body: comment, comment_id: id }, { headers: { Authorization: "Bearer " + token } })
             
             toast({
@@ -62,6 +66,8 @@ const CreateComment = ({ isOpen, onClose, id }) => {
             onClose()
             setComment("")
 
+        } finally{
+            setLoading(false)
         }
 
     }
@@ -80,17 +86,33 @@ const CreateComment = ({ isOpen, onClose, id }) => {
                     {comment.length === 600 ? <Text py=".2rem" color="orange.500">Límite de caracteres alcanzado {"(600)"}</Text> : ""}
                 </ModalBody>
                 <ModalFooter>
-                    <Button colorScheme='blue'
-                        mr={3}
-                        disabled={enableSubmitButton}
-                        onClick={sendComment}>
-                        Confirmar
-                    </Button>
-                    <Button colorScheme='gray'
-                        mr={3}
-                        onClick={onClose}>
-                        Cancelar
-                    </Button>
+                {
+                        loading
+                        ? <Flex justifyContent="flex-start" >
+                            <Spinner
+                                thickness='.7rem'
+                                speed='0.7s'
+                                emptyColor='gray.200'
+                                color='#FFFF01'
+                                w="5rem"
+                                h="5rem"
+                                mr='35px'
+                            />
+                          </Flex>
+                      : <Flex>
+                        <Button colorScheme='blue'
+                            mr={3}
+                            disabled={enableSubmitButton}
+                            onClick={sendComment}>
+                            Confirmar
+                        </Button>
+                        <Button colorScheme='gray'
+                            mr={3}
+                            onClick={onClose}>
+                            Cancelar
+                        </Button>
+                      </Flex>
+                    }
                 </ModalFooter>
             </ModalContent>
         </Modal>

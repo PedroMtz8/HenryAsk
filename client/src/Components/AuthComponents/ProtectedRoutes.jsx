@@ -8,7 +8,7 @@ export default function ProtectedRoute({ children }) {
     const { user, loadingUser } = useAuth()
     if (loadingUser) {
         return (
-            <Flex justifyContent="center" alignItems="center" h="100vh" w="100vw">
+            <Flex justifyContent="center" alignItems="center" h="100vh" w="100vw" bg='black'>
                 <Spinner
                     thickness='0.8rem'
                     speed='0.65s'
