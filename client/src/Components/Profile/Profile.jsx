@@ -322,7 +322,7 @@ const Profile = () => {
                   </Flex>
                   :
                   <Text
-                    fontSize={{ base: "16px", sm: "20px", md: "24px", lg: "28px" }}
+                    fontSize={{ base: "14px", sm: "20px", md: "24px", lg: "28px" }}
                     fontWeight={"bold"}
                     textAlign={"start"}
                   >

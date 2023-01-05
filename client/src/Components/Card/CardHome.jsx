@@ -60,21 +60,21 @@ const CardHome = ({ cardData }) => {
               h="48px"
               borderRadius="3rem"
               src={cardData.user?.avatar}
-              alt="Caffe Latte"
+              alt="userImage"
             />
           </Box>
         </GridItem >
         <GridItem gridArea={'2 / 1 / 3 / 2'} justifySelf='center'>
           <Image w="2.2rem"
-            src={rolImg} alt="userImage" />
+            src={rolImg} alt="rolImage" />
         </GridItem >
         <GridItem gridArea={'1 / 2 / 2 / 4'} justifySelf='flex-start'>
           <Flex display='flex' flexDirection='column' alignItems='flex-start' gap=".4rem" fontSize=".75rem" fontWeight="bold">
-            <Text>
+            <Text fontSize={{base: '11px', sm: '12px'}}>
               {`${cardData.user?.userSlack}`}
             </Text>
             <Flex display='flex' gap=".4rem">
-              <Text cursor="pointer">
+              <Text cursor="pointer" fontSize={{base: '11px', sm: '12px'}}>
                 <Tooltip label={new Date(cardData.createdAt).toLocaleString()}
                   placement='top'>
                   {`${dif} •`}
@@ -82,8 +82,8 @@ const CardHome = ({ cardData }) => {
               </Text>
               <Image w="1.4rem" alignSelf="flex-start"
                 src="https://i.postimg.cc/TwrFYv4p/image-30.png" alt="userImage" />
-              <Text >
-                {cardData.score}
+              <Text fontSize={{base: '11px', sm: '12px'}}>
+                {cardData.score} • {cardData.module}
               </Text>
             </Flex>
           </Flex>
