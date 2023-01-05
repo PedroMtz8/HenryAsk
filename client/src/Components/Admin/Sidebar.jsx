@@ -16,8 +16,8 @@ import { useAuth } from "../AuthComponents/AuthContext";
 import NavItem from "./NavItem";
 
 const Sidebar = () => {
-  const [navSize, setNavSize] = useState("large");
   const navigate = useNavigate();
+  const [navSize, setNavSize] = useState("large");
 
   const dispatch = useDispatch();
 
@@ -32,44 +32,38 @@ const Sidebar = () => {
     dispatch(getUserData(user.accessToken));
   }, [dispatch]);
 
-  const handleMenuSize = () => {
-    if (navSize === "small") {
-      setNavSize("large");
-    } else {
-      setNavSize("small");
-    }
-  };
-
   return (
     <Flex
-      pos="sticky"
-      left="5"
-      h="95vh"
-      marginTop="2.5vh"
-      boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.5)"
-      w={navSize === "small" ? "75px" : "220px"}
-      borderRadius={navSize === "small" ? "15px" : "30px"}
+      pos="relative"
+      w={(navSize === "small") ? "6rem" : "16rem"}
+      minH="100vh"
       flexDir="column"
-      justifyContent="space-between"
-      backgroundColor="#ffff01"
+      backgroundColor="yellow.200"
+      color="black"
     >
-      <Flex p="5%" flexDir="column" alignItems="center" as="nav">
-        <IconButton
+      <Flex 
+      flexDir="column" 
+      alignItems={(navSize === "small") ? "center" : "flex-start"} 
+      justifyContent="flex-start"
+      as="nav">
+        <IconButton 
           background="none"
-          mt={5}
           _hover={{ background: "none" }}
           icon={<FiMenu />}
-          onClick={handleMenuSize}
+          title="Menu"          
+          onClick={e => setNavSize((navSize === "small") ? "large" : "small")}
         />
-        <NavItem navSize={navSize} icon={FiHome} title="Tablero" url="/admin" />
-        <NavItem
-          navSize={navSize}
+        <NavItem navSize={navSize}
+          icon={FiHome}
+          title="Tablero"
+          url="/admin"
+        />
+        <NavItem navSize={navSize}
           icon={FiUser}
           title="Cuentas"
           url="/admin/accounts"
         />
-        <NavItem
-          navSize={navSize}
+        <NavItem navSize={navSize}
           icon={FiBriefcase}
           title={`Peticiones (${requests.length})`}
           url="/admin/requests"

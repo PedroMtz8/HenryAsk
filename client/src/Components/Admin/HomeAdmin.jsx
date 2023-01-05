@@ -1,4 +1,11 @@
-import { Divider, Flex, ListItem, Text, UnorderedList } from "@chakra-ui/react";
+import {
+  Divider,
+  Flex,
+  ListItem,
+  Text,
+  UnorderedList,
+  Box
+} from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getRequest } from "../../slices/userSlice";
@@ -22,44 +29,46 @@ const HomeAdmin = () => {
   }, [dispatch, page]);
 
   return (
-    <Flex>
+    <Flex  position="relative"
+    gap="1rem" >
       <Sidebar />
-      <div style={{ margin: "20px auto" }}>
-        <Text
-          as="b"
-          textTransform="uppercase"
-          fontSize={{ base: "24px", md: "30px", lg: "40px" }}
-        >
-          ¡Bienvenido al panel de administrador: {currentUser?.userSlack}!
-        </Text>
-        <Divider m="20px" />
-        <Text>
-          Desde aquí podremos tener un seguimiento de lo que está pasando en la
-          aplicación.
-          <p style={{ marginTop: "20px", marginBottom: "10px" }}>
-            Tenemos 3 apartados:
-          </p>
-          <UnorderedList>
-            <ListItem>
-              <Text>
-                <i>Tablero:</i> donde estamos ahora mismo.
-              </Text>
-            </ListItem>
-            <ListItem>
-              <Text>
-                <i>Cuentas:</i> tabla con algunos datos de todas las cuentas
-                registradas.
-              </Text>
-            </ListItem>
-            <ListItem>
-              <Text>
-                <i>Peticiones:</i> tabla con peticiones del usuario por
-                responder.
-              </Text>
-            </ListItem>
-          </UnorderedList>
-        </Text>
-      </div>
+      <Flex position="relative" p={6}
+          flexDir="column">
+          <Text
+            as="b"
+            textTransform="uppercase"
+            fontSize={{ base: "24px", md: "30px", lg: "40px" }}
+          >
+            ¡Bienvenido al panel de administrador: {currentUser?.userSlack}!
+          </Text>
+          <Divider w="100%" />
+          <Box>
+            Desde aquí podremos tener un seguimiento de lo que está pasando en la
+            aplicación.
+            <p style={{ marginTop: "20px", marginBottom: "10px" }}>
+              Tenemos 3 apartados:
+            </p>
+            <UnorderedList>
+              <ListItem>
+                <Text>
+                  <i>Tablero:</i> donde estamos ahora mismo.
+                </Text>
+              </ListItem>
+              <ListItem>
+                <Text>
+                  <i>Cuentas:</i> tabla con algunos datos de todas las cuentas
+                  registradas.
+                </Text>
+              </ListItem>
+              <ListItem>
+                <Text>
+                  <i>Peticiones:</i> tabla con peticiones del usuario por
+                  responder.
+                </Text>
+              </ListItem>
+            </UnorderedList>
+          </Box>
+      </Flex>
     </Flex>
   );
 };

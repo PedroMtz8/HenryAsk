@@ -23,7 +23,7 @@ export default function ProtectedRouteAdmin() {
             </Flex>)
     }
     if (!user) return <Navigate to={"/login"} />
-    dispatch(getUserData(user.accessToken))
+    /* dispatch(getUserData(user.accessToken)) */
     if (userData.rol !== 'Administrador') return <Navigate to={"/home"} />
 
     return <><Outlet /></>
