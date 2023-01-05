@@ -11,7 +11,8 @@ import {
     GridItem,
     Tooltip,
     Button,
-    Modal
+    Modal,
+    Skeleton
 } from '@chakra-ui/react'
 import { TriangleUpIcon, TriangleDownIcon } from '@chakra-ui/icons'
 import axios from "axios";
@@ -49,6 +50,7 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [rolImg, setRolImg] = useState();
     const [commentsLoading, setCommentLoading] = useState(false)
+    const [postLoading, setPostLoading] = useState(true)
 
     useEffect(() => {
 
@@ -72,6 +74,7 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData }) => {
         if (dataPost.post.user.rol === "Administrador") setRolImg(Admin);
         if (dataPost.post.user.rol === "Estudiante") setRolImg(Student);
         if (dataPost.post.user.rol === "Graduado") setRolImg(Graduate);
+        setPostLoading(false)
     }, [])
 
     const getComment = async () => {
@@ -107,15 +110,16 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData }) => {
 
     return (
         <>
+        <Skeleton isLoaded={!postLoading} width='92%' alignSelf={'center'} justifySelf='center' mt='3rem' borderRadius={'0.375rem'}>
+
             <Grid position="relative"
                 templateRows={'repeat(3, min-content)'}
                 templateColumns={'min-content 1fr'}
                 boxSize="100%"
                 gap="1rem"
-                w="92%"
+                w="100%"
                 p={'0.8rem'}
                 bg="#F2F2F2"
-                mt={'3rem'}
                 fontWeight={600}
                 borderRadius={'0.375rem'}>
                 <GridItem gridArea={'1 / 1 / 2 / 2'} display='flex' flexDirection={'column'} alignItems='center' >
@@ -189,12 +193,12 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData }) => {
                             {
                                 dataPost.post.tags.map((e, i) =>
                                     <Box key={i}
-                                        textAlign="center"
-                                        bg="#FFFF01"
-                                        fontSize={{ base: ".7rem", sm: ".8rem", md: "1rem" }}
-                                        borderRadius={".5rem"}
+                                    textAlign="center"
+                                    bg="#FFFF01"
+                                    fontSize={{ base: ".7rem", sm: ".8rem", md: "1rem" }}
+                                    borderRadius={".5rem"}
                                         p={{ base: ".2rem .5rem", sm: ".4rem .7rem" }}
-                                    >
+                                        >
                                         {e}
                                     </Box>
                                 )
@@ -214,12 +218,12 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData }) => {
                             color="gray.600">
                             {(dataPost.post.numberComments !== 0) ? ((!showComments) ?
                                 <Text cursor="pointer"
-                                    onClick={e => { commentPage === 0 && setCommentPage(1); commentPage > 0 && setShowComments(true) }}>
+                                onClick={e => { commentPage === 0 && setCommentPage(1); commentPage > 0 && setShowComments(true) }}>
                                     Comentarios: {`(${dataPost.post.numberComments})`} <TriangleDownIcon />
                                 </Text>
                                 :
                                 <Text cursor="pointer"
-                                    onClick={e => { setShowComments(false) }}>
+                                onClick={e => { setShowComments(false) }}>
                                     Comentarios: {`(${dataPost.post.numberComments})`} <TriangleUpIcon />
                                 </Text>)
                                 :
@@ -234,7 +238,7 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData }) => {
                                 onClose={onClose}
                                 type={"post"}
                                 id={idPost}
-                            />
+                                />
                         </>
                     </Flex>
                     <Flex flexDirection='column'>
@@ -271,6 +275,7 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData }) => {
                     </Flex>
                 </GridItem>
             </Grid>
+            </Skeleton>
         </>
     )
 }
