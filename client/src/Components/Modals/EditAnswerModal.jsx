@@ -97,11 +97,10 @@ function EditAnswerModal({  answerData }) {
           setBody('')
           onClose()
         }}
-        blockScrollOnMount={false}
-        alignSelf='center'
+        size={"full"}
         >
         <ModalOverlay />
-        <ModalContent w={{ base: '100vw', sm: "100vw", md: "90vw", lg: '80vw' }} alignSelf='center' maxWidth={'none'}>
+        <ModalContent w={{ base: '100vw', sm: "100vw", md: "90vw", lg: '80vw' }}>
           <ModalHeader>Editar respuesta</ModalHeader>
           <ModalCloseButton _hover={{ background: "tomato" }} />
           <ModalBody pb={6}>
