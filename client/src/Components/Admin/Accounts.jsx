@@ -31,7 +31,7 @@ const Accounts = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     if (filter === "") {
       dispatch(getUsers({ token, page: accounts.page }));
     } else {
@@ -46,7 +46,7 @@ const Accounts = () => {
   };
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     if (filter === "") {
       dispatch(getUsers({ token, page: 1 }));
     } else {
@@ -57,7 +57,12 @@ const Accounts = () => {
   }, [filter]);
 
   return (
-    <Flex>
+    <Flex
+      position="relative"
+      bg="#1F1F1F"
+      minH="100vh"
+      flexDirection={{ base: "column", sm: "row" }}
+    >
       <Sidebar />
       <div style={{ margin: "20px auto" }}>
         <SearchbarAdmin
@@ -70,14 +75,7 @@ const Accounts = () => {
           setFilter={setFilter}
           handleChangeFilter={handleChangeFilter}
         />
-        <Text
-          mb="20px"
-          align="center"
-          fontWeight="bold"
-          textTransform="uppercase"
-        >
-          Lista de cuentas
-        </Text>
+
         {users.length > 0 ? (
           <>
             <TableContainer
@@ -88,9 +86,10 @@ const Accounts = () => {
               <Table
                 variant="striped"
                 colorScheme="blackAlpha"
-                size={{ base: "sm", md: "md", lg: "lg" }}
+                size={{ base: "20em", md: "md", lg: "lg" }}
+                p="20px"
               >
-                <Thead backgroundColor="#ffff01" textAlign="center">
+                <Thead w="100%" backgroundColor="#ffff01" textAlign="center">
                   <Tr>
                     <Th textAlign="center">Usuario</Th>
                     <Th textAlign="center">Email</Th>
@@ -99,7 +98,7 @@ const Accounts = () => {
                 </Thead>
                 <Tbody>
                   {users.map((user) => (
-                    <Tr textAlign="center" key={user.mail}>
+                    <Tr textAlign="center" textColor="white" key={user.mail}>
                       <Td textAlign="center"> {user.userSlack} </Td>
                       <Td textAlign="center"> {user.mail} </Td>
                       <Td textAlign="center"> {user.rol} </Td>
