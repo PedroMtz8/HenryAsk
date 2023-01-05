@@ -5,7 +5,7 @@ import { useAuth } from '../../AuthComponents/AuthContext';
 import { getUserAnswers } from "../../../slices/userSlice";
 import { useDispatch } from 'react-redux';
 
-function AnswerPaginated({data}) {
+function AnswerPaginated({data, tabAnswer}) {
     const dispatch = useDispatch()
     const { user } = useAuth();
     const [page, setPage] = useState(1)
@@ -23,11 +23,13 @@ function AnswerPaginated({data}) {
     }, [page])
 
     const nextPage = () => {
-        setPage(page + 1)
+        tabAnswer.current.scrollIntoView({ block: 'start', behavior: 'smooth' })
+        setTimeout(() => setPage(page + 1), 500)
     }
     
     const prevPage = () => {
-        setPage(page - 1)
+        tabAnswer.current.scrollIntoView({ block: 'start', behavior: 'smooth' })
+        setTimeout(() => setPage(page - 1), 500)
     }
     
 
@@ -39,10 +41,6 @@ function AnswerPaginated({data}) {
             alignItems="center"
             justifyContent={"space-between"}
             gap={3}
-            mt={"15px"}
-            mb='15px'
-            position='absolute'
-            bottom={'0px'}
             >
             <Button
                 onClick={prevPage}
