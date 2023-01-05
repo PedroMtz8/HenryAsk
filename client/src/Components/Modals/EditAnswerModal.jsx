@@ -45,7 +45,7 @@ function EditAnswerModal({  answerData }) {
 
     useEffect(() => {
         setBody(answerData.body)
-    }, [answerData])
+    }, [answerData, isOpen])
 
     const submitAnswer = async () => {
 
