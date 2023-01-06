@@ -1,4 +1,4 @@
-import { Button } from "@chakra-ui/react";
+import { Button, Flex } from "@chakra-ui/react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { nextPage, previousPage, setPage } from "../../slices/userSlice";
@@ -44,7 +44,7 @@ const PaginatedAdmin = ({ maxPages }) => {
   }
 
   return (
-    <div style={{ margin: "20px auto", width: "50%", textAlign: "center" }}>
+    <Flex justifyContent={"center"} alignItems="center">
       <Button
         isDisabled={currentPage === 1 ? true : false}
         backgroundColor="#ffff01"
@@ -64,7 +64,7 @@ const PaginatedAdmin = ({ maxPages }) => {
       >
         {">"}
       </Button>
-    </div>
+    </Flex>
   );
 };
 

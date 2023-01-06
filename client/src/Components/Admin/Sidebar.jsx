@@ -43,7 +43,7 @@ const Sidebar = () => {
   return (
     <Flex
       pos="relative"
-      h={{ base: navSize === "small" ? "10vh" : "20vh", sm: "100vh" }}
+      minH={{ base: navSize === "small" ? "10vh" : "20vh", sm: "100vh" }}
       boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.5)"
       maxW={{ base: "100vw", sm: navSize === "small" ? "4rem" : "12rem" }}
       flexDir={{ base: "row", sm: "column" }}
@@ -51,10 +51,10 @@ const Sidebar = () => {
       justifyContent={isLargerThan30em ? "flex-start" : "space-between"}
       alignItems={isLargerThan30em ? "center" : "center"}
       gap={isLargerThan30em ? 4 : 0}
-      px={{ base: 5, sm: isLargerThan30em ? "center" : "center" }}
+      px={{ base: 0, sm: navSize === "small" ? 10 : 0 }}
     >
       <Flex flexDir="column" alignItems={"center"} as="nav">
-        <IconButton
+        <IconButton alignSelf={{base: "flex-start", sm: "center"}}
           background="none"
           mt={isLargerThan30em ? 5 : 0}
           _hover={{ background: "none" }}
@@ -62,7 +62,8 @@ const Sidebar = () => {
           onClick={handleMenuSize}
         />
         {isLargerThan30em ? (
-          <Flex flexDir={{ base: "row", sm: "column" }}>
+          <Flex flexDir={{ base: "row", sm: "column" }}
+            >
             <NavItem
               navSize={navSize}
               icon={FiHome}
@@ -87,7 +88,7 @@ const Sidebar = () => {
             {navSize === "small" ? (
               <></>
             ) : (
-              <Flex>
+              <Flex fontSize={"0.7rem"} >
                 <NavItem
                   navSize={navSize}
                   icon={FiHome}
