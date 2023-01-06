@@ -44,38 +44,39 @@ const SearchbarAdmin = ({
   };
 
   return (
-    <div>
-      <FormControl
-        m="auto"
-        fontSize=".9rem"
-        mb="60px"
-        w={{ base: "50%", sm: "100%", md: "100%", lg: "100%" }}
+    <Flex justifyContent={"flex-start"} py="0.5rem" alignItems={"center"} >
+      <FormControl pos={"relative"}
+        fontSize={{base: ".7rem", sm: ".8rem"}}
+        w="100%"
+        px=".6rem"
       >
-        <HStack
+        <HStack  
           align="center"
           bg="#F2F2F2"
-          p="1% 2%"
-          spacing="3.5%"
-          borderRadius="10px"
+          spacing=".1rem"
+          borderRadius="1rem"
+          p={".2rem"}
         >
-          <InputGroup
-            w={{ base: "40%", md: "70%", lg: "100%" }}
-            display={{ base: "flex" }}
+          <InputGroup alignContent={"center"} 
+            p={".3rem"}
+            borderRadius="1rem"
+            w={{ base: "60%", md: "50%", lg: "40%" }}
           >
-            <Input
+            <Input 
               placeholder="Mail..."
               borderRadius="10rem"
               value={search}
               onChange={handleChange}
+              
             />
-            <InputRightElement width="3rem" onClick={handleSubmit}>
-              <SearchIcon fontSize="1.1rem" />
+            <InputRightElement width="3rem" pt=".5rem" onClick={handleSubmit}>
+              <SearchIcon  />
             </InputRightElement>
           </InputGroup>
-          <HStack w={{ base: "40%", md: "30%", lg: "60%" }}>
-            <Text w="4rem"> {name}:</Text>
+          <HStack w={{ base: "40%", md: "50%", lg: "60%" }} borderRadius="1rem" >
+            <Text w="4rem">Rol:</Text>
             <Select onChange={handleChangeFilter} borderRadius="10rem">
-              <option value={""}>----</option>
+              <option value={""}>Todos</option>
               <option value={op1}> {op1} </option>
               <option value={op2}> {op2} </option>
               <option value={op3}> {op3} </option>
@@ -85,7 +86,7 @@ const SearchbarAdmin = ({
           </HStack>
         </HStack>
       </FormControl>
-    </div>
+    </Flex>
   );
 };
 

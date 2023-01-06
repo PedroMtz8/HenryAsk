@@ -1,11 +1,12 @@
-import { Button, Flex, Grid, Text } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import {
+  Flex, 
+  Text, 
+  Box,
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
@@ -64,7 +65,11 @@ const Accounts = () => {
       flexDirection={{ base: "column", sm: "row" }}
     >
       <Sidebar />
-      <div style={{ margin: "20px auto" }}>
+      <Flex flexDir={"column"}
+       alignItems="center"
+       gap={4}
+       py={5}
+       w={"100%"}>
         <SearchbarAdmin
           name="Rol"
           op1="Estudiante"
@@ -78,7 +83,7 @@ const Accounts = () => {
 
         {users.length > 0 ? (
           <>
-            <TableContainer
+            <TableContainer fontSize={{base: "0.7rem", sm: "0.7rem", md: "0.9rem", lg: "1rem" }}
               border="1px solid gray"
               borderRadius="10px"
               boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.5)"
@@ -114,7 +119,7 @@ const Accounts = () => {
             No hay usuarios actualmente.
           </Text>
         )}
-      </div>
+      </Flex>
     </Flex>
   );
 };
