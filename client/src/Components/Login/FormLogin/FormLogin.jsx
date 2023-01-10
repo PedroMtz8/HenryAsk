@@ -144,6 +144,7 @@ const FormLogin = () => {
                 position: "top",
             })
             signout()
+            setLoading(true)
         } else if (user && userData?.status === "Aprobado") {
             navigate('/home')
         }

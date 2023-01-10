@@ -22,7 +22,6 @@ const Details = () => {
     const navigate = useNavigate()
 
     const [dataPost, setDataPost] = useState(undefined);
-    const [votingData, setVotingData] = useState(0);
     const [loading, setLoading] = useState(true)
     const toast = useToast()
     
@@ -33,9 +32,6 @@ const Details = () => {
                 const res = await axios.get(API_URL + `/posts/${idPost}`, { headers: {Authorization: "Bearer " + token }})
                 
                 setDataPost(res.data)
-                
-                Object.keys(res.data.post?.voters).includes(user.email) && setVotingData(parseInt(res.data.post.voters[user.email]))
-    
                 setLoading(false)
 
             } catch (error) {
@@ -69,11 +65,7 @@ const Details = () => {
                 loading ? <LoaderDetail/>
                           : 
                           <>
-                            <MainDetails dataPost={dataPost} 
-                                        setDataPost={setDataPost} 
-                                        votingData={votingData} 
-                                        setVotingData={setVotingData} 
-                                        userScore={dataPost.post.user.score}/> 
+                            <MainDetails dataPost={dataPost} setDataPost={setDataPost} /> 
                             <Answers dataPost={dataPost} setDataPost={setDataPost} />
                            </>
                 }

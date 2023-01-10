@@ -12,7 +12,8 @@ import {
     Box,
     Button,
     useMediaQuery,
-    Skeleton
+    Skeleton,
+    useToast
 } from "@chakra-ui/react";
 import { TriangleUpIcon, TriangleDownIcon } from "@chakra-ui/icons";
 import axios from "axios";
@@ -38,7 +39,7 @@ const AnswerCard = ({ answerCardData, setDataPost}) => {
     const idPost = useParams().id;
     moment.updateLocale('es', localeData)
     const [largerThan575px] = useMediaQuery('(min-width: 575px)')
-    const [numberOfVotesAnswerd, setNumberOfVotesAnswerd] = useState(parseInt(answerCardData.score))
+    const [numberOfVotesAnswer, setnumberOfVotesAnswer] = useState(parseInt(answerCardData.score))
     const [numberOfVotesUser, setNumberOfVotesUser] = useState(parseInt(answerCardData.user.score))
     const [currentVote, setCurrentVote] = useState(Object.keys(answerCardData.voters).includes(user.uid) ? parseInt(answerCardData.voters[user.uid]) : 0)
     const [commentAnswers, setCommentAnswers] = useState([])
@@ -49,22 +50,15 @@ const AnswerCard = ({ answerCardData, setDataPost}) => {
     const [rolImg, setRolImg] = useState();
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [commentsLoading, setCommentLoading] = useState(false)
+    const [voteLoading, setVoteLoading] = useState(false)
     const [loading, setLoading] = useState(true)
+    const toast = useToast()
 
     useEffect(() => {
-        setNumberOfVotesAnswerd(parseInt(answerCardData.score))
+        setnumberOfVotesAnswer(parseInt(answerCardData.score))
         setNumberOfVotesUser(parseInt(answerCardData.user.score))
         setCurrentVote(Object.keys(answerCardData.voters).includes(user.uid) ? parseInt(answerCardData.voters[user.uid]) : 0)
     }, [answerCardData])
-
-    useEffect(() => {
-
-        if (numberOfVotesUser !== parseInt(answerCardData.user.score)) {
-            axios.get(API_URL + `/posts/${idPost}`, { headers: { Authorization: "Bearer " + token } })
-                .then(res => { setDataPost(res.data) })
-        }
-        console.log(2)
-    }, [numberOfVotesUser])
 
     useEffect(() => {
         (commentPage > 0) && setCommentLoading(true);
@@ -84,12 +78,26 @@ const AnswerCard = ({ answerCardData, setDataPost}) => {
     }, [])
     
     const voteAnswer = async (type) => {
-
-        const res = await
-            axios.put(API_URL + `/answer/${type}`, { answer_id: answerCardData._id }, { headers: { Authorization: "Bearer " + token } })
-        setNumberOfVotesAnswerd(res.data.voteAnswer)
-        setNumberOfVotesUser(res.data.authorScore)
-        setCurrentVote(type)
+        if(!voteLoading && user.uid !== answerCardData.user._id){
+            try {
+                setVoteLoading(true)
+                const res = await
+                axios.put(API_URL + `/answer/${type}`, { answer_id: answerCardData._id }, { headers: { Authorization: "Bearer " + token } })
+                setVoteLoading(false)
+                setnumberOfVotesAnswer(res.data.voteAnswer)
+                setNumberOfVotesUser(res.data.authorScore)
+                setCurrentVote(type)
+            } catch (error) {
+                setVoteLoading(false)
+                toast({
+                    description: "Ocurrio un error, intentalo de nuevo",
+                    duration: 3000,
+                    position: "top",
+                    status: "error",
+                    isClosable: true
+                }) 
+            }
+        }
     }
 
     const getComment = async () => {
@@ -134,11 +142,19 @@ const AnswerCard = ({ answerCardData, setDataPost}) => {
                     <Flex flexDirection='column' alignItems={'center'} justifyContent='flex-start' fontSize="2rem">
                         <TriangleUpIcon
                             color={currentVote === 1 ? "green" : "gray"}
-                            onClick={e => (user.uid !== answerCardData.user._id) ? (currentVote === 1 ? voteAnswer(0) : voteAnswer(1)) : null} />
-                        <Text>{numberOfVotesAnswerd}</Text>
+                            onClick={e => (currentVote === 1 ? voteAnswer(0) : voteAnswer(1))}
+                            _hover={(user.uid !== answerCardData.user._id && !voteLoading) ? {cursor:'pointer'} : ''} />
+                        {voteLoading 
+                        ? <Spinner color='#3195DB'
+                                    thickness='4px'
+                                    speed='0.65s'
+                                    w="48px"
+                                    h="48px" /> 
+                        : <Text w={'48px'} textAlign='center'>{numberOfVotesAnswer}</Text>}
                         <TriangleDownIcon
                             color={currentVote === -1 ? "red" : "gray"}
-                            onClick={e => (user.uid !== answerCardData.user._id) ? (currentVote === -1 ? voteAnswer(0) : voteAnswer(-1)) : null} />
+                            onClick={e => (currentVote === -1 ? voteAnswer(0) : voteAnswer(-1))}
+                            _hover={(user.uid !== answerCardData.user._id && !voteLoading) ? {cursor:'pointer'} : ''} />
                     </Flex>
                     : null}
                 </GridItem >
@@ -173,11 +189,19 @@ const AnswerCard = ({ answerCardData, setDataPost}) => {
                     fontSize="2rem" display={'flex'} flexDirection='column' alignItems={'center'} justifyContent='flex-start'>
                     <TriangleUpIcon
                         color={currentVote === 1 ? "green" : "gray"}
-                        onClick={e => (user.uid !== answerCardData.user._id) ? (currentVote === 1 ? voteAnswer(0) : voteAnswer(1)) : null} />
-                    <Text>{numberOfVotesAnswerd}</Text>
+                        onClick={e => (currentVote === 1 ? voteAnswer(0) : voteAnswer(1))}
+                        _hover={(user.uid !== answerCardData.user._id && !voteLoading) ? {cursor:'pointer'} : ''} />
+                    {voteLoading 
+                        ? <Spinner color='#3195DB'
+                                    thickness='4px'
+                                    speed='0.65s'
+                                    w="48px"
+                                    h="48px" /> 
+                        : <Text w={'48px'} textAlign='center'>{numberOfVotesAnswer}</Text>}
                     <TriangleDownIcon
                         color={currentVote === -1 ? "red" : "gray"}
-                        onClick={e => (user.uid !== answerCardData.user._id) ? (currentVote === -1 ? voteAnswer(0) : voteAnswer(-1)) : null} />
+                        onClick={e => (currentVote === -1 ? voteAnswer(0) : voteAnswer(-1))}
+                        _hover={(user.uid !== answerCardData.user._id && !voteLoading) ? {cursor:'pointer'} : ''} />
                 </GridItem>
                     : null}
                 <GridItem gridArea={largerThan575px ? '2 / 1 / 3 / 4' : '2 / 1 / 3 / 4'}>

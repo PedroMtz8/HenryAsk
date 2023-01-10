@@ -12,7 +12,8 @@ import {
     Tooltip,
     Button,
     Modal,
-    Skeleton
+    Skeleton,
+    useToast
 } from '@chakra-ui/react'
 import { TriangleUpIcon, TriangleDownIcon } from '@chakra-ui/icons'
 import axios from "axios";
@@ -32,17 +33,19 @@ import Graduate from "../../../assets/Rol Images/Graduate.png";
 import Student from "../../../assets/Rol Images/Students.png";
 import HeroOrTA from "../../../assets/Rol Images/Hero,TA.png";
 
-const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData }) => {
+const MainDetails = ({ dataPost }) => {
 
     const [largerThan575px] = useMediaQuery('(min-width: 575px)')
     moment.updateLocale('es', localeData)
 
     const { user } = useAuth();
+    console.log(user)
     let token = user.accessToken;
     const idPost = useParams().id;
     const [dif, setDif] = useState(moment(dataPost.post.createdAt).startOf('seconds').fromNow())
-    const [numberOfVotesPost, setNumberOfVotes] = useState(parseInt(dataPost.post.score))
+    const [numberOfVotesPost, setNumberOfVotesPost] = useState(parseInt(dataPost.post.score))
     const [numberOfVotesUser, setNumberOfVotesUser] = useState(parseInt(dataPost.post.user.score))
+    const [currentVote, setCurrentVote] = useState(Object.keys(dataPost.post.voters).includes(user.uid) ? parseInt(dataPost.post.voters[user.uid]) : 0)
     const [postComments, setPostComments] = useState([])
     const [commentPage, setCommentPage] = useState(0)
     const [remainingComments, setRemainingComments] = useState(dataPost.post.numberComments)
@@ -50,18 +53,9 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [rolImg, setRolImg] = useState();
     const [commentsLoading, setCommentLoading] = useState(false)
+    const [voteLoading, setVoteLoading] = useState(false)
     const [postLoading, setPostLoading] = useState(true)
-
-    useEffect(() => {
-
-        if (numberOfVotesUser !== dataPost.post.user.score) {
-
-            axios.get(API_URL + `/posts/${idPost}`, { headers: { Authorization: "Bearer " + token } })
-                .then(res => { setDataPost(res.data) })
-
-        }
-
-    }, [numberOfVotesUser])
+    const toast = useToast()
 
     useEffect(() => {
         (commentPage > 0) && setCommentLoading(true);
@@ -90,22 +84,26 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData }) => {
     }
 
     const votePost = async (type) => {
-
-        if (votingData !== type) {
-            const res = await
-                axios.put(API_URL + `/posts/${type}`, { post_id: idPost }, { headers: { Authorization: "Bearer " + token } })
-            setVotingData(type)
-            setNumberOfVotes(numberOfVotesPost + type + (votingData !== 0 ? type : 0))
-            setNumberOfVotesUser(numberOfVotesUser + type + (votingData !== 0 ? type : 0))
-
-        } else {
-            const res = await
-                axios.put(API_URL + `/posts/0`, { post_id: idPost }, { headers: { Authorization: "Bearer " + token } })
-            setVotingData(0)
-            setNumberOfVotes(numberOfVotesPost - type)
-            setNumberOfVotesUser(numberOfVotesUser - type)
+        if(!voteLoading && user.uid !== dataPost.post.user._id){
+            try{
+                setVoteLoading(true)
+                const res = await
+                axios.put(API_URL + `/posts/${type}`, { post_id: dataPost.post._id }, { headers: { Authorization: "Bearer " + token } })
+                setVoteLoading(false)
+                setNumberOfVotesPost(res.data.votePost)
+                setNumberOfVotesUser(res.data.authorScore)
+                setCurrentVote(type)
+            } catch (error) {
+                setVoteLoading(false)
+                toast({
+                    description: "Ocurrio un error, intentalo de nuevo",
+                    duration: 3000,
+                    position: "top",
+                    status: "error",
+                    isClosable: true
+                }) 
+            }
         }
-
     }
 
     return (
@@ -134,19 +132,21 @@ const MainDetails = ({ dataPost, setDataPost, votingData, setVotingData }) => {
                     <Image w={largerThan575px ? "2.8rem" : '2.3rem'} mt=".5rem"
                         src={rolImg} alt="userImage" />
                     <Flex flexDirection='column' alignItems={'center'} justifyContent='flex-start' fontSize="2rem">
-                        {user.email !== dataPost.post.user.email &&
-                            <TriangleUpIcon
-                                color={votingData === 1 ? "green" : "gray"}
-                                onClick={e => votePost(1)} />
-                        }
-                        <Text>
-                            {numberOfVotesPost}
-                        </Text>
-                        {user.email !== dataPost.post.user.email &&
-                            <TriangleDownIcon
-                                color={votingData === -1 ? "red" : "gray"}
-                                onClick={e => votePost(-1)} />
-                        }
+                        <TriangleUpIcon
+                            color={currentVote === 1 ? "green" : "gray"}
+                            onClick={e => (currentVote === 1 ? votePost(0) : votePost(1))}
+                            _hover={(user.uid !== dataPost.post.user._id && !voteLoading) ? {cursor:'pointer'} : ''} />
+                        {voteLoading 
+                        ? <Spinner color='#3195DB'
+                                    thickness='4px'
+                                    speed='0.65s'
+                                    w="48px"
+                                    h="48px" /> 
+                        : <Text>{numberOfVotesPost}</Text>}
+                        <TriangleDownIcon
+                            color={currentVote === -1 ? "red" : "gray"}
+                            onClick={e => (currentVote === -1 ? votePost(0) : votePost(-1))}
+                            _hover={(user.uid !== dataPost.post.user._id && !voteLoading) ? {cursor:'pointer'} : ''}/>
                     </Flex>
                 </GridItem >
                 <GridItem gridArea={'1 / 2 / 2 / 3'} direction="column" minWidth={0}>

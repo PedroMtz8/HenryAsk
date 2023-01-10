@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../AuthComponents/AuthContext"
 import API_URL from "../../../config/environment"
@@ -23,8 +22,6 @@ const CreateComment = ({ isOpen, onClose, id }) => {
 
     const { user } = useAuth();
     let token = user.accessToken;
-    const idParam = useParams().id
-    const navigate = useNavigate()
     const toast = useToast()
     const [loading, setLoading] = useState(false)
 
@@ -53,7 +50,7 @@ const CreateComment = ({ isOpen, onClose, id }) => {
 
             onClose()
             
-            setTimeout(() => {navigate(0)}, 2500) 
+            setTimeout(() => {window.location.reload(false)}, 2500) 
 
         } catch (error) {
 
