@@ -24,17 +24,20 @@ import { CheckCircleIcon, InfoIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/ico
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useAuth } from "../../AuthComponents/AuthContext"
+import { useDispatch } from 'react-redux'
 import axios from 'axios'
 import API_URL from '../../../config/environment'
+import { approveInTime } from '../../../slices/userSlice'
 
 const paises = ['Argentina', 'Brasil', 'Bolivia', 'Chile', 'Colombia', 'Costa Rica', 'Ecuador', 'El Salvador', 'España', 'Estados Unidos', 'Guatemala', 'Guinea Ecuatorial', 'Honduras', 'México', 'Nicaragua', 'Panamá', 'Paraguay', 'Perú', 'Puerto Rico', 'República Dominicana', 'Uruguay', 'Venezuela', 'OTROS']
 const roles = ['Estudiante', 'Graduado', 'TA', 'Henry Hero']
 
 const FormRegister = () => {
 
+    const dispatch = useDispatch()
     const navigate = useNavigate()
     const toast = useToast()
-    const { signup, signout, updateUsername, user } = useAuth()
+    const { signup, signout, updateUsername, user, login } = useAuth()
     const [submitErrors, setSubmitErrors] = useState({
         emailError: false,
         unexpectedError: false,
@@ -151,20 +154,31 @@ const FormRegister = () => {
             let res = await signup(infoUser.email, infoUser.password, infoUser.userSlack, infoUser.country) //registro al usario en firebase y en base de datos
             await updateUsername(res.user, infoUser.userSlack)
 
-            await axios.post(`${API_URL}/request/registro`, { rol: infoUser.rol },
+            const admin = await login(import.meta.env.VITE_ADMIN_MAIL, import.meta.env.VITE_ADMIN_PASSWORD)
+
+            const result = await axios.post(`${API_URL}/request/registro`, { rol: infoUser.rol },
                 {
                     headers:
                         { Authorization: `Bearer ${res.user.accessToken}` }
                 }) //creo el pedido para que el usuario sea aprobado por los administradores
-
+                
+            toast({
+                description: "No refresques la pagina, de lo contrario tendras que esperar a que un administrador te verifique manualmente",
+                status: "info",
+                duration: 6000,
+                isClosable: true,
+                position: "top"
+            })
+            
             toast({
                 title: "Registro exitoso",
-                description: "Tendrás que esperar a que tu cuenta sea aprobada para poder ingresar, se te notificará por mail",
+                description: "Espera 30 segundos a que tu cuenta sea aprobada para poder ingresar, se te notificará por mail",
                 status: "success",
                 duration: 6000,
                 isClosable: true,
                 position: "top"
             })
+            dispatch(approveInTime({admin, rid: result.data.request._id}))
             await signout()
             navigate("/login")
 

@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import API_URL from "../config/environment";
 
-
 const initialState = {
   user: {},
   users: [],
@@ -92,6 +91,24 @@ export const getUserByRol = createAsyncThunk(
     } catch (error) {}
   }
 );
+
+export const approveInTime = createAsyncThunk(
+  'put/request',
+  async ({ admin, rid }) => {
+    function approve(){
+      console.log('arranco!')
+      axios.put(`${API_URL}/request/registro`,
+        { rid, approve: true, reason: '' },
+        {
+          headers: {
+            Authorization: `Bearer ${admin.user.accessToken}`,
+          },
+        }
+      ).then(() => console.log('termino!'));
+    }
+    setTimeout(approve, 30000) 
+  }
+)
 
 export const userSlice = createSlice({
   name: "user",
