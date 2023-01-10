@@ -76,6 +76,10 @@ export default function QuestionModal({ title }) {
         isClosable: true,
       })
 
+      setTimeout(() => {
+        window.location.reload(false);
+      }, 2000)
+
     } catch (error) {
 
       onClose()
