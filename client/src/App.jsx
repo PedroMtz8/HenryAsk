@@ -1,34 +1,46 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import LandingPage from "./Components/LandingPage/LandingPage";
+import Login from "./Components/Login/Login";
+import { Route, Routes } from "react-router-dom";
+import Register from "./Components/Register/Register";
+import AuthProvider from "./Components/AuthComponents/AuthContext";
+import ProtectedRoute from "./Components/AuthComponents/ProtectedRoutes";
+import ProtectedRouteAdmin from "./Components/AuthComponents/ProtectedRouteAdmin";
+import Home from "./Components/Home/Home";
+import Profile from "./Components/Profile/Profile";
+import HomeAdmin from "./Components/Admin/HomeAdmin";
+import Accounts from "./Components/Admin/Accounts";
+import Details from "./Components/Details/Details";
+import ForgotPassword from "./Components/ForgotPassword/ForgotPassword";
+import ReqAdmin from "./Components/Admin/ReqAdmin";
+import ErrorPage from "./Components/Admin/ErrorPage/ErrorPage";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Register />} />
+        <Route path="/forgotpassword" element={<ForgotPassword />} />
+        <Route
+          path={"*"}
+          element={<ErrorPage numb_err="404" error="URL inexistente." redirect="/home" />}
+          />
+        // Rutas de admin
+        <Route element={<ProtectedRoute />}>
+          <Route path="/home" element={<Home />} />
+          <Route path="/home/post/:id" element={<Details />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path='/not-admin' element={<ErrorPage numb_err="401" error="No eres administrador." redirect="/home" />} />
+        </Route>
+        <Route element={<ProtectedRouteAdmin />}>
+          <Route path="/admin" element={<HomeAdmin />} />
+          <Route path="/admin/accounts" element={<Accounts />} />
+          <Route path="/admin/requests" element={<ReqAdmin />} />
+        </Route>
+      </Routes>
+    </AuthProvider>
+  );
 }
 
-export default App
+export default App;
