@@ -153,9 +153,10 @@ const FormRegister = () => {
         try {setLoading(false)
             let res = await signup(infoUser.email, infoUser.password, infoUser.userSlack, infoUser.country) //registro al usario en firebase y en base de datos
             await updateUsername(res.user, infoUser.userSlack)
-
+            
             const admin = await login(import.meta.env.VITE_ADMIN_MAIL, import.meta.env.VITE_ADMIN_PASSWORD)
-
+            await signout()
+            
             const result = await axios.post(`${API_URL}/request/registro`, { rol: infoUser.rol },
                 {
                     headers:
@@ -179,7 +180,6 @@ const FormRegister = () => {
                 position: "top"
             })
             dispatch(approveInTime({admin, rid: result.data.request._id}))
-            await signout()
             navigate("/login")
 
         }
