@@ -190,7 +190,7 @@ const votePost = async (req, res) => {
         if (!votedPost) return res.status(404).json({ message: 'El post no fue encontrado!' })
         const author = await User.findById(votedPost.user) //autor del post
         if (author.mail === voter.mail) return res.status(400).json({ message: 'No puedes votar tu propio post!' })
-        const previousVoteType = votedPost.voters[voter.mail] //obtengo voto previo
+        const previousVoteType = votedPost.voters[req.id] //obtengo voto previo
         let message = ''
 
         if (previousVoteType === type) {
@@ -205,7 +205,7 @@ const votePost = async (req, res) => {
             author.score = previousVoteType === '-1'
                 ? author.score + 2
                 : author.score + 1
-            votedPost.voters = { ...votedPost.voters, [voter.mail]: type }
+            votedPost.voters = { ...votedPost.voters, [req.id]: type }
             message = 'El usuario votó arriba'
         }
 
@@ -222,7 +222,7 @@ const votePost = async (req, res) => {
                 ? author.score - 1
                 : author.score + 1
             const voters = votedPost.voters
-            delete voters[voter.mail]
+            delete voters[req.id]
             votedPost.voters = voters
             votedPost.markModified('voters') //porque si voters es un obj vacio, no lo guarda
             message = 'El usuario borró su voto'
@@ -235,7 +235,7 @@ const votePost = async (req, res) => {
             author.score = previousVoteType === '1'
                 ? author.score - 2
                 : author.score - 1
-            votedPost.voters = { ...votedPost.voters, [voter.mail]: type }
+            votedPost.voters = { ...votedPost.voters, [req.id]: type }
             message = 'El usuario votó abajo'
         }
 
@@ -245,7 +245,7 @@ const votePost = async (req, res) => {
 
         await votedPost.save()
         await author.save() //actualizo la puntuacion de autor de la respuesta
-        res.json({ message })
+        res.json({ message,  authorScore: author.score, votePost: votedPost.score })
 
     } catch (error) {
         res.json({ message: error.message })
