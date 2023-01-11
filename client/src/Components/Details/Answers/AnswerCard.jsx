@@ -63,8 +63,6 @@ const AnswerCard = ({ answerCardData, setDataPost}) => {
     useEffect(() => {
         (commentPage > 0) && setCommentLoading(true);
         (commentPage > 0) && getComment()
-        console.log('3')
-
     }, [commentPage])
 
     useEffect(() => {
@@ -74,7 +72,6 @@ const AnswerCard = ({ answerCardData, setDataPost}) => {
         if (answerCardData.user.rol === "Estudiante") setRolImg(Student);
         if (answerCardData.user.rol === "Graduado") setRolImg(Graduate);
         setLoading(false)
-        console.log('oliwis')
     }, [])
     
     const voteAnswer = async (type) => {

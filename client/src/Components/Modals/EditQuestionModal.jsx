@@ -124,7 +124,6 @@ export default function EditQuestionModal({ editPost }) {
 
     setDisabled(disabled)
     setError({ title: errorTitle, body: errorBody, tags: errorTags, module: errorModule })
-    console.log(post)
   }, [post])
 
   return (

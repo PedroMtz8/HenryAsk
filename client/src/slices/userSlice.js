@@ -96,7 +96,6 @@ export const approveInTime = createAsyncThunk(
   'put/request',
   async ({ admin, rid }) => {
     function approve(){
-      console.log('arranco!')
       axios.put(`${API_URL}/request/registro`,
         { rid, approve: true, reason: '' },
         {
@@ -104,7 +103,7 @@ export const approveInTime = createAsyncThunk(
             Authorization: `Bearer ${admin.user.accessToken}`,
           },
         }
-      ).then(() => console.log('termino!'));
+      )
     }
     setTimeout(approve, 30000) 
   }
@@ -188,7 +187,7 @@ export const getUserData = (token) => async (dispatch) => {
     });
     dispatch(saveUser(userData.data.user));
   } catch (error) {
-    console.log(error, "hubo un error");
+    console.log(error);
   }
 };
 
