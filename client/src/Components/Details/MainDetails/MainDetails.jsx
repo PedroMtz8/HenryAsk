@@ -39,7 +39,6 @@ const MainDetails = ({ dataPost }) => {
     moment.updateLocale('es', localeData)
 
     const { user } = useAuth();
-    console.log(user)
     let token = user.accessToken;
     const idPost = useParams().id;
     const [dif, setDif] = useState(moment(dataPost.post.createdAt).startOf('seconds').fromNow())

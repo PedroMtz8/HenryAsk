@@ -8,6 +8,7 @@ import {
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
+  useToast
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -19,6 +20,7 @@ const CropperImage = ({ photoURL, setOpenCrop, setPhotoURL, croppedAreaPixels, s
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const userData = useSelector((state) => state.user.user);
+  const toast = useToast()
 
 
   const cropComplete = (croppedArea, croppedAreaPixels) => {
@@ -32,7 +34,13 @@ const CropperImage = ({ photoURL, setOpenCrop, setPhotoURL, croppedAreaPixels, s
       await setPhotoURL(url);
       setZoom(1);
     } catch (error) {
-      console.log(error);
+      toast({
+        description: "Ocurrio un error durante el recorte, intente de nuevo",
+        duration: 2000,
+        position: "top",
+        status: "error",
+        isClosable: true,
+      });
     }
   };
 
