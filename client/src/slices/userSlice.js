@@ -17,7 +17,7 @@ const initialState = {
 
 export const getUser = createAsyncThunk("get/user", async (token) => {
   try {
-    const { data } = await axios.get(`http://localhost:3001/auth`, {
+    const { data } = await axios.get(`${API_URL}/auth`, {
       headers: { Authorization: "Bearer " + token },
     });
     return data;
@@ -31,7 +31,7 @@ export const getUsers = createAsyncThunk(
   async ({ token, page }) => {
     try {
       const { data } = await axios.get(
-        `http://localhost:3001/auth/users?page=${page}`,
+        `${API_URL}/auth/users?page=${page}`,
         {
           headers: { Authorization: "Bearer " + token },
         }
@@ -48,7 +48,7 @@ export const getRequest = createAsyncThunk(
   async ({ token, page, type }) => {
     try {
       const { data } = await axios.get(
-        `http://localhost:3001/request?page=${page}&type=${type}`,
+        `${API_URL}/request?page=${page}&type=${type}`,
         {
           headers: { Authorization: "Bearer " + token },
         }
@@ -65,7 +65,7 @@ export const getByMail = createAsyncThunk(
   async ({ token, page, mail }) => {
     try {
       const { data } = await axios.get(
-        `http://localhost:3001/auth/users?mail=${mail}&page=${page}`,
+        `${API_URL}/auth/users?mail=${mail}&page=${page}`,
         {
           headers: { Authorization: "Bearer " + token },
         }
@@ -82,7 +82,7 @@ export const getUserByRol = createAsyncThunk(
   async ({ page, rol, token }) => {
     try {
       const { data } = await axios.get(
-        `http://localhost:3001/auth/users?page=${page}&rol=${rol}`,
+        `${API_URL}/auth/users?page=${page}&rol=${rol}`,
         {
           headers: { Authorization: "Bearer " + token },
         }
