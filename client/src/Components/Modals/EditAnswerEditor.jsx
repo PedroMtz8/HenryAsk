@@ -341,6 +341,11 @@ export default ({ body, setBody, setText, setUrl}) => {
     }, [HTML])
 
     const editor = useEditor({
+        editorProps: {
+            attributes: {
+                class: 'formEditor'
+            }
+        },
         extensions: [
             StarterKit,
             TextAlign.configure({

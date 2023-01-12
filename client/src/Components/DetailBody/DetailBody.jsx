@@ -9,6 +9,11 @@ import Image from '@tiptap/extension-image'
 
 export default ({ body }) => {
     const editor = useEditor({
+        editorProps: {
+            attributes: {
+                class: 'bodyEditor'
+            }
+        },
         extensions: [
             StarterKit,
             TextAlign.configure({
