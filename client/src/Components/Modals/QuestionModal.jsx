@@ -257,7 +257,7 @@ function TagsInput({ post, setPost}) {
     value = value.replace(/[.]+/gi, '.') //elimino la repeticion seguida de puntos
     
     //si el guion no esta entre caracteres, se elimina
-    value = value.replace(/((?<!.)-)|(-(?!.))/gi, '') 
+    value = value.replace(/((?<![a-zA-Z0-9])-)|(-(?![a-zA-Z0-9]))/gi, '') 
 
     //si el punto no esta seguido de algun caracter, se elimina
     value = value.replace(/\.(?!.)/gi, '')
