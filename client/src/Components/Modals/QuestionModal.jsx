@@ -180,7 +180,7 @@ export default function QuestionModal({ title }) {
                 <FormLabel fontSize={"24px"}>Tags</FormLabel>
                 <Text mb={"5px"} >Añade hasta 3 tags para describir sobre que tecnologias es tu problema</Text>
                 <Text fontSize={"14px"}>*Pulsa espacio para agregar cada tag</Text>
-                <TagsInput post={post} setPost={setPost} error={error.tags} setError={setError}/>
+                <TagsInput post={post} setPost={setPost}/>
                 <Text mb={"5px"} color={'red'}>{error.tags}</Text>
 
               </FormControl>
@@ -235,7 +235,7 @@ export default function QuestionModal({ title }) {
 
 
 
-function TagsInput({ post, setPost, error, setError}) {
+function TagsInput({ post, setPost}) {
   const toast = useToast()
   const [value, setValue] = useState('')
 
