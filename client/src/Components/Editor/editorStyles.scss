@@ -23,11 +23,12 @@
     font-weight: 500;
 }
 
-.ProseMirror {
+.formEditor {
+    min-height: 200px;
     height: auto;
 }
 
-.ProseMirror p.is-editor-empty:first-child::before {
+.formEditor p.is-editor-empty:first-child::before {
     color: #718096;
     content: attr(data-placeholder);
     float: left;
@@ -105,13 +106,13 @@ button:disabled {
 
 
 
-.ProseMirror {
+.formEditor {
 
     transition-property: border-color,
     box-shadow,
     transform;
     transition-duration: 200ms;
-    border: 1px solid transparent;
+    border: 1px solid #CBD5E0;
     border-radius: 0.375rem;
     padding-block: 10px;
 
@@ -207,11 +208,7 @@ button:disabled {
 
 }
 
-.ProseMirror:hover {
-    border-color: #CBD5E0;
-}
-
-.ProseMirror:focus {
+.formEditor:focus {
     outline: 2px solid transparent;
     border-color: #3182ce;
     box-shadow: 0 0 0 1px #3182ce;

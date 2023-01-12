@@ -239,7 +239,7 @@ function TagsInput({ post, setPost, error}) {
   const toast = useToast()
 
   function handleKeyDown(e) {
-    if (e.code !== 'Space' || e.keyCode !== 32) return
+    if (e.key !== " ") return
 
     const value = e.target.value
     if (!value.trim()) return

@@ -35,6 +35,11 @@ function AnswerEditor({ post_id, responseData, setResponseData, token, scrollFro
     const [loadingImage, setLoadingImage] = useState(false)
     const [loadingSubmit, setLoadingSubmit] = useState(false)
     const editor = useEditor({
+        editorProps: {
+            attributes: {
+                class: 'formEditor'
+            }
+        },
         extensions: [
             StarterKit,
             TextAlign.configure({
