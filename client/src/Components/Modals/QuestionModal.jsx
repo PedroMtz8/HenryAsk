@@ -239,14 +239,6 @@ function TagsInput({ post, setPost, error, setError}) {
   const toast = useToast()
   const [value, setValue] = useState('')
 
-  // useEffect(() => {
-  //   if(value.length === 0){
-  //     var errorTags = 'Debe haber al menos un tag'
-  //   }
-
-  //   setError({ ...error, tags: errorTags })
-  // }, [value])
-
   function handleChange(e){
     let value = e.target.value.replace(/[^a-zA-Z0-9\s\-\.]/gi, '')
     setValue(value)
