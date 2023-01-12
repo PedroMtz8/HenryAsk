@@ -252,6 +252,7 @@ function TagsInput({ post, setPost}) {
 
     if(!value.match(/\s/)) return
     
+    value = value.trim()
     value = value.replace(/[-]+/gi, '-') //elimino la repeticion seguida de guiones
     value = value.replace(/[.]+/gi, '.') //elimino la repeticion seguida de puntos
     
