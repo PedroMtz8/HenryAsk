@@ -241,6 +241,7 @@ function TagsInput({ post, setPost, error}) {
   function handleKeyDown(e) {
     console.log(e.keyCode, "keyCode")
     console.log(e.code, "code")
+    console.log(e.which, "code")
 
     if (e.code !== 'Space' || e.keyCode !== 32) return
 
