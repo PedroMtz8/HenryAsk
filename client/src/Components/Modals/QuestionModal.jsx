@@ -239,12 +239,7 @@ function TagsInput({ post, setPost, error}) {
   const toast = useToast()
 
   function handleKeyDown(e) {
-    console.log('EVENTO:', e)
-    console.log('WHICH:', e.which)
-    console.log('KEYCODE:',e.keyCode)
-    console.log('CODE:',e.code)
-    console.log('KEY:',e.key)
-    if (e.key !== " ") return
+    if(!e.target.value.match(/\s/)) return
 
     const value = e.target.value
     if (!value.trim()) return
