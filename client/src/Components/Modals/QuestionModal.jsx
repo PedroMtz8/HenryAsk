@@ -239,6 +239,7 @@ function TagsInput({ post, setPost, error}) {
   const toast = useToast()
 
   function handleKeyDown(e) {
+    console.log(e.key)
     if (e.key !== " ") return
 
     const value = e.target.value
