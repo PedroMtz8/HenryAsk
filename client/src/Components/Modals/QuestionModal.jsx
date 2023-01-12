@@ -98,17 +98,17 @@ export default function QuestionModal({ title }) {
 
   useEffect(() => {
     let disabled = false, errorTitle = '', errorBody = '', errorTags = '', errorModule = ''
-    if (post.title.length < 15) {
+    if (post.title.length < 15 || post.title.trim() === "") {
       disabled = true
       errorTitle = 'Titulo debe tener al menos 15 caracteres'
     }
 
-    if (post.title.length > 150) {
+    if (post.title.length > 150 ) {
       disabled = true
       errorTitle = 'Limite de 150 caracteres excedido'
     }
 
-    if (bodyText.length < 20) {
+    if (bodyText.length < 20 || bodyText.trim() === "")  {
       disabled = true
       errorBody = 'Cuerpo debe tener al menos 20 caracteres'
     }
@@ -239,6 +239,9 @@ function TagsInput({ post, setPost, error}) {
   const toast = useToast()
 
   function handleKeyDown(e) {
+    console.log(e.keyCode, "keyCode")
+    console.log(e.code, "code")
+
     if (e.code !== 'Space' || e.keyCode !== 32) return
 
     const value = e.target.value
@@ -320,7 +323,7 @@ function TagsInput({ post, setPost, error}) {
         marginLeft={"15px"}
         focusBorderColor={"transparent"}
         paddingInlineStart={0}
-        borderRadius={"none"} w={"200px"} h={"30px"} type="text" onKeyUp={handleKeyDown} placeholder="REACT JAVASCRIPT..." />
+        borderRadius={"none"} w={"200px"} h={"30px"} type="text" onKeyUpCapture={handleKeyDown} placeholder="REACT JAVASCRIPT..." />
     </Flex >
   )
 }
