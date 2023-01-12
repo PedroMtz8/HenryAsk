@@ -180,7 +180,7 @@ export default function QuestionModal({ title }) {
                 <FormLabel fontSize={"24px"}>Tags</FormLabel>
                 <Text mb={"5px"} >Añade hasta 3 tags para describir sobre que tecnologias es tu problema</Text>
                 <Text fontSize={"14px"}>*Pulsa espacio para agregar cada tag</Text>
-                <TagsInput post={post} setPost={setPost} error={error.tags} />
+                <TagsInput post={post} setPost={setPost} error={error.tags} setError={setError}/>
                 <Text mb={"5px"} color={'red'}>{error.tags}</Text>
 
               </FormControl>
@@ -235,14 +235,43 @@ export default function QuestionModal({ title }) {
 
 
 
-function TagsInput({ post, setPost, error}) {
+function TagsInput({ post, setPost, error, setError}) {
   const toast = useToast()
+  const [value, setValue] = useState('')
 
-  function handleKeyDown(e) {
-    if(!e.target.value.match(/\s/)) return
+  // useEffect(() => {
+  //   if(value.length === 0){
+  //     var errorTags = 'Debe haber al menos un tag'
+  //   }
 
-    const value = e.target.value
-    if (!value.trim()) return
+  //   setError({ ...error, tags: errorTags })
+  // }, [value])
+
+  function handleChange(e){
+    let value = e.target.value.replace(/[^a-zA-Z0-9\s\-\.]/gi, '')
+    setValue(value)
+    if (value.trim().length > 18) return toast({
+      description: "Tag puede tener hasta 18 caracteres",
+      status: "error",
+      duration: 4000,
+      isClosable: true,
+      position: "top"
+    })
+
+    if(!value.match(/\s/)) return
+    
+    value = value.replace(/[-]+/gi, '-') //elimino la repeticion seguida de guiones
+    value = value.replace(/[.]+/gi, '.') //elimino la repeticion seguida de puntos
+    
+    //si el guion no esta entre caracteres, se elimina
+    value = value.replace(/((?<!.)-)|(-(?!.))/gi, '') 
+
+    //si el punto no esta seguido de algun caracter, se elimina
+    value = value.replace(/\.(?!.)/gi, '')
+    
+    if(value.trim() === ''){
+      return setValue('')
+    } 
 
     let same = post.tags.find(t => t === value.toUpperCase().trim())
 
@@ -266,7 +295,9 @@ function TagsInput({ post, setPost, error}) {
       tags: [...post.tags, value.toUpperCase().trim()]
 
     })
-    e.target.value = ''
+
+    setValue('')
+
   }
 
   function removeTag(index) {
@@ -320,7 +351,14 @@ function TagsInput({ post, setPost, error}) {
         marginLeft={"15px"}
         focusBorderColor={"transparent"}
         paddingInlineStart={0}
-        borderRadius={"none"} w={"200px"} h={"30px"} type="text" onKeyUp={handleKeyDown} placeholder="REACT JAVASCRIPT..." />
+        borderRadius={"none"} 
+        w={"200px"} 
+        h={"30px"} 
+        type="text" 
+        placeholder="REACT JAVASCRIPT..."
+        value={value}
+        onChange={handleChange}
+        />
     </Flex >
   )
 }
