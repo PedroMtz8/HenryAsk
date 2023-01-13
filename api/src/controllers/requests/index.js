@@ -9,21 +9,21 @@ function checkFields(fields) {
         const value = fields[field]
         switch (field) {
             case 'rol':
-                if(!value) return;
+                if (!value) return;
                 const roles = ['Administrador', 'Estudiante', 'Graduado', 'TA', 'Henry Hero']
-                if(!roles.includes(value)) return 'Rol invalido'
+                if (!roles.includes(value)) return 'Rol invalido'
                 break;
             case 'approve':
-                if(value !== true && value !== false) return 'approve debe ser true o false'
+                if (value !== true && value !== false) return 'approve debe ser true o false'
                 break;
             case 'type':
-                if(value && value !== 'Rol' && value !== 'Registro') return 'Tipo de pedido invalido.'
+                if (value && value !== 'Rol' && value !== 'Registro') return 'Tipo de pedido invalido.'
             case 'page':
-                if(!value) return 'Numero de pagina requerido'
+                if (!value) return 'Numero de pagina requerido'
                 if (value <= 0) return 'Pagina no puede ser menor o igual a 0'
                 break;
             case 'rid':
-                if(!value) return 'Id de request requerido'
+                if (!value) return 'Id de request requerido'
             default:
                 break;
         }
@@ -100,7 +100,7 @@ const completeRegisterRequest = async (req, res) => {
         };
 
         if (!approve) {
-            if(!reason) return res.status(400).json({message: 'Debe incluir una razon'})
+            if (!reason) return res.status(400).json({ message: 'Debe incluir una razon' })
             mailOptions.template = 'registerR'
             mailOptions.context = { reason }
             response = { message: 'Peticion rechazada!' }
@@ -108,8 +108,7 @@ const completeRegisterRequest = async (req, res) => {
 
         else {
             mailOptions.template = 'registerA'
-            const updatedUser = await User.findByIdAndUpdate(request.user, { rol: request.rol, status: 'Aprobado' }, { new: true })
-            response = { message: 'Usuario aprobado!', user: updatedUser }
+            response = { message: 'Usuario aprobado!' }
         }
 
 
@@ -117,6 +116,7 @@ const completeRegisterRequest = async (req, res) => {
             if (e) return res.status(500).json({ messsage: e.message });
             else {
                 await request.remove()
+                const updatedUser = await User.findByIdAndUpdate(request.user, { rol: request.rol, status: 'Aprobado' }, { new: true })
                 return res.json(response)
             }
         });
@@ -165,7 +165,7 @@ const completeRolRequest = async (req, res) => {
         };
 
         if (!approve) {
-            if(!reason) return res.status(400).json({message: 'Debe incluir una razon'})
+            if (!reason) return res.status(400).json({ message: 'Debe incluir una razon' })
             mailOptions.template = 'rolR'
             mailOptions.context = { reason }
             response = { message: 'Peticion rechazada!' }
@@ -192,7 +192,7 @@ const completeRolRequest = async (req, res) => {
 }
 
 const getRequests = async (req, res) => {
-    const { page, type} = req.query
+    const { page, type } = req.query
     const message = checkFields({ page })
     if (message) return res.status(400).json({ message })
 
@@ -205,7 +205,7 @@ const getRequests = async (req, res) => {
                 : Request.find({ type })
         }
 
-        if(!query) query = Request.find()
+        if (!query) query = Request.find()
         return query
     }
     //busqueda para obtener usuarios paginados
