@@ -21,6 +21,6 @@ Puedes chequear la aplicacion accediendo al siguiente enlace: https://henry-ask.
 
 [David Cicconi](https://github.com/davidcicconi94) [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/david-cicconi-dev/)
 
-[Nicolás Sepertino](https://github.com/NicoSeper89) [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://github.com/NicoSeper89)
+[Nicolás Sepertino](https://github.com/NicoSeper89) [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/nicolassepertino)
 
 [Pedro Martinez](https://github.com/PedroMtz8) [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/pedromtz8)
