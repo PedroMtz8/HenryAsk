@@ -76,7 +76,6 @@ const completeRegisterRequest = async (req, res) => {
             port: 456,
             secure: true,
             auth: {
-                type: 'login',
                 user: "henryask.soporte@gmail.com",
                 pass: process.env.AUTH_PASSWORD,
             },

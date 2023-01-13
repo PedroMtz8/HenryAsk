@@ -173,7 +173,7 @@ const FormRegister = () => {
             
             toast({
                 title: "Registro exitoso",
-                description: "Espera 30 segundos a que tu cuenta sea aprobada para poder ingresar",
+                description: "Espera 30 segundos a que tu cuenta sea aprobada para poder ingresar, se te notificará por mail",
                 status: "success",
                 duration: 15000,
                 isClosable: true,
