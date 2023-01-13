@@ -128,9 +128,9 @@ const ReqAdmin = () => {
                 </Thead>
                 <Tbody>
                   {req.map((req) => (
-                    <Tr textAlign="center" key={req.user._id}>
-                      <Td textAlign="center"> {req.user.userSlack} </Td>
-                      <Td textAlign="center"> {req.user.mail} </Td>
+                    <Tr textAlign="center" key={req.user?._id}>
+                      <Td textAlign="center"> {req.user?.userSlack} </Td>
+                      <Td textAlign="center"> {req.user?.mail} </Td>
                       <Td textAlign="center"> {req.rol} </Td>
                       <Td textAlign="center">{req.type}</Td>
                       <Td>
