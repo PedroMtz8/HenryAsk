@@ -34,8 +34,8 @@ const FormLogin = () => {
 
 
     const [infoUser, setInfoUser] = useState({
-        email: "",
-        password: ""
+        email: "demo@gmail.com",
+        password: "Demo1234!"
     });
     const [wrongPass, setWrongPass] = useState(false)
     const [wrongEmail, setWrongEmail] = useState(false)
@@ -43,9 +43,9 @@ const FormLogin = () => {
     const [loading, setLoading] = useState(true)
 
     const [errorInfoUser, setErrorInfoUser] = useState({
-        email: "black",
+        email: "green",
         password: {
-            complete: "black",
+            complete: "green",
             capitalLetter: false,
             digit: false,
             specialCharacter: false,

@@ -231,7 +231,7 @@ const Profile = () => {
   }, [submitImage])
 
   return (
-    <Flex backgroundColor={"#1F1F1F"} h={"auto"} w="100%" flexFlow={"column"}>
+    <Flex backgroundColor={"#1F1F1F"} minH={'100vh'} w="100%" flexFlow={"column"} justifyContent={'space-between'}>
       <NavBar />
 
       {openCrop ? (
@@ -498,10 +498,14 @@ const Profile = () => {
                       </Button>
                     </Flex>
                   ) : (
-                    <Button onClick={() => {
-                      setEdit(true)
-                      setCountry(userData.country)
-                    }}>Editar</Button>
+                    userData.mail !== "demo@gmail.com" ? 
+                      <Button onClick={() => {
+                        setEdit(true)
+                        setCountry(userData.country)
+                      }}>Editar</Button>
+                    : <Flex>
+                        <Text color={'gray'}>ⓘ Si deseas personalizar tu perfil, registrate!</Text>
+                      </Flex>
                   )}
                 </Flex>
               </Flex>
